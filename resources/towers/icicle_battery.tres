@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_bnghd"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_lr8lt"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_wohxx"]
+
+[sub_resource type="Resource" id="Resource_dov3m"]
+script = ExtResource("3_wohxx")
+cost = 35
+damage = 6.0
+range_tiles = 3.0
+fire_rate = 0.9
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.5
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_5f3kd"]
+script = ExtResource("3_wohxx")
+cost = 55
+damage = 12.0
+range_tiles = 3.5
+fire_rate = 1.03
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.5
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_eo8kb"]
+script = ExtResource("3_wohxx")
+cost = 95
+damage = 24.0
+range_tiles = 4.0
+fire_rate = 1.19
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.5
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[resource]
+script = ExtResource("2_lr8lt")
+id = &"icicle_battery"
+display_name = "Icicle Battery"
+role = "Burst single-target, bonus vs slowed"
+rune_element = 1
+tiers = Array[ExtResource("3_wohxx")]([SubResource("Resource_dov3m"), SubResource("Resource_5f3kd"), SubResource("Resource_eo8kb")])
+sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
+sprite_frame = "medievalStructure_18.png"
+projectile_scene = ExtResource("1_bnghd")
+scene_path = "res://scenes/towers/IcicleBattery.tscn"
+unlock_cost = 300
+required_account_level = 6

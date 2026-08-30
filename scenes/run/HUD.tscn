@@ -1,0 +1,132 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/run/HUD.gd" id="1_hud"]
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_hud")
+
+[node name="TopBar" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 104.0
+grow_horizontal = 2
+
+[node name="TopRow" type="HBoxContainer" parent="TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="WaveLabel" type="Label" parent="TopBar/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Wave 1"
+
+[node name="WardBox" type="VBoxContainer" parent="TopBar/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="WardBar" type="ProgressBar" parent="TopBar/TopRow/WardBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+max_value = 20.0
+value = 20.0
+show_percentage = false
+
+[node name="WardLabel" type="Label" parent="TopBar/TopRow/WardBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "20 / 20"
+horizontal_alignment = 1
+
+[node name="GoldLabel" type="Label" parent="TopBar/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "40 g"
+
+[node name="PauseButton" type="Button" parent="TopBar/TopRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 72)
+layout_mode = 2
+text = "II"
+
+[node name="Banner" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 300.0
+offset_right = 300.0
+offset_bottom = 460.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Wave 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Message" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -240.0
+offset_right = 320.0
+offset_bottom = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(1, 0.8, 0.45, 1)
+text = ""
+horizontal_alignment = 1
+
+[node name="BankButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -176.0
+offset_right = 220.0
+offset_bottom = -152.0
+grow_horizontal = 2
+grow_vertical = 0
+custom_minimum_size = Vector2(0, 78)
+theme_override_font_sizes/font_size = 24
+text = "Bank & Retreat"
+
+[node name="TrayPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -148.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="TrayScroll" type="ScrollContainer" parent="TrayPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="Tray" type="HBoxContainer" parent="TrayPanel/TrayScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10

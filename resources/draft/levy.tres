@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_s2mgt"]
+
+[resource]
+script = ExtResource("1_s2mgt")
+id = &"levy"
+title = "Levy"
+description = "+25% wave-clear gold bonus."
+rarity = 0
+effect_key = &"wave_clear_bonus_pct"
+magnitude = 0.25
+max_rank = 3
+element_filter = -1
+icon_path = ""

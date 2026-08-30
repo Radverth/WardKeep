@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_fan2w"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_dl8li"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_8lyjf"]
+
+[sub_resource type="Resource" id="Resource_oy56x"]
+script = ExtResource("3_8lyjf")
+cost = 20
+damage = 4.0
+range_tiles = 3.0
+fire_rate = 1.4
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_0f8r6"]
+script = ExtResource("3_8lyjf")
+cost = 35
+damage = 8.0
+range_tiles = 3.5
+fire_rate = 1.61
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_on2vy"]
+script = ExtResource("3_8lyjf")
+cost = 60
+damage = 16.0
+range_tiles = 4.0
+fire_rate = 1.85
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[resource]
+script = ExtResource("2_dl8li")
+id = &"watchtower"
+display_name = "Watchtower"
+role = "Single-target, high rate"
+rune_element = 0
+tiers = Array[ExtResource("3_8lyjf")]([SubResource("Resource_oy56x"), SubResource("Resource_0f8r6"), SubResource("Resource_on2vy")])
+sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
+sprite_frame = "medievalStructure_16.png"
+projectile_scene = ExtResource("1_fan2w")
+scene_path = "res://scenes/towers/Watchtower.tscn"
+unlock_cost = 0
+required_account_level = 1

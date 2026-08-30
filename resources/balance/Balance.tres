@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="BalanceConfig" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/BalanceConfig.gd" id="1_u0lpe"]
+[ext_resource type="Script" path="res://resources/defs/WaveBand.gd" id="2_ltui4"]
+
+[sub_resource type="Resource" id="Resource_k63y6"]
+script = ExtResource("2_ltui4")
+from_wave = 1
+to_wave = 5
+base = 10.0
+step = 6.0
+spawn_interval = 1.2
+
+[sub_resource type="Resource" id="Resource_bbf15"]
+script = ExtResource("2_ltui4")
+from_wave = 6
+to_wave = 10
+base = 40.0
+step = 9.0
+spawn_interval = 1.0
+
+[sub_resource type="Resource" id="Resource_c2tds"]
+script = ExtResource("2_ltui4")
+from_wave = 11
+to_wave = 30
+base = 80.0
+step = 12.0
+spawn_interval = 0.85
+
+[sub_resource type="Resource" id="Resource_5drab"]
+script = ExtResource("2_ltui4")
+from_wave = 31
+to_wave = -1
+base = 308.0
+step = 15.0
+spawn_interval = 0.7
+
+[resource]
+script = ExtResource("1_u0lpe")
+wave_bands = Array[ExtResource("2_ltui4")]([SubResource("Resource_k63y6"), SubResource("Resource_bbf15"), SubResource("Resource_c2tds"), SubResource("Resource_5drab")])
+stat_scale_per_wave = 0.09
+elite_every = 5
+elite_budget_multiplier = 1.4
+elite_hp_multiplier = 2.0
+elite_gold_multiplier = 1.5
+first_boss_wave = 10
+boss_wave_interval = 10
+starting_gold = 40
+gold_kill_base = 2
+gold_kill_wave_divisor = 3
+gold_boss_base = 50
+gold_boss_per_wave = 5
+gold_wave_clear_base = 5
+gold_wave_clear_per_wave = 1
+sell_refund_ratio = 0.6
+runestones_per_wave = 3
+bank_rate_retreat = 1.0
+bank_rate_loss = 0.75
+xp_per_wave = 5
+xp_level_coefficient = 100
+max_account_level = 30
+draft_card_count = 3
+draft_weight_common = 60
+draft_weight_rare = 30
+draft_weight_epic = 10
+daily_completion_bonus = 25
+interstitial_every_n_run_ends = 3
+ward_stone_hp = 20
+element_strong_multiplier = 1.25
+element_weak_multiplier = 0.75

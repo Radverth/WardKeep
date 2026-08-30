@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_6cdxk"]
+
+[resource]
+script = ExtResource("1_6cdxk")
+id = &"ogre"
+display_name = "Ogre"
+base_hp = 140.0
+base_speed = 0.7
+base_damage = 6.0
+armor_type = 1
+budget_cost = 34
+unlock_wave = 22
+sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
+sprite_cell = Vector2i(0, 3)
+tint = Color(1, 1, 1, 1)
+scale_factor = 3.2
+is_boss = false
+scene_path = "res://scenes/enemies/Ogre.tscn"
+provisional = true

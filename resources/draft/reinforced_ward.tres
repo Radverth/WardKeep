@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_y6v8q"]
+
+[resource]
+script = ExtResource("1_y6v8q")
+id = &"reinforced_ward"
+title = "Reinforced Ward"
+description = "+5 maximum Ward Stone health, fully repaired."
+rarity = 1
+effect_key = &"ward_stone_max_flat"
+magnitude = 5.0
+max_rank = 2
+element_filter = -1
+icon_path = ""

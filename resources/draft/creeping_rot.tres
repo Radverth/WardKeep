@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_1reof"]
+
+[resource]
+script = ExtResource("1_1reof")
+id = &"creeping_rot"
+title = "Creeping Rot"
+description = "Every tower applies 1 damage per second of Blight."
+rarity = 2
+effect_key = &"universal_dot"
+magnitude = 1.0
+max_rank = 1
+element_filter = -1
+icon_path = ""

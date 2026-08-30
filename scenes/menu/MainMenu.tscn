@@ -1,0 +1,128 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/menu/MainMenu.gd" id="1_menu"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.11, 0.094, 0.098, 1)
+
+[node name="Root" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 40.0
+offset_right = -36.0
+offset_bottom = -40.0
+theme_override_constants/separation = 20
+
+[node name="AccountRow" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="RankIcon" type="TextureRect" parent="Root/AccountRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MedalIcon" type="TextureRect" parent="Root/AccountRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AccountText" type="VBoxContainer" parent="Root/AccountRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="LevelLabel" type="Label" parent="Root/AccountRow/AccountText"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Iron  ·  Level 1"
+
+[node name="XpBar" type="ProgressBar" parent="Root/AccountRow/AccountText"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+show_percentage = false
+
+[node name="RunestoneLabel" type="Label" parent="Root/AccountRow/AccountText"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "0 Runestones"
+
+[node name="TitleSpacer" type="Control" parent="Root"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Root"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 78
+text = "WARDKEEP"
+horizontal_alignment = 1
+
+[node name="BestWaveLabel" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "No runs yet"
+horizontal_alignment = 1
+
+[node name="Filler" type="Control" parent="Root"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StartButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
+theme_override_font_sizes/font_size = 46
+text = "Start Run"
+
+[node name="DailyButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+text = "Daily Challenge"
+
+[node name="DailyDetail" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Streak 0"
+horizontal_alignment = 1
+
+[node name="SecondaryRow" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="KeepButton" type="Button" parent="Root/SecondaryRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Keep Hub"
+
+[node name="SettingsButton" type="Button" parent="Root/SecondaryRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Settings"

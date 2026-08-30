@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="TowerDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="1_bvifj"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="2_sf02o"]
+
+[sub_resource type="Resource" id="Resource_fpjwg"]
+script = ExtResource("2_sf02o")
+cost = 25
+damage = 3.0
+range_tiles = 1.0
+fire_rate = 1.0
+splash_radius = 1.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_24mpi"]
+script = ExtResource("2_sf02o")
+cost = 40
+damage = 6.0
+range_tiles = 1.5
+fire_rate = 1.15
+splash_radius = 1.25
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_x25dq"]
+script = ExtResource("2_sf02o")
+cost = 70
+damage = 12.0
+range_tiles = 2.0
+fire_rate = 1.32
+splash_radius = 1.5
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[resource]
+script = ExtResource("1_bvifj")
+id = &"palisade_ram"
+display_name = "Palisade Ram"
+role = "Melee AoE, short range"
+rune_element = 0
+tiers = Array[ExtResource("2_sf02o")]([SubResource("Resource_fpjwg"), SubResource("Resource_24mpi"), SubResource("Resource_x25dq")])
+sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
+sprite_frame = "medievalStructure_23.png"
+scene_path = "res://scenes/towers/PalisadeRam.tscn"
+unlock_cost = 300
+required_account_level = 6

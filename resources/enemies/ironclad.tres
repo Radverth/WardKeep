@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_tqd6t"]
+
+[resource]
+script = ExtResource("1_tqd6t")
+id = &"ironclad"
+display_name = "Ironclad"
+base_hp = 90.0
+base_speed = 0.8
+base_damage = 4.0
+armor_type = 1
+budget_cost = 24
+unlock_wave = 16
+sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
+sprite_cell = Vector2i(1, 11)
+tint = Color(0.82, 0.86, 0.95, 1)
+scale_factor = 2.5
+is_boss = false
+scene_path = "res://scenes/enemies/Ironclad.tscn"
+provisional = true

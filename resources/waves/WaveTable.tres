@@ -1,0 +1,548 @@
+[gd_resource type="Resource" script_class="WaveTable" load_steps=63 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/WaveRow.gd" id="1_7rmro"]
+[ext_resource type="Script" path="res://resources/defs/WaveTable.gd" id="2_uv7pf"]
+
+[sub_resource type="Resource" id="Resource_a8btj"]
+script = ExtResource("1_7rmro")
+wave = 1
+enemy_budget = 10.0
+spawn_interval = 1.2
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_xys57"]
+script = ExtResource("1_7rmro")
+wave = 2
+enemy_budget = 16.0
+spawn_interval = 1.2
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_obtkh"]
+script = ExtResource("1_7rmro")
+wave = 3
+enemy_budget = 22.0
+spawn_interval = 1.2
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_op150"]
+script = ExtResource("1_7rmro")
+wave = 4
+enemy_budget = 28.0
+spawn_interval = 1.2
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_jqxox"]
+script = ExtResource("1_7rmro")
+wave = 5
+enemy_budget = 47.6
+spawn_interval = 1.2
+is_elite = true
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_4nkva"]
+script = ExtResource("1_7rmro")
+wave = 6
+enemy_budget = 40.0
+spawn_interval = 1.0
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_14u7f"]
+script = ExtResource("1_7rmro")
+wave = 7
+enemy_budget = 49.0
+spawn_interval = 1.0
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_xjkga"]
+script = ExtResource("1_7rmro")
+wave = 8
+enemy_budget = 58.0
+spawn_interval = 1.0
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_w738n"]
+script = ExtResource("1_7rmro")
+wave = 9
+enemy_budget = 67.0
+spawn_interval = 1.0
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_bp4tx"]
+script = ExtResource("1_7rmro")
+wave = 10
+enemy_budget = 76.0
+spawn_interval = 1.0
+is_elite = false
+is_boss = true
+boss_id = &"the_bulwark"
+
+[sub_resource type="Resource" id="Resource_5bfjo"]
+script = ExtResource("1_7rmro")
+wave = 11
+enemy_budget = 80.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_1ias8"]
+script = ExtResource("1_7rmro")
+wave = 12
+enemy_budget = 92.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_jk2eb"]
+script = ExtResource("1_7rmro")
+wave = 13
+enemy_budget = 104.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_ejxsb"]
+script = ExtResource("1_7rmro")
+wave = 14
+enemy_budget = 116.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_d0jbe"]
+script = ExtResource("1_7rmro")
+wave = 15
+enemy_budget = 179.2
+spawn_interval = 0.85
+is_elite = true
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_rj4wq"]
+script = ExtResource("1_7rmro")
+wave = 16
+enemy_budget = 140.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_2bmml"]
+script = ExtResource("1_7rmro")
+wave = 17
+enemy_budget = 152.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_y8fjt"]
+script = ExtResource("1_7rmro")
+wave = 18
+enemy_budget = 164.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_w8fos"]
+script = ExtResource("1_7rmro")
+wave = 19
+enemy_budget = 176.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_iwgl8"]
+script = ExtResource("1_7rmro")
+wave = 20
+enemy_budget = 188.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = true
+boss_id = &"frostmaw"
+
+[sub_resource type="Resource" id="Resource_5ebdh"]
+script = ExtResource("1_7rmro")
+wave = 21
+enemy_budget = 200.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_jk5tf"]
+script = ExtResource("1_7rmro")
+wave = 22
+enemy_budget = 212.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_tckws"]
+script = ExtResource("1_7rmro")
+wave = 23
+enemy_budget = 224.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_rh8wl"]
+script = ExtResource("1_7rmro")
+wave = 24
+enemy_budget = 236.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_e03h6"]
+script = ExtResource("1_7rmro")
+wave = 25
+enemy_budget = 347.2
+spawn_interval = 0.85
+is_elite = true
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_3w2nx"]
+script = ExtResource("1_7rmro")
+wave = 26
+enemy_budget = 260.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_o77j4"]
+script = ExtResource("1_7rmro")
+wave = 27
+enemy_budget = 272.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_6htuu"]
+script = ExtResource("1_7rmro")
+wave = 28
+enemy_budget = 284.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_r6off"]
+script = ExtResource("1_7rmro")
+wave = 29
+enemy_budget = 296.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_gbw6b"]
+script = ExtResource("1_7rmro")
+wave = 30
+enemy_budget = 308.0
+spawn_interval = 0.85
+is_elite = false
+is_boss = true
+boss_id = &"the_hollow_king"
+
+[sub_resource type="Resource" id="Resource_kveqy"]
+script = ExtResource("1_7rmro")
+wave = 31
+enemy_budget = 308.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_gcy44"]
+script = ExtResource("1_7rmro")
+wave = 32
+enemy_budget = 323.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_1cop0"]
+script = ExtResource("1_7rmro")
+wave = 33
+enemy_budget = 338.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_yflwb"]
+script = ExtResource("1_7rmro")
+wave = 34
+enemy_budget = 353.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_i7cgm"]
+script = ExtResource("1_7rmro")
+wave = 35
+enemy_budget = 515.2
+spawn_interval = 0.7
+is_elite = true
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_78l7s"]
+script = ExtResource("1_7rmro")
+wave = 36
+enemy_budget = 383.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_ver3b"]
+script = ExtResource("1_7rmro")
+wave = 37
+enemy_budget = 398.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_g67xf"]
+script = ExtResource("1_7rmro")
+wave = 38
+enemy_budget = 413.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_cxacf"]
+script = ExtResource("1_7rmro")
+wave = 39
+enemy_budget = 428.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_pt0kp"]
+script = ExtResource("1_7rmro")
+wave = 40
+enemy_budget = 443.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = true
+boss_id = &"the_bulwark"
+
+[sub_resource type="Resource" id="Resource_6w6uq"]
+script = ExtResource("1_7rmro")
+wave = 41
+enemy_budget = 458.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_x0usy"]
+script = ExtResource("1_7rmro")
+wave = 42
+enemy_budget = 473.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_6wxc3"]
+script = ExtResource("1_7rmro")
+wave = 43
+enemy_budget = 488.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_0xair"]
+script = ExtResource("1_7rmro")
+wave = 44
+enemy_budget = 503.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_m178w"]
+script = ExtResource("1_7rmro")
+wave = 45
+enemy_budget = 725.2
+spawn_interval = 0.7
+is_elite = true
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_uuwx4"]
+script = ExtResource("1_7rmro")
+wave = 46
+enemy_budget = 533.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_q4u24"]
+script = ExtResource("1_7rmro")
+wave = 47
+enemy_budget = 548.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_hiply"]
+script = ExtResource("1_7rmro")
+wave = 48
+enemy_budget = 563.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_wisur"]
+script = ExtResource("1_7rmro")
+wave = 49
+enemy_budget = 578.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_c72qg"]
+script = ExtResource("1_7rmro")
+wave = 50
+enemy_budget = 593.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = true
+boss_id = &"frostmaw"
+
+[sub_resource type="Resource" id="Resource_b6eyy"]
+script = ExtResource("1_7rmro")
+wave = 51
+enemy_budget = 608.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_m8x51"]
+script = ExtResource("1_7rmro")
+wave = 52
+enemy_budget = 623.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_862wr"]
+script = ExtResource("1_7rmro")
+wave = 53
+enemy_budget = 638.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_islv5"]
+script = ExtResource("1_7rmro")
+wave = 54
+enemy_budget = 653.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_sul85"]
+script = ExtResource("1_7rmro")
+wave = 55
+enemy_budget = 935.2
+spawn_interval = 0.7
+is_elite = true
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_8stgc"]
+script = ExtResource("1_7rmro")
+wave = 56
+enemy_budget = 683.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_c615m"]
+script = ExtResource("1_7rmro")
+wave = 57
+enemy_budget = 698.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_yujy6"]
+script = ExtResource("1_7rmro")
+wave = 58
+enemy_budget = 713.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_jfsv5"]
+script = ExtResource("1_7rmro")
+wave = 59
+enemy_budget = 728.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = false
+boss_id = &""
+
+[sub_resource type="Resource" id="Resource_bewxh"]
+script = ExtResource("1_7rmro")
+wave = 60
+enemy_budget = 743.0
+spawn_interval = 0.7
+is_elite = false
+is_boss = true
+boss_id = &"the_hollow_king"
+
+[resource]
+script = ExtResource("2_uv7pf")
+rows = Array[ExtResource("1_7rmro")]([SubResource("Resource_a8btj"), SubResource("Resource_xys57"), SubResource("Resource_obtkh"), SubResource("Resource_op150"), SubResource("Resource_jqxox"), SubResource("Resource_4nkva"), SubResource("Resource_14u7f"), SubResource("Resource_xjkga"), SubResource("Resource_w738n"), SubResource("Resource_bp4tx"), SubResource("Resource_5bfjo"), SubResource("Resource_1ias8"), SubResource("Resource_jk2eb"), SubResource("Resource_ejxsb"), SubResource("Resource_d0jbe"), SubResource("Resource_rj4wq"), SubResource("Resource_2bmml"), SubResource("Resource_y8fjt"), SubResource("Resource_w8fos"), SubResource("Resource_iwgl8"), SubResource("Resource_5ebdh"), SubResource("Resource_jk5tf"), SubResource("Resource_tckws"), SubResource("Resource_rh8wl"), SubResource("Resource_e03h6"), SubResource("Resource_3w2nx"), SubResource("Resource_o77j4"), SubResource("Resource_6htuu"), SubResource("Resource_r6off"), SubResource("Resource_gbw6b"), SubResource("Resource_kveqy"), SubResource("Resource_gcy44"), SubResource("Resource_1cop0"), SubResource("Resource_yflwb"), SubResource("Resource_i7cgm"), SubResource("Resource_78l7s"), SubResource("Resource_ver3b"), SubResource("Resource_g67xf"), SubResource("Resource_cxacf"), SubResource("Resource_pt0kp"), SubResource("Resource_6w6uq"), SubResource("Resource_x0usy"), SubResource("Resource_6wxc3"), SubResource("Resource_0xair"), SubResource("Resource_m178w"), SubResource("Resource_uuwx4"), SubResource("Resource_q4u24"), SubResource("Resource_hiply"), SubResource("Resource_wisur"), SubResource("Resource_c72qg"), SubResource("Resource_b6eyy"), SubResource("Resource_m8x51"), SubResource("Resource_862wr"), SubResource("Resource_islv5"), SubResource("Resource_sul85"), SubResource("Resource_8stgc"), SubResource("Resource_c615m"), SubResource("Resource_yujy6"), SubResource("Resource_jfsv5"), SubResource("Resource_bewxh")])

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/bosses/HollowKingPattern.gd" id="1_3iuri"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_jcllm"]
+
+[resource]
+script = ExtResource("2_jcllm")
+id = &"the_hollow_king"
+display_name = "The Hollow King"
+base_hp = 1000.0
+base_speed = 0.9
+base_damage = 15.0
+armor_type = 0
+budget_cost = 0
+unlock_wave = 10
+sprite_atlas_path = "res://assets/sprites/enemies/bosses_composite/the_hollow_king.png"
+sprite_cell = Vector2i(-1, -1)
+tint = Color(1, 1, 1, 1)
+scale_factor = 1.0
+is_boss = true
+boss_pattern_script = ExtResource("1_3iuri")
+scene_path = "res://scenes/enemies/bosses/TheHollowKing.tscn"
+provisional = true

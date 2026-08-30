@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_ujxnc"]
+
+[resource]
+script = ExtResource("1_ujxnc")
+id = &"guild_favour"
+title = "Guild Favour"
+description = "Tower upgrades cost 15% less."
+rarity = 1
+effect_key = &"upgrade_discount_pct"
+magnitude = 0.15
+max_rank = 2
+element_filter = -1
+icon_path = ""

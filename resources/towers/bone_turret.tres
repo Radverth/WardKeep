@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_h1e8t"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_jq6kl"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_mxa3o"]
+
+[sub_resource type="Resource" id="Resource_e6gke"]
+script = ExtResource("3_mxa3o")
+cost = 30
+damage = 5.0
+range_tiles = 3.0
+fire_rate = 1.0
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 1.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_f5vfo"]
+script = ExtResource("3_mxa3o")
+cost = 50
+damage = 10.0
+range_tiles = 3.5
+fire_rate = 1.15
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 1.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_gqgfr"]
+script = ExtResource("3_mxa3o")
+cost = 90
+damage = 20.0
+range_tiles = 4.0
+fire_rate = 1.32
+splash_radius = 0.0
+slow_amount = 0.0
+slow_duration = 0.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 1.0
+ignores_armor_matchup = false
+
+[resource]
+script = ExtResource("2_jq6kl")
+id = &"bone_turret"
+display_name = "Bone Turret"
+role = "Anti-ethereal specialist"
+rune_element = 2
+tiers = Array[ExtResource("3_mxa3o")]([SubResource("Resource_e6gke"), SubResource("Resource_f5vfo"), SubResource("Resource_gqgfr")])
+sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
+sprite_frame = "medievalStructure_22.png"
+projectile_scene = ExtResource("1_h1e8t")
+scene_path = "res://scenes/towers/BoneTurret.tscn"
+unlock_cost = 300
+required_account_level = 6

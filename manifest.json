@@ -1,0 +1,29 @@
+{
+  "project": "WARDKEEP",
+  "instructions": "Unzip so that the top-level 'assets/' folder in this archive becomes res://assets/ in the Godot project. Each entry's 'path' is already the intended res:// location.",
+  "entries": [
+    { "path": "assets/sprites/environment/tower_defense_tilesheet/", "source_pack": "Tower Defense (Tilesheet)", "used_for": "Path tiles, build-tile highlight overlay", "spec_refs": ["FeatureSpec:1", "Pipeline:2.1"] },
+    { "path": "assets/sprites/environment/roguelike_dungeon/", "source_pack": "Roguelike Dungeon Pack (Spritesheet)", "used_for": "Floor texture variation, decorative props", "spec_refs": ["FeatureSpec:1", "Pipeline:2.1"] },
+    { "path": "assets/sprites/towers/rts_medieval_base/", "source_pack": "RTS Medieval (Spritesheet)", "used_for": "Base tower structures shared across all 3 rune elements", "spec_refs": ["FeatureSpec:4", "Pipeline:2.2"] },
+    { "path": "assets/sprites/towers/rune_overlays/grey/", "source_pack": "Rune Pack - Grey", "used_for": "Physical-element tint overlay + Default cosmetic tier", "spec_refs": ["FeatureSpec:4.1", "FeatureSpec:6.4", "Pipeline:2.2"] },
+    { "path": "assets/sprites/towers/rune_overlays/blue/", "source_pack": "Rune Pack - Blue", "used_for": "Frost-element tint overlay + Default cosmetic tier", "spec_refs": ["FeatureSpec:4.2", "FeatureSpec:6.4", "Pipeline:2.2"] },
+    { "path": "assets/sprites/towers/rune_overlays/black/", "source_pack": "Rune Pack - Black", "used_for": "Blight-element tint overlay + Default cosmetic tier", "spec_refs": ["FeatureSpec:4.3", "FeatureSpec:6.4", "Pipeline:2.2"] },
+    { "path": "assets/sprites/enemies/roguelike_characters/", "source_pack": "Roguelike Characters Pack (Spritesheet)", "used_for": "Standard + Elite enemy archetypes", "spec_refs": ["FeatureSpec:4", "Pipeline:2.3"] },
+    { "path": "assets/sprites/enemies/monster_builder_bosses/", "source_pack": "Monster Builder Pack (Spritesheet + PNG/Default parts)", "used_for": "Boss composites: The Bulwark, Frostmaw, The Hollow King", "spec_refs": ["FeatureSpec:2.5", "Pipeline:2.3"] },
+    { "path": "assets/sprites/vfx/explosion_pixel/", "source_pack": "Explosion Pack - pixelExplosion", "used_for": "Physical tower hits, standard enemy death", "spec_refs": ["Pipeline:2.4"] },
+    { "path": "assets/sprites/vfx/explosion_simple/", "source_pack": "Explosion Pack - simpleExplosion", "used_for": "Boss death, Ward-Stone-hit shake accompaniment", "spec_refs": ["Pipeline:2.4"] },
+    { "path": "assets/sprites/vfx/particle_magic_light/", "source_pack": "Particle Pack - magic_*, light_*", "used_for": "Frost/Blight tower muzzle flashes", "spec_refs": ["Pipeline:2.4"] },
+    { "path": "assets/sprites/vfx/particle_smoke/", "source_pack": "Particle Pack - smoke_*", "used_for": "Blight DoT lingering effect", "spec_refs": ["Pipeline:2.4"] },
+    { "path": "assets/sprites/vfx/particle_star/", "source_pack": "Particle Pack - star_*", "used_for": "Best-wave-ever celebration burst", "spec_refs": ["FeatureSpec:8", "Pipeline:2.4"] },
+    { "path": "assets/sprites/ui/adventure_pack/", "source_pack": "UI Pack - Adventure (PNG, Default + Double)", "used_for": "All buttons, panels, progress bars, HUD chrome", "spec_refs": ["UserFlow:3", "Pipeline:2.5"] },
+    { "path": "assets/sprites/ui/medals/", "source_pack": "Medals (PNG)", "used_for": "Rank-milestone badges (levels 5/10/15/20/25/30)", "spec_refs": ["FeatureSpec:8", "Pipeline:2.5"] },
+    { "path": "assets/sprites/ui/ranks/", "source_pack": "Ranks Pack (Tilesheet)", "used_for": "Account-level rank icon + Veteran/Legendary skin palette source", "spec_refs": ["FeatureSpec:6.4", "Pipeline:2.5"] },
+    { "path": "assets/sprites/ui/input_prompts_touch/", "source_pack": "Input Prompts - Touch", "used_for": "First-run onboarding tooltip icons", "spec_refs": ["UserFlow:4", "Pipeline:2.5"] },
+    { "path": "assets/audio/music/Infinite Descent.ogg", "source_pack": "Music Loops", "used_for": "Main gameplay loop track", "spec_refs": ["Pipeline:2.6"] },
+    { "path": "assets/audio/music/Mission Plausible.ogg", "source_pack": "Music Loops", "used_for": "Boss-wave alternate track", "spec_refs": ["Pipeline:2.6"] },
+    { "path": "assets/audio/music/Serious ident.ogg", "source_pack": "Music Loops (Idents)", "used_for": "Main Menu stinger", "spec_refs": ["Pipeline:2.6"] },
+    { "path": "assets/audio/sfx_impact/", "source_pack": "Impact Sounds - impactMetal_*, impactBell_heavy_*", "used_for": "Physical tower hits, Ward Stone damage cue", "spec_refs": ["Pipeline:2.6"] },
+    { "path": "assets/audio/sfx_ui/", "source_pack": "UI Audio - click2.ogg, switch1.ogg", "used_for": "Button press, draft-card select", "spec_refs": ["Pipeline:2.6"] },
+    { "path": "assets/fonts/", "source_pack": "Kenney fonts (Mini + Bold)", "used_for": "All UI text", "spec_refs": ["Pipeline:2.7"] }
+  ]
+}

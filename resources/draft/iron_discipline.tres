@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_gaog4"]
+
+[resource]
+script = ExtResource("1_gaog4")
+id = &"iron_discipline"
+title = "Iron Discipline"
+description = "+8% fire rate for all towers."
+rarity = 0
+effect_key = &"fire_rate_all_pct"
+magnitude = 0.08
+max_rank = 3
+element_filter = -1
+icon_path = ""

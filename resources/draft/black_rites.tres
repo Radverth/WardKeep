@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_quf22"]
+
+[resource]
+script = ExtResource("1_quf22")
+id = &"black_rites"
+title = "Black Rites"
+description = "+15% damage for Blight towers."
+rarity = 0
+effect_key = &"damage_element_pct"
+magnitude = 0.15
+max_rank = 3
+element_filter = 2
+icon_path = ""

@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_lq2u5"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_ba0wu"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_02kep"]
+
+[sub_resource type="Resource" id="Resource_2hd82"]
+script = ExtResource("3_02kep")
+cost = 25
+damage = 3.0
+range_tiles = 3.0
+fire_rate = 1.0
+splash_radius = 0.0
+slow_amount = 0.2
+slow_duration = 4.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_s6u4c"]
+script = ExtResource("3_02kep")
+cost = 40
+damage = 6.0
+range_tiles = 3.5
+fire_rate = 1.15
+splash_radius = 0.0
+slow_amount = 0.25
+slow_duration = 5.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[sub_resource type="Resource" id="Resource_03yvo"]
+script = ExtResource("3_02kep")
+cost = 75
+damage = 12.0
+range_tiles = 4.0
+fire_rate = 1.32
+splash_radius = 0.0
+slow_amount = 0.3
+slow_duration = 6.0
+is_aura = false
+dot_damage = 0.0
+dot_duration = 0.0
+spreads_dot_on_death = false
+bonus_vs_slowed = 0.0
+bonus_vs_ethereal = 0.0
+ignores_armor_matchup = false
+
+[resource]
+script = ExtResource("2_ba0wu")
+id = &"rime_spire"
+display_name = "Rime Spire"
+role = "Slow single-target + 20% slow debuff (4s)"
+rune_element = 1
+tiers = Array[ExtResource("3_02kep")]([SubResource("Resource_2hd82"), SubResource("Resource_s6u4c"), SubResource("Resource_03yvo")])
+sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
+sprite_frame = "medievalStructure_19.png"
+projectile_scene = ExtResource("1_lq2u5")
+scene_path = "res://scenes/towers/RimeSpire.tscn"
+unlock_cost = 0
+required_account_level = 1

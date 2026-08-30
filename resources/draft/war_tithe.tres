@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_847d6"]
+
+[resource]
+script = ExtResource("1_847d6")
+id = &"war_tithe"
+title = "War Tithe"
+description = "+1 gold from every kill."
+rarity = 0
+effect_key = &"gold_per_kill_flat"
+magnitude = 1.0
+max_rank = 3
+element_filter = -1
+icon_path = ""

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_xrkd2"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_vsbr4"]
+
+[resource]
+script = ExtResource("2_vsbr4")
+id = &"the_bulwark"
+display_name = "The Bulwark"
+base_hp = 450.0
+base_speed = 0.5
+base_damage = 10.0
+armor_type = 1
+budget_cost = 0
+unlock_wave = 10
+sprite_atlas_path = "res://assets/sprites/enemies/bosses_composite/the_bulwark.png"
+sprite_cell = Vector2i(-1, -1)
+tint = Color(1, 1, 1, 1)
+scale_factor = 1.0
+is_boss = true
+boss_pattern_script = ExtResource("1_xrkd2")
+scene_path = "res://scenes/enemies/bosses/TheBulwark.tscn"
+provisional = true

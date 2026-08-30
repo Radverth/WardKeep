@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_wxehv"]
+
+[resource]
+script = ExtResource("1_wxehv")
+id = &"salvage_rights"
+title = "Salvage Rights"
+description = "Selling refunds 20% more."
+rarity = 1
+effect_key = &"sell_refund_flat"
+magnitude = 0.2
+max_rank = 2
+element_filter = -1
+icon_path = ""

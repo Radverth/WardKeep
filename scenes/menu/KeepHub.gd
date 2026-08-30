@@ -1,0 +1,201 @@
+extends Control
+## User Flow §3.6 — three tabs: Towers (permanent unlocks), Cosmetics (skins),
+## Account (level, medals, lifetime stats). Costs come from Feature Spec §6.
+
+## Feature Spec §6.4 — Veteran needs account level 10; Legendary is the IAP
+## bundle or 800 Runestones.
+const SKIN_TIERS: Array[Dictionary] = [
+	{"id": "default", "cost": 0, "level": 1},
+	{"id": "veteran", "cost": 200, "level": 10},
+	{"id": "legendary", "cost": 800, "level": 1},
+]
+
+@onready var _balance_label: Label = %BalanceLabel
+@onready var _towers_list: VBoxContainer = %TowersList
+@onready var _cosmetics_list: VBoxContainer = %CosmeticsList
+@onready var _account_list: VBoxContainer = %AccountList
+@onready var _medal_row: HBoxContainer = %MedalRow
+@onready var _back_button: Button = %BackButton
+@onready var _toast: Label = %Toast
+
+func _ready() -> void:
+	_back_button.pressed.connect(_on_back)
+	SaveManager.runestones_changed.connect(func(_balance: int) -> void: _refresh())
+	_refresh()
+
+func _refresh() -> void:
+	_balance_label.text = "%d Runestones" % SaveManager.runestones()
+	_build_towers()
+	_build_cosmetics()
+	_build_account()
+
+func _clear(container: Node) -> void:
+	for child: Node in container.get_children():
+		child.queue_free()
+
+## --- towers tab (Feature Spec §6.2) -------------------------------------
+
+func _build_towers() -> void:
+	_clear(_towers_list)
+	var level: int = SaveManager.account_level()
+	for def: TowerDef in Registry.towers():
+		var row := PanelContainer.new()
+		var box := HBoxContainer.new()
+		box.add_theme_constant_override("separation", 14)
+		row.add_child(box)
+
+		var icon := TextureRect.new()
+		icon.texture = SpriteAtlas.frame("medievalRTS", def.sprite_frame)
+		icon.custom_minimum_size = Vector2(72, 72)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.modulate = WK.element_tint(def.rune_element)
+		box.add_child(icon)
+
+		var text := VBoxContainer.new()
+		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		box.add_child(text)
+		var title := Label.new()
+		title.text = def.display_name
+		title.add_theme_font_size_override("font_size", 24)
+		text.add_child(title)
+		var subtitle := Label.new()
+		subtitle.text = "%s · %s" % [WK.element_name(def.rune_element), def.role]
+		subtitle.add_theme_font_size_override("font_size", 17)
+		subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		text.add_child(subtitle)
+
+		var action := Button.new()
+		action.custom_minimum_size = Vector2(190, 72)
+		if SaveManager.is_tower_unlocked(String(def.id)):
+			action.text = "Unlocked"
+			action.disabled = true
+		elif level < def.required_account_level:
+			action.text = "Level %d" % def.required_account_level
+			action.disabled = true
+		else:
+			action.text = "%d" % def.unlock_cost
+			action.disabled = SaveManager.runestones() < def.unlock_cost
+			action.pressed.connect(_on_unlock_tower.bind(def))
+		box.add_child(action)
+		_towers_list.add_child(row)
+
+func _on_unlock_tower(def: TowerDef) -> void:
+	if not SaveManager.spend_runestones(def.unlock_cost):
+		_show_toast("Not enough Runestones.")
+		return
+	SaveManager.unlock_tower(String(def.id))
+	AudioBus.select()
+	_show_toast("%s unlocked." % def.display_name)
+	_refresh()
+
+## --- cosmetics tab (Feature Spec §6.4) ----------------------------------
+
+func _build_cosmetics() -> void:
+	_clear(_cosmetics_list)
+	var level: int = SaveManager.account_level()
+	for def: TowerDef in Registry.towers():
+		if not SaveManager.is_tower_unlocked(String(def.id)):
+			continue
+		var row := PanelContainer.new()
+		var box := VBoxContainer.new()
+		row.add_child(box)
+		var title := Label.new()
+		title.text = def.display_name
+		title.add_theme_font_size_override("font_size", 24)
+		box.add_child(title)
+
+		var options := HBoxContainer.new()
+		options.add_theme_constant_override("separation", 10)
+		box.add_child(options)
+		for tier: Dictionary in SKIN_TIERS:
+			options.add_child(_skin_button(def, tier, level))
+		_cosmetics_list.add_child(row)
+	if _cosmetics_list.get_child_count() == 0:
+		var empty := Label.new()
+		empty.text = "Unlock a tower to customise it."
+		_cosmetics_list.add_child(empty)
+
+func _skin_button(def: TowerDef, tier: Dictionary, level: int) -> Button:
+	var skin_id: String = tier["id"]
+	var full_id: String = "%s_%s" % [def.id, skin_id]
+	var button := Button.new()
+	button.custom_minimum_size = Vector2(0, 84)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var owned: bool = skin_id == "default" or SaveManager.is_skin_unlocked(full_id)
+	var equipped: bool = SaveManager.equipped_skin(String(def.id)) == skin_id
+	if equipped:
+		button.text = "%s ✓" % UiKit.skin_display_name(skin_id)
+		button.disabled = true
+	elif owned:
+		button.text = "Equip %s" % UiKit.skin_display_name(skin_id)
+		button.pressed.connect(func() -> void:
+			SaveManager.equip_skin(String(def.id), skin_id)
+			AudioBus.select()
+			_refresh())
+	elif level < int(tier["level"]):
+		button.text = "%s · Lv%d" % [UiKit.skin_display_name(skin_id), int(tier["level"])]
+		button.disabled = true
+	else:
+		button.text = "%s · %d" % [UiKit.skin_display_name(skin_id), int(tier["cost"])]
+		button.disabled = SaveManager.runestones() < int(tier["cost"])
+		button.pressed.connect(func() -> void:
+			if not SaveManager.spend_runestones(int(tier["cost"])):
+				_show_toast("Not enough Runestones.")
+				return
+			SaveManager.unlock_skin(full_id)
+			SaveManager.equip_skin(String(def.id), skin_id)
+			AudioBus.select()
+			_refresh())
+	return button
+
+## --- account tab (Feature Spec §6.3, §8) --------------------------------
+
+func _build_account() -> void:
+	_clear(_account_list)
+	_clear(_medal_row)
+	var level: int = SaveManager.account_level()
+	var xp: int = SaveManager.account_xp()
+	_add_stat("Rank", "%s · Level %d" % [UiKit.rank_name(level), level])
+	if level < Balance.config().max_account_level:
+		_add_stat("XP", "%d / %d" % [xp, Balance.xp_for_level(level + 1)])
+	else:
+		_add_stat("XP", "%d (max level)" % xp)
+	_add_stat("Best wave", str(int(SaveManager.get_stat("best_wave", 0))))
+	_add_stat("Runs played", str(int(SaveManager.get_stat("total_runs", 0))))
+	_add_stat("Enemies killed", str(int(SaveManager.get_stat("total_enemies_killed", 0))))
+	_add_stat("Runestones earned", str(int(SaveManager.get_stat("total_runestones_earned", 0))))
+	_add_stat("Daily streak", str(int(SaveManager.get_value("daily_challenge_streak", 0))))
+
+	for index: int in UiKit.MEDAL_LEVELS.size():
+		var milestone: int = UiKit.MEDAL_LEVELS[index]
+		var icon := TextureRect.new()
+		icon.custom_minimum_size = Vector2(78, 78)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture = load("res://assets/sprites/ui/medals/flat_medal%d.png" % (index + 1))
+		icon.modulate = Color.WHITE if level >= milestone else Color(0.3, 0.3, 0.3, 0.55)
+		icon.tooltip_text = "Level %d" % milestone
+		_medal_row.add_child(icon)
+
+func _add_stat(name: String, value: String) -> void:
+	var row := HBoxContainer.new()
+	var key := Label.new()
+	key.text = name
+	key.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(key)
+	var val := Label.new()
+	val.text = value
+	row.add_child(val)
+	_account_list.add_child(row)
+
+func _show_toast(text: String) -> void:
+	_toast.text = text
+	_toast.show()
+	await get_tree().create_timer(2.0).timeout
+	if is_instance_valid(_toast):
+		_toast.hide()
+
+func _on_back() -> void:
+	AudioBus.click()
+	GameState.goto_scene(GameState.SCENE_MAIN_MENU)

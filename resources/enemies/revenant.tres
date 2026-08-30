@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_petjq"]
+
+[resource]
+script = ExtResource("1_petjq")
+id = &"revenant"
+display_name = "Revenant"
+base_hp = 44.0
+base_speed = 1.4
+base_damage = 3.0
+armor_type = 2
+budget_cost = 16
+unlock_wave = 13
+sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
+sprite_cell = Vector2i(1, 9)
+tint = Color(0.62, 0.85, 0.95, 0.72)
+scale_factor = 2.5
+is_boss = false
+scene_path = "res://scenes/enemies/Revenant.tscn"
+provisional = true

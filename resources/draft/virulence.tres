@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_is1qx"]
+
+[resource]
+script = ExtResource("1_is1qx")
+id = &"virulence"
+title = "Virulence"
+description = "+30% damage-over-time damage."
+rarity = 1
+effect_key = &"dot_damage_pct"
+magnitude = 0.3
+max_rank = 2
+element_filter = -1
+icon_path = ""

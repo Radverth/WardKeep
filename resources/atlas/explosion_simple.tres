@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AtlasFrames" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/AtlasFrames.gd" id="1_e3887"]
+
+[resource]
+script = ExtResource("1_e3887")
+texture_path = "res://assets/sprites/vfx/explosion_simple/spritesheet_simpleExplosion.png"
+frames = {
+"simpleExplosion00.png": Rect2i(0, 0, 186, 186),
+"simpleExplosion01.png": Rect2i(155, 345, 152, 150),
+"simpleExplosion02.png": Rect2i(307, 357, 90, 91),
+"simpleExplosion03.png": Rect2i(307, 260, 97, 97),
+"simpleExplosion04.png": Rect2i(302, 135, 125, 125),
+"simpleExplosion05.png": Rect2i(186, 0, 135, 135),
+"simpleExplosion06.png": Rect2i(159, 186, 143, 143),
+"simpleExplosion07.png": Rect2i(0, 345, 155, 154),
+"simpleExplosion08.png": Rect2i(0, 186, 159, 159)
+}

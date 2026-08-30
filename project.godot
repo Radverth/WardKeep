@@ -1,0 +1,48 @@
+; Engine configuration file.
+; WARDKEEP — see docs/WARDKEEP_02_Technical_Architecture.docx
+
+config_version=5
+
+[application]
+
+config/name="wardkeep"
+config/description="WARDKEEP — endless roguelite tower defense."
+config/version="0.1.0"
+run/main_scene="res://scenes/boot/Boot.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://assets/sprites/ui/ranks/default_gold.png"
+
+[autoload]
+
+GameState="*res://autoload/GameState.gd"
+SaveManager="*res://autoload/SaveManager.gd"
+AudioBus="*res://autoload/AudioBus.gd"
+AdsManager="*res://autoload/AdsManager.gd"
+RunManager="*res://autoload/RunManager.gd"
+WaveDirector="*res://autoload/WaveDirector.gd"
+
+[display]
+
+window/size/viewport_width=768
+window/size/viewport_height=1280
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+textures/canvas_textures/default_texture_filter=1
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[gui]
+
+theme/custom="res://ui/wardkeep_theme.tres"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=1

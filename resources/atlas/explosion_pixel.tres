@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AtlasFrames" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/AtlasFrames.gd" id="1_5vcat"]
+
+[resource]
+script = ExtResource("1_5vcat")
+texture_path = "res://assets/sprites/vfx/explosion_pixel/spritesheet_pixelExplosion.png"
+frames = {
+"pixelExplosion00.png": Rect2i(96, 182, 96, 91),
+"pixelExplosion01.png": Rect2i(96, 91, 96, 91),
+"pixelExplosion02.png": Rect2i(96, 0, 96, 91),
+"pixelExplosion03.png": Rect2i(96, 273, 96, 91),
+"pixelExplosion04.png": Rect2i(0, 273, 96, 91),
+"pixelExplosion05.png": Rect2i(0, 182, 96, 91),
+"pixelExplosion06.png": Rect2i(0, 91, 96, 91),
+"pixelExplosion07.png": Rect2i(0, 0, 96, 91),
+"pixelExplosion08.png": Rect2i(0, 364, 96, 91)
+}

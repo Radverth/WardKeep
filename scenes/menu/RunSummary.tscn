@@ -1,0 +1,97 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/menu/RunSummary.gd" id="1_summary"]
+
+[node name="RunSummary" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_summary")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.11, 0.094, 0.098, 1)
+
+[node name="Celebration" type="CPUParticles2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(384, 380)
+emitting = false
+amount = 48
+lifetime = 1.6
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 40.0
+spread = 180.0
+gravity = Vector2(0, 240)
+initial_velocity_min = 220.0
+initial_velocity_max = 460.0
+scale_amount_min = 0.4
+scale_amount_max = 0.9
+
+[node name="Root" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 56.0
+offset_right = -36.0
+offset_bottom = -44.0
+theme_override_constants/separation = 16
+
+[node name="Headline" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Run Over"
+horizontal_alignment = 1
+
+[node name="WavesLabel" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 92
+text = "Wave 0"
+horizontal_alignment = 1
+
+[node name="BestBanner" type="Label" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+text = "NEW BEST WAVE"
+horizontal_alignment = 1
+
+[node name="Detail" type="VBoxContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Filler" type="Control" parent="Root"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DoubleButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+text = "Watch ad: double Runestones"
+
+[node name="SpendButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+text = "Spend Now"
+
+[node name="ContinueButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Continue"

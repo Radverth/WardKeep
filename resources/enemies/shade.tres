@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_53b4k"]
+
+[resource]
+script = ExtResource("1_53b4k")
+id = &"shade"
+display_name = "Shade"
+base_hp = 30.0
+base_speed = 2.6
+base_damage = 2.0
+armor_type = 2
+budget_cost = 18
+unlock_wave = 19
+sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
+sprite_cell = Vector2i(0, 8)
+tint = Color(0.45, 0.42, 0.62, 0.7)
+scale_factor = 2.5
+is_boss = false
+scene_path = "res://scenes/enemies/Shade.tscn"
+provisional = true
