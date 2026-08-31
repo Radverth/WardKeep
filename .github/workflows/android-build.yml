@@ -90,13 +90,8 @@ jobs:
           : "${ANDROID_SDK:=$HOME/android-sdk}"
           mkdir -p "$ANDROID_SDK"
 
-          echo "::group::Android SDK before"
           echo "Java SDK:    $JAVA_SDK"
           echo "Android SDK: $ANDROID_SDK"
-          ls "$ANDROID_SDK" 2>/dev/null || echo "(empty)"
-          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
-          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
-          echo "::endgroup::"
 
           # Godot 4.3 targets SDK 34, and validates the SDK rather than warning
           # about it - an image carrying only older build-tools fails the export
@@ -127,11 +122,9 @@ jobs:
             "platform-tools" "platforms;android-${ANDROID_TARGET_SDK}" \
             "build-tools;${ANDROID_BUILD_TOOLS}"
 
-          echo "::group::Android SDK after"
-          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
-          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
-          ls "$ANDROID_SDK/platform-tools/adb" 2>/dev/null || echo "(no adb)"
-          echo "::endgroup::"
+          echo "build-tools: $(ls "$ANDROID_SDK/build-tools" 2>/dev/null | tr '\n' ' ')"
+          echo "platforms:   $(ls "$ANDROID_SDK/platforms" 2>/dev/null | tr '\n' ' ')"
+          echo "adb:         $(ls "$ANDROID_SDK/platform-tools/adb" 2>/dev/null || echo missing)"
 
           KEYSTORE="$HOME/.local/share/godot/keystores/debug.keystore"
           mkdir -p "$(dirname "$KEYSTORE")" "$HOME/.config/godot"
@@ -165,7 +158,11 @@ jobs:
             ls -la android android/build 2>/dev/null || echo "no android/ build template in the project"
             cat android/build/.build_version 2>/dev/null || echo "no .build_version"
             ls ~/.local/share/godot/export_templates/ 2>/dev/null || echo "no export templates under HOME"
-            cat "$HOME/.config/godot/editor_settings-${GODOT_VERSION}.tres" 2>/dev/null || echo "no editor settings"
+            grep android "$HOME/.config/godot/editor_settings-${GODOT_VERSION}.tres" 2>/dev/null || echo "no editor settings"
+            echo "-- SDK --"
+            ls "${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/lib/android-sdk}}/build-tools" 2>/dev/null || echo "(no build-tools)"
+            ls "${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/lib/android-sdk}}/platforms" 2>/dev/null || echo "(no platforms)"
+            java -version 2>&1 | head -1
             echo "::endgroup::"
             exit 1
           }
@@ -255,13 +252,8 @@ jobs:
           : "${ANDROID_SDK:=$HOME/android-sdk}"
           mkdir -p "$ANDROID_SDK"
 
-          echo "::group::Android SDK before"
           echo "Java SDK:    $JAVA_SDK"
           echo "Android SDK: $ANDROID_SDK"
-          ls "$ANDROID_SDK" 2>/dev/null || echo "(empty)"
-          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
-          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
-          echo "::endgroup::"
 
           # Godot 4.3 targets SDK 34, and validates the SDK rather than warning
           # about it - an image carrying only older build-tools fails the export
@@ -292,11 +284,9 @@ jobs:
             "platform-tools" "platforms;android-${ANDROID_TARGET_SDK}" \
             "build-tools;${ANDROID_BUILD_TOOLS}"
 
-          echo "::group::Android SDK after"
-          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
-          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
-          ls "$ANDROID_SDK/platform-tools/adb" 2>/dev/null || echo "(no adb)"
-          echo "::endgroup::"
+          echo "build-tools: $(ls "$ANDROID_SDK/build-tools" 2>/dev/null | tr '\n' ' ')"
+          echo "platforms:   $(ls "$ANDROID_SDK/platforms" 2>/dev/null | tr '\n' ' ')"
+          echo "adb:         $(ls "$ANDROID_SDK/platform-tools/adb" 2>/dev/null || echo missing)"
 
           KEYSTORE="$HOME/.local/share/godot/keystores/debug.keystore"
           mkdir -p "$(dirname "$KEYSTORE")" "$HOME/.config/godot"
