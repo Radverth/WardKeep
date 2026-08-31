@@ -61,13 +61,62 @@ jobs:
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable \
              ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
+      # Godot will not export for Android until three things it keeps in
+      # *editor settings* are set: a JDK, the Android SDK, and a debug
+      # keystore. None of them are project files, and none carry over from the
+      # image: GitHub Actions sets HOME=/github/home inside a container, so
+      # Godot never reads the settings the image wrote to /root. Write them
+      # where this Godot will actually look, and generate the debug keystore.
+      - name: Configure the Android toolchain
+        run: |
+          echo "HOME=$HOME"
+          JAVA_SDK="${JAVA_HOME:-}"
+          if [ -z "$JAVA_SDK" ] && command -v javac >/dev/null; then
+            JAVA_SDK="$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")"
+          fi
+          ANDROID_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          for candidate in /usr/lib/android-sdk /opt/android-sdk /root/android-sdk; do
+            [ -n "$ANDROID_SDK" ] && break
+            [ -d "$candidate" ] && ANDROID_SDK="$candidate"
+          done
+          echo "Java SDK:    ${JAVA_SDK:-<not found>}"
+          echo "Android SDK: ${ANDROID_SDK:-<not found>}"
+          if [ -z "$JAVA_SDK" ] || [ -z "$ANDROID_SDK" ]; then
+            echo "::error::Android export needs a JDK and the Android SDK in the build image."
+            echo "Diagnostics follow so the next run does not have to guess:"
+            command -v java javac keytool gradle || true
+            ls -d /usr/lib/jvm/* /opt/android* /usr/lib/android* 2>/dev/null || true
+            env | grep -iE 'java|android' || true
+            exit 1
+          fi
+          KEYSTORE="$HOME/.local/share/godot/keystores/debug.keystore"
+          mkdir -p "$(dirname "$KEYSTORE")" "$HOME/.config/godot"
+          if [ ! -f "$KEYSTORE" ]; then
+            keytool -keyalg RSA -genkeypair -alias androiddebugkey \
+              -keypass android -storepass android -keystore "$KEYSTORE" \
+              -validity 9999 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          # The filename carries the minor version - 4.3 does not read
+          # editor_settings-4.tres. Godot merges the rest of the defaults in.
+          cat > "$HOME/.config/godot/editor_settings-${GODOT_VERSION}.tres" <<SETTINGS
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/java_sdk_path = "$JAVA_SDK"
+          export/android/android_sdk_path = "$ANDROID_SDK"
+          export/android/debug_keystore = "$KEYSTORE"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          SETTINGS
+
       - name: Import project (generates .godot cache)
         run: godot --headless --verbose --import
 
       - name: Export debug APK
         run: |
           mkdir -v -p build/test
-          godot --headless --verbose --export-debug "Android" build/test/wardkeep-test.apk
+          godot --headless --verbose --install-android-build-template \
+            --export-debug "Android" build/test/wardkeep-test.apk
 
       - name: Upload test APK as build artifact
         uses: actions/upload-artifact@v4
@@ -127,13 +176,62 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
+      # Godot will not export for Android until three things it keeps in
+      # *editor settings* are set: a JDK, the Android SDK, and a debug
+      # keystore. None of them are project files, and none carry over from the
+      # image: GitHub Actions sets HOME=/github/home inside a container, so
+      # Godot never reads the settings the image wrote to /root. Write them
+      # where this Godot will actually look, and generate the debug keystore.
+      - name: Configure the Android toolchain
+        run: |
+          echo "HOME=$HOME"
+          JAVA_SDK="${JAVA_HOME:-}"
+          if [ -z "$JAVA_SDK" ] && command -v javac >/dev/null; then
+            JAVA_SDK="$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")"
+          fi
+          ANDROID_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          for candidate in /usr/lib/android-sdk /opt/android-sdk /root/android-sdk; do
+            [ -n "$ANDROID_SDK" ] && break
+            [ -d "$candidate" ] && ANDROID_SDK="$candidate"
+          done
+          echo "Java SDK:    ${JAVA_SDK:-<not found>}"
+          echo "Android SDK: ${ANDROID_SDK:-<not found>}"
+          if [ -z "$JAVA_SDK" ] || [ -z "$ANDROID_SDK" ]; then
+            echo "::error::Android export needs a JDK and the Android SDK in the build image."
+            echo "Diagnostics follow so the next run does not have to guess:"
+            command -v java javac keytool gradle || true
+            ls -d /usr/lib/jvm/* /opt/android* /usr/lib/android* 2>/dev/null || true
+            env | grep -iE 'java|android' || true
+            exit 1
+          fi
+          KEYSTORE="$HOME/.local/share/godot/keystores/debug.keystore"
+          mkdir -p "$(dirname "$KEYSTORE")" "$HOME/.config/godot"
+          if [ ! -f "$KEYSTORE" ]; then
+            keytool -keyalg RSA -genkeypair -alias androiddebugkey \
+              -keypass android -storepass android -keystore "$KEYSTORE" \
+              -validity 9999 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          # The filename carries the minor version - 4.3 does not read
+          # editor_settings-4.tres. Godot merges the rest of the defaults in.
+          cat > "$HOME/.config/godot/editor_settings-${GODOT_VERSION}.tres" <<SETTINGS
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/java_sdk_path = "$JAVA_SDK"
+          export/android/android_sdk_path = "$ANDROID_SDK"
+          export/android/debug_keystore = "$KEYSTORE"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          SETTINGS
+
       - name: Import project (generates .godot cache)
         run: godot --headless --verbose --import
 
       - name: Export release AAB
         run: |
           mkdir -v -p build/release
-          godot --headless --verbose --export-release "Android" build/release/wardkeep.aab
+          godot --headless --verbose --install-android-build-template \
+            --export-release "Android" build/release/wardkeep.aab
 
       - name: Upload release AAB as build artifact
         uses: actions/upload-artifact@v4
