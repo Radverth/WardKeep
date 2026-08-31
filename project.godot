@@ -34,6 +34,11 @@ window/handheld/orientation=1
 renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="mobile"
 textures/canvas_textures/default_texture_filter=1
+; Android requires ETC2/ASTC-compressed textures. Without this the importer
+; only produces them when the *host* prefers that format, so exporting from a
+; Linux or Windows machine fails validation - and Godot 4.3 reports that
+; particular failure with an empty error message.
+textures/vram_compression/import_etc2_astc=true
 
 [input_devices]
 

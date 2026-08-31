@@ -101,8 +101,8 @@ intended for Play Console. There are two presets: `Android` (the release
 `.aab`) and `Android Test` (the sideloadable `.apk`); keep the version and
 package fields in sync across both.
 
-**The APK export step currently fails in CI** — see
-[`CI_ANDROID_EXPORT_STATUS.md`](CI_ANDROID_EXPORT_STATUS.md) for the full
-elimination trail and the fastest way to finish it. The `test` job is green
-and gates every push, so the game code stays protected; it is packaging that
-is broken.
+Android requires ETC2/ASTC-compressed textures, so `project.godot` sets
+`rendering/textures/vram_compression/import_etc2_astc=true`. Do not remove it:
+without it the export fails validation on any host that does not itself prefer
+that texture format, and Godot 4.3 reports that particular failure with an
+empty error message.
