@@ -14,6 +14,8 @@ on:
 
 env:
   GODOT_VERSION: "4.3"    # pin to the exact Godot version the project uses
+  ANDROID_TARGET_SDK: "34"      # the platform Godot 4.3 targets
+  ANDROID_BUILD_TOOLS: "34.0.0" # must match the target platform
 
 jobs:
   test:
@@ -61,34 +63,76 @@ jobs:
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable \
              ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
-      # Godot will not export for Android until three things it keeps in
-      # *editor settings* are set: a JDK, the Android SDK, and a debug
-      # keystore. None of them are project files, and none carry over from the
-      # image: GitHub Actions sets HOME=/github/home inside a container, so
-      # Godot never reads the settings the image wrote to /root. Write them
-      # where this Godot will actually look, and generate the debug keystore.
+      # Godot needs a JDK, a complete Android SDK and a debug keystore, all of
+      # which it reads from *editor settings* rather than the project. None of
+      # it carries over from the image: GitHub Actions sets HOME=/github/home
+      # inside a container, so Godot never sees the settings the image wrote to
+      # /root. Write them where this Godot looks, make sure the SDK actually has
+      # the platform and build-tools Godot targets, and generate the keystore.
       - name: Configure the Android toolchain
         run: |
+          set -u
           echo "HOME=$HOME"
           JAVA_SDK="${JAVA_HOME:-}"
           if [ -z "$JAVA_SDK" ] && command -v javac >/dev/null; then
             JAVA_SDK="$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")"
           fi
-          ANDROID_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
-          for candidate in /usr/lib/android-sdk /opt/android-sdk /root/android-sdk; do
-            [ -n "$ANDROID_SDK" ] && break
-            [ -d "$candidate" ] && ANDROID_SDK="$candidate"
-          done
-          echo "Java SDK:    ${JAVA_SDK:-<not found>}"
-          echo "Android SDK: ${ANDROID_SDK:-<not found>}"
-          if [ -z "$JAVA_SDK" ] || [ -z "$ANDROID_SDK" ]; then
-            echo "::error::Android export needs a JDK and the Android SDK in the build image."
-            echo "Diagnostics follow so the next run does not have to guess:"
-            command -v java javac keytool gradle || true
-            ls -d /usr/lib/jvm/* /opt/android* /usr/lib/android* 2>/dev/null || true
-            env | grep -iE 'java|android' || true
+          if [ -z "$JAVA_SDK" ]; then
+            echo "::error::No JDK in the build image; Godot cannot export for Android."
             exit 1
           fi
+          ANDROID_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          if [ -z "$ANDROID_SDK" ]; then
+            for candidate in /usr/lib/android-sdk /opt/android-sdk /root/android-sdk; do
+              [ -d "$candidate" ] && ANDROID_SDK="$candidate" && break
+            done
+          fi
+          : "${ANDROID_SDK:=$HOME/android-sdk}"
+          mkdir -p "$ANDROID_SDK"
+
+          echo "::group::Android SDK before"
+          echo "Java SDK:    $JAVA_SDK"
+          echo "Android SDK: $ANDROID_SDK"
+          ls "$ANDROID_SDK" 2>/dev/null || echo "(empty)"
+          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
+          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
+          echo "::endgroup::"
+
+          # Godot 4.3 targets SDK 34, and validates the SDK rather than warning
+          # about it - an image carrying only older build-tools fails the export
+          # with an empty error message, which is what runs 2 and 3 hit.
+          SDKMANAGER="$(command -v sdkmanager || true)"
+          if [ -z "$SDKMANAGER" ]; then
+            for candidate in \
+              "$ANDROID_SDK/cmdline-tools/latest/bin/sdkmanager" \
+              "$ANDROID_SDK/cmdline-tools/bin/sdkmanager" \
+              "$ANDROID_SDK/tools/bin/sdkmanager"; do
+              [ -x "$candidate" ] && SDKMANAGER="$candidate" && break
+            done
+          fi
+          if [ -z "$SDKMANAGER" ]; then
+            echo "No sdkmanager in the image - fetching the command line tools."
+            curl -sSL -o /tmp/cmdline-tools.zip \
+              https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            rm -rf /tmp/cmdline && mkdir -p /tmp/cmdline
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline
+            mkdir -p "$ANDROID_SDK/cmdline-tools"
+            rm -rf "$ANDROID_SDK/cmdline-tools/latest"
+            mv /tmp/cmdline/cmdline-tools "$ANDROID_SDK/cmdline-tools/latest"
+            SDKMANAGER="$ANDROID_SDK/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          echo "sdkmanager: $SDKMANAGER"
+          yes 2>/dev/null | "$SDKMANAGER" --sdk_root="$ANDROID_SDK" --licenses >/dev/null 2>&1 || true
+          "$SDKMANAGER" --sdk_root="$ANDROID_SDK" \
+            "platform-tools" "platforms;android-${ANDROID_TARGET_SDK}" \
+            "build-tools;${ANDROID_BUILD_TOOLS}"
+
+          echo "::group::Android SDK after"
+          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
+          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
+          ls "$ANDROID_SDK/platform-tools/adb" 2>/dev/null || echo "(no adb)"
+          echo "::endgroup::"
+
           KEYSTORE="$HOME/.local/share/godot/keystores/debug.keystore"
           mkdir -p "$(dirname "$KEYSTORE")" "$HOME/.config/godot"
           if [ ! -f "$KEYSTORE" ]; then
@@ -121,6 +165,7 @@ jobs:
             ls -la android android/build 2>/dev/null || echo "no android/ build template in the project"
             cat android/build/.build_version 2>/dev/null || echo "no .build_version"
             ls ~/.local/share/godot/export_templates/ 2>/dev/null || echo "no export templates under HOME"
+            cat "$HOME/.config/godot/editor_settings-${GODOT_VERSION}.tres" 2>/dev/null || echo "no editor settings"
             echo "::endgroup::"
             exit 1
           }
@@ -183,34 +228,76 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      # Godot will not export for Android until three things it keeps in
-      # *editor settings* are set: a JDK, the Android SDK, and a debug
-      # keystore. None of them are project files, and none carry over from the
-      # image: GitHub Actions sets HOME=/github/home inside a container, so
-      # Godot never reads the settings the image wrote to /root. Write them
-      # where this Godot will actually look, and generate the debug keystore.
+      # Godot needs a JDK, a complete Android SDK and a debug keystore, all of
+      # which it reads from *editor settings* rather than the project. None of
+      # it carries over from the image: GitHub Actions sets HOME=/github/home
+      # inside a container, so Godot never sees the settings the image wrote to
+      # /root. Write them where this Godot looks, make sure the SDK actually has
+      # the platform and build-tools Godot targets, and generate the keystore.
       - name: Configure the Android toolchain
         run: |
+          set -u
           echo "HOME=$HOME"
           JAVA_SDK="${JAVA_HOME:-}"
           if [ -z "$JAVA_SDK" ] && command -v javac >/dev/null; then
             JAVA_SDK="$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")"
           fi
-          ANDROID_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
-          for candidate in /usr/lib/android-sdk /opt/android-sdk /root/android-sdk; do
-            [ -n "$ANDROID_SDK" ] && break
-            [ -d "$candidate" ] && ANDROID_SDK="$candidate"
-          done
-          echo "Java SDK:    ${JAVA_SDK:-<not found>}"
-          echo "Android SDK: ${ANDROID_SDK:-<not found>}"
-          if [ -z "$JAVA_SDK" ] || [ -z "$ANDROID_SDK" ]; then
-            echo "::error::Android export needs a JDK and the Android SDK in the build image."
-            echo "Diagnostics follow so the next run does not have to guess:"
-            command -v java javac keytool gradle || true
-            ls -d /usr/lib/jvm/* /opt/android* /usr/lib/android* 2>/dev/null || true
-            env | grep -iE 'java|android' || true
+          if [ -z "$JAVA_SDK" ]; then
+            echo "::error::No JDK in the build image; Godot cannot export for Android."
             exit 1
           fi
+          ANDROID_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          if [ -z "$ANDROID_SDK" ]; then
+            for candidate in /usr/lib/android-sdk /opt/android-sdk /root/android-sdk; do
+              [ -d "$candidate" ] && ANDROID_SDK="$candidate" && break
+            done
+          fi
+          : "${ANDROID_SDK:=$HOME/android-sdk}"
+          mkdir -p "$ANDROID_SDK"
+
+          echo "::group::Android SDK before"
+          echo "Java SDK:    $JAVA_SDK"
+          echo "Android SDK: $ANDROID_SDK"
+          ls "$ANDROID_SDK" 2>/dev/null || echo "(empty)"
+          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
+          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
+          echo "::endgroup::"
+
+          # Godot 4.3 targets SDK 34, and validates the SDK rather than warning
+          # about it - an image carrying only older build-tools fails the export
+          # with an empty error message, which is what runs 2 and 3 hit.
+          SDKMANAGER="$(command -v sdkmanager || true)"
+          if [ -z "$SDKMANAGER" ]; then
+            for candidate in \
+              "$ANDROID_SDK/cmdline-tools/latest/bin/sdkmanager" \
+              "$ANDROID_SDK/cmdline-tools/bin/sdkmanager" \
+              "$ANDROID_SDK/tools/bin/sdkmanager"; do
+              [ -x "$candidate" ] && SDKMANAGER="$candidate" && break
+            done
+          fi
+          if [ -z "$SDKMANAGER" ]; then
+            echo "No sdkmanager in the image - fetching the command line tools."
+            curl -sSL -o /tmp/cmdline-tools.zip \
+              https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            rm -rf /tmp/cmdline && mkdir -p /tmp/cmdline
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline
+            mkdir -p "$ANDROID_SDK/cmdline-tools"
+            rm -rf "$ANDROID_SDK/cmdline-tools/latest"
+            mv /tmp/cmdline/cmdline-tools "$ANDROID_SDK/cmdline-tools/latest"
+            SDKMANAGER="$ANDROID_SDK/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          echo "sdkmanager: $SDKMANAGER"
+          yes 2>/dev/null | "$SDKMANAGER" --sdk_root="$ANDROID_SDK" --licenses >/dev/null 2>&1 || true
+          "$SDKMANAGER" --sdk_root="$ANDROID_SDK" \
+            "platform-tools" "platforms;android-${ANDROID_TARGET_SDK}" \
+            "build-tools;${ANDROID_BUILD_TOOLS}"
+
+          echo "::group::Android SDK after"
+          ls "$ANDROID_SDK/build-tools" 2>/dev/null || echo "(no build-tools)"
+          ls "$ANDROID_SDK/platforms" 2>/dev/null || echo "(no platforms)"
+          ls "$ANDROID_SDK/platform-tools/adb" 2>/dev/null || echo "(no adb)"
+          echo "::endgroup::"
+
           KEYSTORE="$HOME/.local/share/godot/keystores/debug.keystore"
           mkdir -p "$(dirname "$KEYSTORE")" "$HOME/.config/godot"
           if [ ! -f "$KEYSTORE" ]; then
