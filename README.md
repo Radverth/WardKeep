@@ -97,4 +97,12 @@ environment's approval before building the signed AAB. One-time setup —
 environment, secrets, keystore — is in [`CI_SETUP.md`](CI_SETUP.md).
 
 `version/code` in `export_presets.cfg` must be bumped by hand before any build
-intended for Play Console.
+intended for Play Console. There are two presets: `Android` (the release
+`.aab`) and `Android Test` (the sideloadable `.apk`); keep the version and
+package fields in sync across both.
+
+**The APK export step currently fails in CI** — see
+[`CI_ANDROID_EXPORT_STATUS.md`](CI_ANDROID_EXPORT_STATUS.md) for the full
+elimination trail and the fastest way to finish it. The `test` job is green
+and gates every push, so the game code stays protected; it is packaging that
+is broken.
