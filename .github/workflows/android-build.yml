@@ -45,6 +45,8 @@ jobs:
     name: Build debug test APK
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      release_signing_configured: ${{ steps.release-signing.outputs.configured }}
     # softprops/action-gh-release creates a Release, which GITHUB_TOKEN can
     # only do with write access. Repos whose default workflow permission is
     # read-only would otherwise fail this job with a 403.
@@ -56,6 +58,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
+
+      # A job-level `if` cannot read the secrets context, so the release job
+      # takes this as an input instead. Only whether the secret is set is
+      # reported - never its value.
+      - name: Check whether release signing is configured
+        id: release-signing
+        run: |
+          if [ -n "${ANDROID_KEYSTORE_BASE64}" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "Release signing secrets are not set - the AAB job will be skipped (see CI_SETUP.md)."
+          fi
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: Set up export templates
         run: |
@@ -187,6 +204,10 @@ jobs:
   build-release-aab:
     name: Build signed release AAB (Play Console upload)
     needs: build-test-apk
+    # Skipped until the release keystore secrets exist. Without this the job
+    # runs unsigned-but-half-configured and fails the whole run, which says
+    # nothing useful about the commit that triggered it.
+    if: needs.build-test-apk.outputs.release_signing_configured == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write

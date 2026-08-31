@@ -27,6 +27,13 @@ Push to `main` on GitHub:
 Copy `.github/workflows/android-build.yml` and `export_presets.cfg` from
 this bundle into your WARDKEEP repo root, commit, push.
 
+**Until you do steps 2 and 3, the release AAB job is skipped**, not run: the
+test-APK job reports whether `ANDROID_KEYSTORE_BASE64` exists and the release
+job is conditional on it. That keeps a push to `main` green while release
+signing is still unconfigured. Note also that the approval gate is the
+*environment*, not the workflow file — a job naming an environment that does
+not exist is **not** gated, it simply runs.
+
 ### 2. Create the approval-gated environment
 
 GitHub repo → **Settings → Environments → New environment** → name it
