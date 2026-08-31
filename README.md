@@ -101,6 +101,14 @@ intended for Play Console. There are two presets: `Android` (the release
 `.aab`) and `Android Test` (the sideloadable `.apk`); keep the version and
 package fields in sync across both.
 
+### Art direction
+
+The arena floor and the enemies are **16px pixel art** (Tiny Town and
+Roguelike Characters), drawn at whole-number scales onto the 64px grid. The
+towers are still RTS Medieval, which is flat vector — small enough on screen
+to pass, but it is a genuine style mix and worth deciding on before adding
+more tower art. See `MAPPING.md`.
+
 Android requires ETC2/ASTC-compressed textures, so `project.godot` sets
 `rendering/textures/vram_compression/import_etc2_astc=true`. Do not remove it:
 without it the export fails validation on any host that does not itself prefer

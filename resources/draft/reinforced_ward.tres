@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_y6v8q"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_byual"]
 
 [resource]
-script = ExtResource("1_y6v8q")
+script = ExtResource("1_byual")
 id = &"reinforced_ward"
 title = "Reinforced Ward"
 description = "+5 maximum Ward Stone health, fully repaired."

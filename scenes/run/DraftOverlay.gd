@@ -18,14 +18,20 @@ func show_cards(cards: Array) -> void:
 	show()
 
 func _build_card(card: DraftCardDef) -> Control:
+	# A dark plate behind the ornate frame: the Fantasy UI border is drawn to
+	# be tinted, so on its own it would take the rarity colour across the whole
+	# card and swallow the text.
+	var plate := PanelContainer.new()
+	var backing := StyleBoxFlat.new()
+	backing.bg_color = Color(0.13, 0.11, 0.11, 0.97)
+	backing.set_corner_radius_all(10)
+	backing.set_content_margin_all(0)
+	plate.add_theme_stylebox_override("panel", backing)
+
 	var border := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.14, 0.12, 0.12, 0.97)
-	style.border_color = WK.rarity_color(card.rarity)
-	style.set_border_width_all(6)
-	style.set_corner_radius_all(12)
-	style.set_content_margin_all(16)
-	border.add_theme_stylebox_override("panel", style)
+	border.add_theme_stylebox_override("panel",
+		UiKit.border_stylebox(WK.rarity_color(card.rarity)))
+	plate.add_child(border)
 
 	var button := Button.new()
 	button.flat = true
@@ -58,4 +64,4 @@ func _build_card(card: DraftCardDef) -> Control:
 	description.add_theme_font_size_override("font_size", 21)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(description)
-	return border
+	return plate

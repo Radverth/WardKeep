@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_wxehv"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_wjmlo"]
 
 [resource]
-script = ExtResource("1_wxehv")
+script = ExtResource("1_wjmlo")
 id = &"salvage_rights"
 title = "Salvage Rights"
 description = "Selling refunds 20% more."

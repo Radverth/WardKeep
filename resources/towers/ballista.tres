@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_4f3kh"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_f6qfw"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_au5to"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_ycq6f"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_elw56"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_u2xtr"]
 
-[sub_resource type="Resource" id="Resource_sbr63"]
-script = ExtResource("3_au5to")
+[sub_resource type="Resource" id="Resource_bnb1q"]
+script = ExtResource("3_u2xtr")
 cost = 30
 damage = 10.0
 range_tiles = 4.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = true
 
-[sub_resource type="Resource" id="Resource_h62he"]
-script = ExtResource("3_au5to")
+[sub_resource type="Resource" id="Resource_e46xg"]
+script = ExtResource("3_u2xtr")
 cost = 50
 damage = 20.0
 range_tiles = 4.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = true
 
-[sub_resource type="Resource" id="Resource_c2axg"]
-script = ExtResource("3_au5to")
+[sub_resource type="Resource" id="Resource_x5hxq"]
+script = ExtResource("3_u2xtr")
 cost = 90
 damage = 40.0
 range_tiles = 5.0
@@ -56,15 +56,15 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = true
 
 [resource]
-script = ExtResource("2_f6qfw")
+script = ExtResource("2_elw56")
 id = &"ballista"
 display_name = "Ballista"
 role = "Single-target, armour-piercing"
 rune_element = 0
-tiers = Array[ExtResource("3_au5to")]([SubResource("Resource_sbr63"), SubResource("Resource_h62he"), SubResource("Resource_c2axg")])
+tiers = Array[ExtResource("3_u2xtr")]([SubResource("Resource_bnb1q"), SubResource("Resource_e46xg"), SubResource("Resource_x5hxq")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_17.png"
-projectile_scene = ExtResource("1_4f3kh")
+projectile_scene = ExtResource("1_ycq6f")
 scene_path = "res://scenes/towers/Ballista.tscn"
 unlock_cost = 150
 required_account_level = 3

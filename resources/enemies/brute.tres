@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_aycvk"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_g6e8x"]
 
 [resource]
-script = ExtResource("1_aycvk")
+script = ExtResource("1_g6e8x")
 id = &"brute"
 display_name = "Brute"
 base_hp = 55.0
@@ -15,7 +15,7 @@ unlock_wave = 9
 sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
 sprite_cell = Vector2i(0, 2)
 tint = Color(1, 1, 1, 1)
-scale_factor = 2.9
+scale_factor = 4.0
 is_boss = false
 scene_path = "res://scenes/enemies/Brute.tscn"
 provisional = true

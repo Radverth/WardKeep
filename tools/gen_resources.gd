@@ -227,7 +227,7 @@ func _build_enemies() -> void:
 		{"id": "grunt", "name": "Grunt", "hp": 12.0, "speed": 1.6, "dmg": 1.0,
 			"armor": WK.ArmorType.NONE, "cost": 4, "wave": 1, "cell": Vector2i(0, 1), "tint": Color(1, 1, 1)},
 		{"id": "swarmling", "name": "Swarmling", "hp": 6.0, "speed": 2.4, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 3, "wave": 1, "cell": Vector2i(0, 0), "tint": Color(1, 0.95, 0.85), "scale": 1.9},
+			"armor": WK.ArmorType.NONE, "cost": 3, "wave": 1, "cell": Vector2i(0, 0), "tint": Color(1, 0.95, 0.85), "scale": 2.0},
 		{"id": "skirmisher", "name": "Skirmisher", "hp": 18.0, "speed": 1.9, "dmg": 1.0,
 			"armor": WK.ArmorType.NONE, "cost": 6, "wave": 3, "cell": Vector2i(0, 6), "tint": Color(1, 1, 1)},
 		{"id": "shieldbearer", "name": "Shieldbearer", "hp": 34.0, "speed": 1.1, "dmg": 2.0,
@@ -235,7 +235,7 @@ func _build_enemies() -> void:
 		{"id": "wraith", "name": "Wraith", "hp": 20.0, "speed": 1.8, "dmg": 2.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 9, "wave": 7, "cell": Vector2i(1, 5), "tint": Color(0.7, 0.9, 1.0, 0.72)},
 		{"id": "brute", "name": "Brute", "hp": 55.0, "speed": 0.9, "dmg": 3.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "cell": Vector2i(0, 2), "tint": Color(1, 1, 1), "scale": 2.9},
+			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "cell": Vector2i(0, 2), "tint": Color(1, 1, 1), "scale": 4.0},
 		{"id": "hexer", "name": "Hexer", "hp": 26.0, "speed": 1.5, "dmg": 2.0,
 			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "cell": Vector2i(1, 7), "tint": Color(0.85, 0.75, 1.0)},
 		{"id": "revenant", "name": "Revenant", "hp": 44.0, "speed": 1.4, "dmg": 3.0,
@@ -245,7 +245,7 @@ func _build_enemies() -> void:
 		{"id": "shade", "name": "Shade", "hp": 30.0, "speed": 2.6, "dmg": 2.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "cell": Vector2i(0, 8), "tint": Color(0.45, 0.42, 0.62, 0.7)},
 		{"id": "ogre", "name": "Ogre", "hp": 140.0, "speed": 0.7, "dmg": 6.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "cell": Vector2i(0, 3), "tint": Color(1, 1, 1), "scale": 3.2},
+			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "cell": Vector2i(0, 3), "tint": Color(1, 1, 1), "scale": 4.0},
 		{"id": "warlord", "name": "Warlord", "hp": 110.0, "speed": 1.3, "dmg": 5.0,
 			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "cell": Vector2i(1, 6), "tint": Color(1, 0.85, 0.8)},
 	]
@@ -261,7 +261,7 @@ func _build_enemies() -> void:
 		def.unlock_wave = entry["wave"]
 		def.sprite_cell = entry["cell"]
 		def.tint = entry["tint"]
-		def.scale_factor = float(entry.get("scale", 2.5))
+		def.scale_factor = float(entry.get("scale", 3.0))
 		def.provisional = true
 		def.scene_path = "res://scenes/enemies/%s.tscn" % _pascal(entry["id"])
 		_save(def, ENEMY_DIR + entry["id"] + ".tres")

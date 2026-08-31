@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=6 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="1_grny5"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="2_pdiyb"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="1_gv6bh"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="2_mguxr"]
 
-[sub_resource type="Resource" id="Resource_xj0p6"]
-script = ExtResource("2_pdiyb")
+[sub_resource type="Resource" id="Resource_kfyfq"]
+script = ExtResource("2_mguxr")
 cost = 30
 damage = 0.0
 range_tiles = 2.0
@@ -20,8 +20,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_13n71"]
-script = ExtResource("2_pdiyb")
+[sub_resource type="Resource" id="Resource_e3ja5"]
+script = ExtResource("2_mguxr")
 cost = 50
 damage = 0.0
 range_tiles = 2.5
@@ -37,8 +37,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_qcr4j"]
-script = ExtResource("2_pdiyb")
+[sub_resource type="Resource" id="Resource_kddet"]
+script = ExtResource("2_mguxr")
 cost = 85
 damage = 0.0
 range_tiles = 3.0
@@ -55,12 +55,12 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("1_grny5")
+script = ExtResource("1_gv6bh")
 id = &"glacier_well"
 display_name = "Glacier Well"
 role = "AoE slow field, no damage"
 rune_element = 1
-tiers = Array[ExtResource("2_pdiyb")]([SubResource("Resource_xj0p6"), SubResource("Resource_13n71"), SubResource("Resource_qcr4j")])
+tiers = Array[ExtResource("2_mguxr")]([SubResource("Resource_kfyfq"), SubResource("Resource_e3ja5"), SubResource("Resource_kddet")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_13.png"
 scene_path = "res://scenes/towers/GlacierWell.tscn"

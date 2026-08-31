@@ -55,3 +55,22 @@ Pipeline/Integration Spec §6) — this manifest doesn't replace reading them.
   smoke, and star were pulled, matching the 3 VFX uses in Feature Spec.
   If a later feature needs another particle type, go back to the source pack
   rather than trying to repurpose what's here.
+
+
+## Added after the original bundle
+
+Two further Kenney packs (CC0, `License.txt` kept in each folder):
+
+| res:// path | Pack | Used for |
+|---|---|---|
+| `assets/sprites/environment/tiny_town/` | Tiny Town | The arena floor: grass, the 3x3 dirt-on-grass block that gives the path its grass borders, cobble build plots, trees and bushes, and the tiles the Ward Stone keep is built from |
+| `assets/sprites/ui/fantasy_borders/` | Fantasy UI Borders | Draft card frames, tinted per rarity (Feature Spec §5.2) |
+
+Tiny Town is **16px pixel art**, indexed `row * 12 + column` off
+`tilemap_packed.png`, and drawn at exactly 4x onto the 64px grid so the pixels
+stay square. That makes the floor pixel art, matching the enemy sprites, which
+come from the Roguelike Characters pack and are pixel art too. Enemy scale
+factors are therefore whole numbers.
+
+The towers are still RTS Medieval, which is flat vector rather than pixel art
+— see the note in README.

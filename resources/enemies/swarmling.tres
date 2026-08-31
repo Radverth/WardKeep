@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_oqkhm"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_g0b18"]
 
 [resource]
-script = ExtResource("1_oqkhm")
+script = ExtResource("1_g0b18")
 id = &"swarmling"
 display_name = "Swarmling"
 base_hp = 6.0
@@ -15,7 +15,7 @@ unlock_wave = 1
 sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
 sprite_cell = Vector2i(0, 0)
 tint = Color(1, 0.95, 0.85, 1)
-scale_factor = 1.9
+scale_factor = 2.0
 is_boss = false
 scene_path = "res://scenes/enemies/Swarmling.tscn"
 provisional = true

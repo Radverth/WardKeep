@@ -10,12 +10,41 @@ static var current: Arena = null
 
 enum Phase { INTRO, ACTIVE, CLEARED, DRAFT, ENDED }
 
-const TILE_SHEET: String = "res://assets/sprites/environment/tower_defense_tilesheet/towerDefense_tilesheet.png"
-## Uniform-colour tiles in that sheet, found by sampling: grass, dirt, sand, stone.
-const TILE_GROUND := Vector2i(4, 5)
-const TILE_PATH := Vector2i(4, 2)
-const TILE_BUILD := Vector2i(4, 8)
-const TILE_WARD := Vector2i(4, 11)
+## Tiny Town (Kenney, CC0) — 16px tiles, 12 per row, no spacing in the packed
+## sheet. Indices below are row * 12 + column.
+const TINY_TOWN: String = "res://assets/sprites/environment/tiny_town/tilemap_packed.png"
+const TINY_TILE: int = 16
+## 16px art on 64px cells: an exact 4x so the pixels stay square and crisp.
+const TINY_SCALE: float = float(WK.TILE_SIZE) / float(TINY_TILE)
+
+## Grass, weighted: mostly plain, some tufted, flowers only occasionally —
+## an even split makes the field read as noise rather than grass.
+const GRASS_PLAIN: int = 0
+const GRASS_TUFT: int = 1
+const GRASS_FLOWERS: int = 2
+const GRASS_TUFT_CHANCE: float = 0.22
+const GRASS_FLOWER_CHANCE: float = 0.07
+## The pack's 3x3 dirt-on-grass block. Row picks the vertical edge, column the
+## horizontal one, which is what turns a bare path into one with grass borders.
+const PATH_BLOCK: Array[int] = [
+	12, 13, 14,
+	24, 25, 26,
+	36, 37, 38,
+]
+## Plain dirt for a cell with path on every side.
+const PATH_FILL: int = 25
+## A laid cobble plot, so build tiles read as prepared ground at a glance.
+## Warmed and darkened, or the pale stone reads as rubble dropped on the grass.
+const TILE_BUILD_PAD: int = 43
+const BUILD_PAD_TINT := Color(0.82, 0.76, 0.66)
+const TILE_STONE: int = 109
+## Whole trees and bushes only — the pack's other foliage tiles are halves of
+## multi-tile trees and read as fragments on their own.
+const PROP_TILES: Array[int] = [16, 17, 6]
+const PROP_CHANCE: float = 0.13
+## The Ward Stone reads as a real building: roof over walls, with a door.
+const KEEP_ROOF: Array[int] = [52, 53]
+const KEEP_WALL: Array[int] = [76, 78]
 
 const WAVE_INTRO_SECONDS: float = 1.5
 ## The HUD's top bar and tower tray sit over the board. The board is exactly
@@ -23,8 +52,7 @@ const WAVE_INTRO_SECONDS: float = 1.5
 ## up underneath the tray.
 const HUD_TOP_INSET: float = 104.0
 const HUD_BOTTOM_INSET: float = 148.0
-const WARD_STONE_FRAME: String = "medievalStructure_21.png"
-const PROP_FRAMES: Array[String] = ["medievalEnvironment_09.png", "medievalEnvironment_11.png"]
+
 
 @onready var _ground: Node2D = $Ground
 @onready var _slot_layer: Node2D = $SlotLayer
@@ -95,8 +123,48 @@ func _exit_tree() -> void:
 
 ## --- board construction -------------------------------------------------
 
-func _tile(cell: Vector2i) -> AtlasTexture:
-	return SpriteAtlas.cell(TILE_SHEET, cell.x, cell.y, WK.TILE_SIZE, 0)
+func _tile(index: int) -> AtlasTexture:
+	return SpriteAtlas.cell(TINY_TOWN, index % 12, index / 12, TINY_TILE, 0)
+
+## No z_index here: it applies across the whole canvas layer, so a ground
+## sprite raised above 0 would draw over the towers and enemies. Everything in
+## this node stacks by insertion order instead, and the node itself sits below
+## the tower layer in the scene.
+func _tiny_sprite(index: int, at: Vector2, tint: Color = Color.WHITE) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sprite.texture = _tile(index)
+	sprite.scale = Vector2.ONE * TINY_SCALE
+	sprite.position = at
+	sprite.modulate = tint
+	_ground.add_child(sprite)
+	return sprite
+
+## The pack has no inner-corner tiles, but the arena path is one tile wide, so
+## every cell is a straight run or a turn — both of which the 3x3 block covers.
+func _path_tile_for(column: int, row: int) -> int:
+	var open_north: bool = _is_lane(column, row - 1)
+	var open_south: bool = _is_lane(column, row + 1)
+	var open_west: bool = _is_lane(column - 1, row)
+	var open_east: bool = _is_lane(column + 1, row)
+	if open_north and open_south and open_west and open_east:
+		return PATH_FILL
+	var block_column: int = 1
+	if not open_west:
+		block_column = 0
+	elif not open_east:
+		block_column = 2
+	var block_row: int = 1
+	if not open_north:
+		block_row = 0
+	elif not open_south:
+		block_row = 2
+	return PATH_BLOCK[block_row * 3 + block_column]
+
+## The Ward Stone platform is walked onto, so it counts as lane for edging —
+## otherwise the path would draw a grass border against the keep.
+func _is_lane(column: int, row: int) -> bool:
+	return map.is_path_tile(column, row) or map.is_ward_stone(column, row)
 
 func cell_to_world(cell: Vector2i) -> Vector2:
 	return Vector2(cell) * float(WK.TILE_SIZE) + Vector2.ONE * (float(WK.TILE_SIZE) * 0.5)
@@ -105,39 +173,42 @@ func world_to_cell(position: Vector2) -> Vector2i:
 	return Vector2i(floori(position.x / float(WK.TILE_SIZE)), floori(position.y / float(WK.TILE_SIZE)))
 
 func _build_ground() -> void:
+	# Deterministic, so the field looks the same every run rather than
+	# shimmering between loads.
+	var ground_rng := RandomNumberGenerator.new()
+	ground_rng.seed = 0x57A11
 	for row: int in map.rows:
 		for column: int in map.columns:
-			var sprite := Sprite2D.new()
-			sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-			var kind: String = map.cell(column, row)
-			match kind:
-				"#": sprite.texture = _tile(TILE_PATH)
-				"B": sprite.texture = _tile(TILE_BUILD)
-				"W": sprite.texture = _tile(TILE_WARD)
-				_: sprite.texture = _tile(TILE_GROUND)
-			sprite.position = cell_to_world(Vector2i(column, row))
-			_ground.add_child(sprite)
-	_scatter_props()
+			var at: Vector2 = cell_to_world(Vector2i(column, row))
+			# Grass goes down everywhere first, so the path's transparent
+			# grass borders have something to sit against.
+			_tiny_sprite(_grass_tile(ground_rng), at)
+			match map.cell(column, row):
+				"#":
+					_tiny_sprite(_path_tile_for(column, row), at)
+				"W":
+					_tiny_sprite(TILE_STONE, at)
+				"B":
+					_tiny_sprite(TILE_BUILD_PAD, at, BUILD_PAD_TINT)
+	_scatter_props(ground_rng)
 
-## Pipeline §2.1 — decorative props on empty floor, deterministic so the board
-## looks the same every run rather than shimmering between loads.
-func _scatter_props() -> void:
-	var prop_rng := RandomNumberGenerator.new()
-	prop_rng.seed = 0x57A11
+func _grass_tile(ground_rng: RandomNumberGenerator) -> int:
+	var roll: float = ground_rng.randf()
+	if roll < GRASS_FLOWER_CHANCE:
+		return GRASS_FLOWERS
+	if roll < GRASS_FLOWER_CHANCE + GRASS_TUFT_CHANCE:
+		return GRASS_TUFT
+	return GRASS_PLAIN
+
+## Trees and shrubs on the open field only — never on the path or a build tile,
+## so scenery can never be mistaken for something placeable.
+func _scatter_props(prop_rng: RandomNumberGenerator) -> void:
 	for row: int in map.rows:
 		for column: int in map.columns:
-			if map.cell(column, row) != "." or prop_rng.randf() > 0.12:
+			if map.cell(column, row) != "." or prop_rng.randf() > PROP_CHANCE:
 				continue
-			var frame_name: String = PROP_FRAMES[prop_rng.randi_range(0, PROP_FRAMES.size() - 1)]
-			var texture: AtlasTexture = SpriteAtlas.frame("medievalRTS", frame_name)
-			if texture == null:
-				continue
-			var sprite := Sprite2D.new()
-			sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-			sprite.texture = texture
-			sprite.position = cell_to_world(Vector2i(column, row))
-			sprite.modulate = Color(1, 1, 1, 0.75)
-			_ground.add_child(sprite)
+			_tiny_sprite(PROP_TILES[prop_rng.randi_range(0, PROP_TILES.size() - 1)],
+				cell_to_world(Vector2i(column, row)))
 
 func _build_path_points() -> void:
 	_path_points = PackedVector2Array()
@@ -153,9 +224,16 @@ func _build_slots() -> void:
 		slot.setup(cell)
 		_slots[cell] = slot
 
+## Built from four Tiny Town tiles rather than one sprite, so the keep is the
+## same art as the ground it stands on.
 func _place_ward_stone() -> void:
-	_ward_stone.texture = SpriteAtlas.frame("medievalRTS", WARD_STONE_FRAME)
-	_ward_stone.position = (map.ward_stone_center() + Vector2(0.5, 0.5)) * float(WK.TILE_SIZE)
+	var centre: Vector2 = map.ward_stone_center()
+	var origin := Vector2i(int(floor(centre.x)), int(floor(centre.y)))
+	for index: int in 2:
+		_tiny_sprite(KEEP_ROOF[index], cell_to_world(origin + Vector2i(index, 0)))
+		_tiny_sprite(KEEP_WALL[index], cell_to_world(origin + Vector2i(index, 1)))
+	_ward_stone.visible = false
+	_ward_stone.position = (centre + Vector2(0.5, 0.5)) * float(WK.TILE_SIZE)
 
 func _cache_explosion_frames() -> void:
 	for entry: Array in [["explosion_pixel", "pixelExplosion"], ["explosion_simple", "simpleExplosion"]]:

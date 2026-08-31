@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_ujxnc"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_88fss"]
 
 [resource]
-script = ExtResource("1_ujxnc")
+script = ExtResource("1_88fss")
 id = &"guild_favour"
 title = "Guild Favour"
 description = "Tower upgrades cost 15% less."

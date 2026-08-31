@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_vrvep"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_i0bxf"]
 
 [resource]
-script = ExtResource("1_vrvep")
+script = ExtResource("1_i0bxf")
 id = &"skirmisher"
 display_name = "Skirmisher"
 base_hp = 18.0
@@ -15,7 +15,7 @@ unlock_wave = 3
 sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
 sprite_cell = Vector2i(0, 6)
 tint = Color(1, 1, 1, 1)
-scale_factor = 2.5
+scale_factor = 3.0
 is_boss = false
 scene_path = "res://scenes/enemies/Skirmisher.tscn"
 provisional = true

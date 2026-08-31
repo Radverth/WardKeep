@@ -7,6 +7,10 @@ const UI_DIR: String = "res://assets/sprites/ui/adventure_pack/Default/"
 const RANK_DIR: String = "res://assets/sprites/ui/ranks/"
 const MEDAL_DIR: String = "res://assets/sprites/ui/medals/"
 const TOUCH_DIR: String = "res://assets/sprites/ui/input_prompts_touch/Default/"
+const BORDER_DIR: String = "res://assets/sprites/ui/fantasy_borders/"
+## 48x48 source with a 16px ornate corner, so the frame scales without the
+## corners smearing.
+const BORDER_CORNER: int = 16
 
 ## Feature Spec §8 — rank badges at account levels 5/10/15/20/25/30.
 const MEDAL_LEVELS: Array[int] = [5, 10, 15, 20, 25, 30]
@@ -47,6 +51,26 @@ static func medal_texture(account_level: int) -> Texture2D:
 static func touch_texture(file_name: String) -> Texture2D:
 	var path: String = TOUCH_DIR + file_name
 	return load(path) as Texture2D if ResourceLoader.exists(path) else null
+
+## Fantasy UI Borders are drawn white so they can be tinted. A draft card's
+## frame is its rarity colour (Feature Spec §5.2), which is far more legible
+## than a flat one-pixel outline.
+static func border_stylebox(tint: Color, variant: String = "006", filled: bool = true) -> StyleBoxTexture:
+	var folder: String = "Transparent center" if filled else "Border"
+	var prefix: String = "panel-transparent-center" if filled else "panel-border"
+	var path: String = "%s%s/%s-%s.png" % [BORDER_DIR, folder, prefix, variant]
+	var box := StyleBoxTexture.new()
+	box.texture = load(path) as Texture2D
+	box.texture_margin_left = BORDER_CORNER
+	box.texture_margin_right = BORDER_CORNER
+	box.texture_margin_top = BORDER_CORNER
+	box.texture_margin_bottom = BORDER_CORNER
+	box.content_margin_left = 18
+	box.content_margin_right = 18
+	box.content_margin_top = 14
+	box.content_margin_bottom = 14
+	box.modulate_color = tint
+	return box
 
 ## A label styled for headings rather than body copy.
 static func heading(text: String, size: int = 44) -> Label:
