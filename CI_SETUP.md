@@ -58,7 +58,12 @@ Edit the `GODOT_VERSION` env var at the top of the workflow and the
 
 `export_presets.cfg`'s `version/code` must increase on every build you
 actually intend to upload to Play Console (Google rejects a re-upload with
-the same code). This repo template does not auto-increment it — bump it by
+the same code). Note there are two presets: `Android` builds the release
+`.aab` for Play Console, and `Android Test` builds the sideloadable `.apk`
+the push-to-main job attaches to a pre-release. They are the same build in
+two package formats — an `.aab` cannot be sideloaded, so the test job needs
+its own preset. Keep `version/code`, `version/name` and the package name in
+sync across both. This repo template does not auto-increment it — bump it by
 hand as part of the commit that triggers a release build you intend to
 ship, or ask for a small workflow addition that auto-increments it from
 `github.run_number` if you'd rather not track it manually.

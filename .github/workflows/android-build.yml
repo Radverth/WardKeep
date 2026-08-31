@@ -116,7 +116,14 @@ jobs:
         run: |
           mkdir -v -p build/test
           godot --headless --verbose --install-android-build-template \
-            --export-debug "Android" build/test/wardkeep-test.apk
+            --export-debug "Android Test" build/test/wardkeep-test.apk || {
+            echo "::group::export diagnostics"
+            ls -la android android/build 2>/dev/null || echo "no android/ build template in the project"
+            cat android/build/.build_version 2>/dev/null || echo "no .build_version"
+            ls ~/.local/share/godot/export_templates/ 2>/dev/null || echo "no export templates under HOME"
+            echo "::endgroup::"
+            exit 1
+          }
 
       - name: Upload test APK as build artifact
         uses: actions/upload-artifact@v4
