@@ -19,6 +19,8 @@ jobs:
   test:
     name: Unit suites + headless playtest
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     container:
       image: barichello/godot-ci:4.3   # match GODOT_VERSION above
     steps:
@@ -41,6 +43,11 @@ jobs:
     name: Build debug test APK
     needs: test
     runs-on: ubuntu-latest
+    # softprops/action-gh-release creates a Release, which GITHUB_TOKEN can
+    # only do with write access. Repos whose default workflow permission is
+    # read-only would otherwise fail this job with a 403.
+    permissions:
+      contents: write
     container:
       image: barichello/godot-ci:4.3   # match GODOT_VERSION above
     steps:
@@ -83,6 +90,8 @@ jobs:
     name: Build signed release AAB (Play Console upload)
     needs: build-test-apk
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     environment: play-release   # <-- the approval gate lives here
     container:
       image: barichello/godot-ci:4.3
