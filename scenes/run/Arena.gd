@@ -18,6 +18,11 @@ const TILE_BUILD := Vector2i(4, 8)
 const TILE_WARD := Vector2i(4, 11)
 
 const WAVE_INTRO_SECONDS: float = 1.5
+## The HUD's top bar and tower tray sit over the board. The board is exactly
+## 12x20 tiles, so without framing, the Ward Stone platform on rows 17-18 ends
+## up underneath the tray.
+const HUD_TOP_INSET: float = 104.0
+const HUD_BOTTOM_INSET: float = 148.0
 const WARD_STONE_FRAME: String = "medievalStructure_21.png"
 const PROP_FRAMES: Array[String] = ["medievalEnvironment_09.png", "medievalEnvironment_11.png"]
 
@@ -34,6 +39,8 @@ const PROP_FRAMES: Array[String] = ["medievalEnvironment_09.png", "medievalEnvir
 @onready var _pause_menu: Control = %PauseMenu
 @onready var _onboarding: Control = %Onboarding
 @onready var _ghost: Sprite2D = $Ghost
+@onready var _range_indicator: RangeIndicator = $RangeIndicator
+@onready var _camera: Camera2D = $Camera
 
 var map: ArenaMap = null
 var phase: Phase = Phase.INTRO
@@ -61,6 +68,7 @@ func _ready() -> void:
 	_build_slots()
 	_place_ward_stone()
 	_cache_explosion_frames()
+	_frame_board()
 
 	RunManager.ward_stone_damaged.connect(_on_ward_stone_damaged)
 	RunManager.run_ended.connect(_on_run_ended)
@@ -157,6 +165,25 @@ func _cache_explosion_frames() -> void:
 			if texture != null:
 				frames.append(texture)
 		_explosion_frames[entry[0]] = frames
+
+## Fits the whole board into the strip of screen the HUD leaves free, so no
+## part of the arena is ever hidden behind the chrome.
+func _frame_board() -> void:
+	var viewport_size: Vector2 = get_viewport_rect().size
+	var board: Vector2 = Vector2(map.columns, map.rows) * float(WK.TILE_SIZE)
+	var free_height: float = maxf(1.0, viewport_size.y - HUD_TOP_INSET - HUD_BOTTOM_INSET)
+	var fit: float = minf(viewport_size.x / board.x, free_height / board.y)
+	var free_centre_y: float = HUD_TOP_INSET + free_height * 0.5
+	_camera.zoom = Vector2.ONE * fit
+	_camera.position = Vector2(
+		board.x * 0.5,
+		board.y * 0.5 - (free_centre_y - viewport_size.y * 0.5) / fit)
+	_camera.make_current()
+
+## Input arrives in screen space; the camera means that is no longer the same
+## as world space.
+func _to_world(screen_position: Vector2) -> Vector2:
+	return get_viewport().get_canvas_transform().affine_inverse() * screen_position
 
 ## --- wave loop (User Flow §2) -------------------------------------------
 
@@ -352,31 +379,47 @@ func _on_tower_armed(def: TowerDef) -> void:
 	_ghost.modulate.a = 0.7
 	_ghost.visible = true
 	_show_placement_hints(true)
+	# Tier 1 reach, so the player can judge coverage before paying for it.
+	_range_indicator.show_range(_ghost.global_position,
+		def.tier(0).range_tiles * RunManager.modifiers.range_mult * float(WK.TILE_SIZE),
+		WK.element_tint(def.rune_element))
 
 func _clear_armed() -> void:
 	_armed_def = null
 	_ghost.visible = false
+	_range_indicator.hide_range()
 	_show_placement_hints(false)
 	_hud.clear_armed()
 
+## Every build tile reports its state while placing — a pad where the tower
+## can go, a cross where one already stands.
 func _show_placement_hints(visible: bool) -> void:
 	for slot: TowerSlot in _slots.values():
-		if not visible:
+		if visible:
+			slot.show_placement_hint(slot.is_free())
+		else:
 			slot.clear_hint()
-		elif slot.is_free():
-			slot.show_placement_hint(true)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if phase == Phase.ENDED:
 		return
 	if event is InputEventMouseMotion and _armed_def != null:
-		_ghost.global_position = (event as InputEventMouseMotion).position
+		_move_ghost(_to_world((event as InputEventMouseMotion).position))
 	elif event is InputEventScreenDrag and _armed_def != null:
-		_ghost.global_position = (event as InputEventScreenDrag).position
+		_move_ghost(_to_world((event as InputEventScreenDrag).position))
 	elif event is InputEventMouseButton and not (event as InputEventMouseButton).pressed:
-		_resolve_tap((event as InputEventMouseButton).position)
+		_resolve_tap(_to_world((event as InputEventMouseButton).position))
 	elif event is InputEventScreenTouch and not (event as InputEventScreenTouch).pressed:
-		_resolve_tap((event as InputEventScreenTouch).position)
+		_resolve_tap(_to_world((event as InputEventScreenTouch).position))
+
+## Snaps to the build tile under the finger so the preview sits where the
+## tower actually would, not under the fingertip.
+func _move_ghost(at: Vector2) -> void:
+	var cell: Vector2i = world_to_cell(at)
+	var slot: TowerSlot = _slots.get(cell, null)
+	var target: Vector2 = cell_to_world(cell) if slot != null else at
+	_ghost.global_position = target
+	_range_indicator.move_to(target)
 
 func _resolve_tap(at: Vector2) -> void:
 	var cell: Vector2i = world_to_cell(at)
@@ -422,10 +465,13 @@ func _select_tower(tower: Tower) -> void:
 	var slot: TowerSlot = _slots.get(tower.grid_cell, null)
 	if slot != null:
 		slot.show_selected()
+	_range_indicator.show_range(tower.global_position, tower.effective_range(),
+		WK.element_tint(tower.def.rune_element))
 	_tower_panel.open(tower)
 
 func _close_tower_panel() -> void:
 	_selected_tower = null
+	_range_indicator.hide_range()
 	_tower_panel.close()
 	for slot: TowerSlot in _slots.values():
 		slot.clear_hint()
@@ -433,6 +479,8 @@ func _close_tower_panel() -> void:
 func _on_upgrade_tower(tower: Tower) -> void:
 	if tower.upgrade():
 		AudioBus.select()
+		_range_indicator.show_range(tower.global_position, tower.effective_range(),
+			WK.element_tint(tower.def.rune_element))
 		_tower_panel.open(tower)
 	else:
 		_hud.flash_message("Not enough gold.")

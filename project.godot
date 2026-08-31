@@ -32,6 +32,10 @@ window/handheld/orientation=1
 [rendering]
 
 renderer/rendering_method="mobile"
+; The board is 12x20 tiles and the HUD frames it, so a portrait screen leaves
+; margins at the sides. Match them to the menu ground rather than the default
+; grey, so the letterboxing reads as intentional.
+environment/defaults/default_clear_color=Color(0.11, 0.094, 0.098, 1)
 renderer/rendering_method.mobile="mobile"
 textures/canvas_textures/default_texture_filter=1
 ; Android requires ETC2/ASTC-compressed textures. Without this the importer
