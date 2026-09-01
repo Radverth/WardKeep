@@ -24,9 +24,26 @@ and §3.3 (the HUD shows a "Ward Stone HP bar"); Technical Architecture §4.1
 (RunManager "owns … Ward Stone HP"). Every document assumes the number
 exists; none gives it.
 
-**Provisional:** `20`, in `BalanceConfig.ward_stone_hp`
-(`resources/balance/Balance.tres`). Each leaked enemy removes its scaled
-`base_damage`, so 20 absorbs roughly 10–20 early leaks and about 3 late ones.
+**Provisional:** `50`, in `BalanceConfig.ward_stone_hp`
+(`resources/balance/Balance.tres`).
+
+Sized rather than guessed. Leak damage scales with the wave (§2.2) while the
+pool does not, so the pool sets how long that scaling stays survivable. At the
+original 20, one wave-30 Ogre leak cost 108% of a full bar — from about wave
+22 the Ward Stone bar stopped meaning anything and a single mistake ended the
+run outright. At 50, with the heaviest leak damages trimmed (see #3), one leak
+costs:
+
+| wave | grunt | ironclad | ogre |
+|---|---|---|---|
+| 1 | 2% | 6% | 8% |
+| 20 | 5% | 16% | 22% |
+| 30 | 7% | 22% | 29% |
+| 40 | 9% | 27% | 36% |
+
+Forgiving early, roughly three or four leaks from a loss late.
+`tests/test_balance_shape.gd` asserts no enemy can take half a full pool in
+one leak.
 
 **Also unstated:** whether the pool ever regenerates between waves. Implemented
 as: it does not, except via the "Masonry" draft card.
@@ -45,7 +62,7 @@ additive bonuses", the missing values are the whole upgrade curve.
 
 | Stat | Tier 1 | Tier 2 | Tier 3 |
 |---|---|---|---|
-| damage (and DoT damage) | table value | ×2 | ×4 |
+| damage (and DoT damage) | table value | ×2.5 | ×6 |
 | range | table value | +0.5 tiles | +1.0 tiles |
 | fire rate | table value | ×1.15 | ×1.32 |
 | splash radius | table value | +0.25 tiles | +0.5 tiles |
@@ -55,6 +72,18 @@ additive bonuses", the missing values are the whole upgrade curve.
 
 Costs are the spec's, untouched. The rule is deliberately uniform so it is
 easy to replace one tower at a time once real numbers exist.
+
+The damage multipliers are not arbitrary. The spec fixes the costs, so the
+multipliers decide whether upgrading is ever worth doing. At the original
+×2/×4 a Watchtower returned **0.280** damage-per-second per gold at tier 1 and
+only **0.234** and **0.257** at tiers 2 and 3 — upgrading was strictly worse
+than buying another tower while any build tile was free, which made two thirds
+of the roster dead content and made *space* the binding constraint. Feature
+Spec §1 explicitly wants the opposite: "more than enough for the full tower
+roster at once so the constraint is gold, not space". At ×2.5/×6 the figures
+are **0.280 / 0.293 / 0.386**, so a line of towers comes first and gold then
+goes into height. `tests/test_balance_shape.gd` asserts this holds for every
+damage-dealing tower.
 
 ---
 
@@ -88,16 +117,20 @@ The **numbers** below are still guesses:
 | skirmisher | none | 18 | 1.9 | 1 | 6 | 3 |
 | shieldbearer | heavy | 34 | 1.1 | 2 | 10 | 5 |
 | wraith | ethereal | 20 | 1.8 | 2 | 9 | 7 |
-| brute | heavy | 55 | 0.9 | 3 | 15 | 9 |
+| brute | heavy | 55 | 0.9 | 2 | 15 | 9 |
 | hexer | none | 26 | 1.5 | 2 | 11 | 11 |
 | revenant | ethereal | 44 | 1.4 | 3 | 16 | 13 |
-| ironclad | heavy | 90 | 0.8 | 4 | 24 | 16 |
+| ironclad | heavy | 90 | 0.8 | 3 | 24 | 16 |
 | shade | ethereal | 30 | 2.6 | 2 | 18 | 19 |
-| ogre | heavy | 140 | 0.7 | 6 | 34 | 22 |
-| warlord | none | 110 | 1.3 | 5 | 30 | 25 |
+| ogre | heavy | 140 | 0.7 | 4 | 34 | 22 |
+| warlord | none | 110 | 1.3 | 3 | 30 | 25 |
 
 Speeds are in tiles/second. Note that §2.2 fixes speed per archetype forever,
 so these particular numbers set the game's readability ceiling.
+
+The leak-damage column was compressed (ogre 6→4, ironclad 4→3, warlord 5→3,
+brute 3→2) as part of sizing the Ward Stone pool in #1 — the top of the
+original range was what made a late leak lethal outright.
 
 ---
 

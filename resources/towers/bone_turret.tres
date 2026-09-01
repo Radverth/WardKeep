@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_wu27t"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_eu1bi"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_lvbp0"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_o7fx5"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_jms07"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_4qlu5"]
 
-[sub_resource type="Resource" id="Resource_n1fq7"]
-script = ExtResource("3_lvbp0")
+[sub_resource type="Resource" id="Resource_okh04"]
+script = ExtResource("3_4qlu5")
 cost = 30
 damage = 5.0
 range_tiles = 3.0
@@ -21,10 +21,10 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 1.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_wr22y"]
-script = ExtResource("3_lvbp0")
+[sub_resource type="Resource" id="Resource_eo7ha"]
+script = ExtResource("3_4qlu5")
 cost = 50
-damage = 10.0
+damage = 12.5
 range_tiles = 3.5
 fire_rate = 1.15
 splash_radius = 0.0
@@ -38,10 +38,10 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 1.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_8mfr7"]
-script = ExtResource("3_lvbp0")
+[sub_resource type="Resource" id="Resource_78ap4"]
+script = ExtResource("3_4qlu5")
 cost = 90
-damage = 20.0
+damage = 30.0
 range_tiles = 4.0
 fire_rate = 1.32
 splash_radius = 0.0
@@ -56,15 +56,15 @@ bonus_vs_ethereal = 1.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_eu1bi")
+script = ExtResource("2_jms07")
 id = &"bone_turret"
 display_name = "Bone Turret"
 role = "Anti-ethereal specialist"
 rune_element = 2
-tiers = Array[ExtResource("3_lvbp0")]([SubResource("Resource_n1fq7"), SubResource("Resource_wr22y"), SubResource("Resource_8mfr7")])
+tiers = Array[ExtResource("3_4qlu5")]([SubResource("Resource_okh04"), SubResource("Resource_eo7ha"), SubResource("Resource_78ap4")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_22.png"
-projectile_scene = ExtResource("1_wu27t")
+projectile_scene = ExtResource("1_o7fx5")
 scene_path = "res://scenes/towers/BoneTurret.tscn"
 unlock_cost = 300
 required_account_level = 6

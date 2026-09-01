@@ -106,9 +106,18 @@ func _build_arena() -> ArenaMap:
 
 ## Tier 1 comes straight from the §4 tables. The spec gives only *costs* for
 ## tiers 2 and 3, so their stats follow one documented progression rule
-## (SPEC_GAPS.md #2): damage x2 / x4, range +0.5 / +1.0 tiles, fire rate
+## (SPEC_GAPS.md #2): damage x2.5 / x6, range +0.5 / +1.0 tiles, fire rate
 ## x1.15 / x1.32, splash +0.25 / +0.5, slow +5 / +10 percentage points.
-const TIER_DAMAGE_SCALE := [1.0, 2.0, 4.0]
+##
+## The damage multipliers are set so upgrading beats buying another tower.
+## At x2/x4 a Watchtower returned 0.280 damage-per-second per gold at tier 1
+## and only 0.234 / 0.257 at tiers 2 and 3 — so while any build tile was free,
+## a new tier-1 tower was always the better buy and two thirds of the tower
+## roster was dead content. It also made space the binding constraint rather
+## than gold, which Feature Spec §1 explicitly does not want. At x2.5/x6 the
+## figures are 0.280 / 0.293 / 0.386, so going tall is the rational play once
+## a line is established.
+const TIER_DAMAGE_SCALE := [1.0, 2.5, 6.0]
 const TIER_RANGE_BONUS := [0.0, 0.5, 1.0]
 const TIER_RATE_SCALE := [1.0, 1.15, 1.32]
 const TIER_SPLASH_BONUS := [0.0, 0.25, 0.5]
@@ -238,21 +247,21 @@ func _build_enemies() -> void:
 		{"id": "wraith", "name": "Wraith", "hp": 20.0, "speed": 1.8, "dmg": 2.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 9, "wave": 7, "art": "ghost",
 			"tint": Color(1, 1, 1, 0.8), "scale": 0.75},
-		{"id": "brute", "name": "Brute", "hp": 55.0, "speed": 0.9, "dmg": 3.0,
+		{"id": "brute", "name": "Brute", "hp": 55.0, "speed": 0.9, "dmg": 2.0,
 			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "art": "frog", "scale": 0.95},
 		{"id": "hexer", "name": "Hexer", "hp": 26.0, "speed": 1.5, "dmg": 2.0,
 			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "art": "bee", "scale": 0.75},
 		{"id": "revenant", "name": "Revenant", "hp": 44.0, "speed": 1.4, "dmg": 3.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 16, "wave": 13, "art": "ghost",
 			"tint": Color(0.62, 0.85, 1.0, 0.8), "scale": 0.95},
-		{"id": "ironclad", "name": "Ironclad", "hp": 90.0, "speed": 0.8, "dmg": 4.0,
+		{"id": "ironclad", "name": "Ironclad", "hp": 90.0, "speed": 0.8, "dmg": 3.0,
 			"armor": WK.ArmorType.HEAVY, "cost": 24, "wave": 16, "art": "barnacle", "scale": 0.9},
 		{"id": "shade", "name": "Shade", "hp": 30.0, "speed": 2.6, "dmg": 2.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "art": "bat",
 			"tint": Color(0.75, 0.75, 0.95, 0.85), "scale": 0.7},
-		{"id": "ogre", "name": "Ogre", "hp": 140.0, "speed": 0.7, "dmg": 6.0,
+		{"id": "ogre", "name": "Ogre", "hp": 140.0, "speed": 0.7, "dmg": 4.0,
 			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "art": "slimeBlock", "scale": 1.05},
-		{"id": "warlord", "name": "Warlord", "hp": 110.0, "speed": 1.3, "dmg": 5.0,
+		{"id": "warlord", "name": "Warlord", "hp": 110.0, "speed": 1.3, "dmg": 3.0,
 			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "art": "snakeLava", "scale": 0.95},
 	]
 	for entry: Dictionary in enemies:

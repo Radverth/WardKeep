@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_r6pd8"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_exc8k"]
 
 [resource]
-script = ExtResource("1_r6pd8")
+script = ExtResource("1_exc8k")
 id = &"ironclad"
 display_name = "Ironclad"
 base_hp = 90.0
 base_speed = 0.8
-base_damage = 4.0
+base_damage = 3.0
 armor_type = 1
 budget_cost = 24
 unlock_wave = 16

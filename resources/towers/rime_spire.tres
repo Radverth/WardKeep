@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_nt234"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_6ggil"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_kcift"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_mvnhx"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_kyv51"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_pawsb"]
 
-[sub_resource type="Resource" id="Resource_bpj4e"]
-script = ExtResource("3_kcift")
+[sub_resource type="Resource" id="Resource_e654p"]
+script = ExtResource("3_pawsb")
 cost = 25
 damage = 3.0
 range_tiles = 3.0
@@ -21,10 +21,10 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_5c5xe"]
-script = ExtResource("3_kcift")
+[sub_resource type="Resource" id="Resource_v1sr5"]
+script = ExtResource("3_pawsb")
 cost = 40
-damage = 6.0
+damage = 7.5
 range_tiles = 3.5
 fire_rate = 1.15
 splash_radius = 0.0
@@ -38,10 +38,10 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_kiwq7"]
-script = ExtResource("3_kcift")
+[sub_resource type="Resource" id="Resource_g84j8"]
+script = ExtResource("3_pawsb")
 cost = 75
-damage = 12.0
+damage = 18.0
 range_tiles = 4.0
 fire_rate = 1.32
 splash_radius = 0.0
@@ -56,15 +56,15 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_6ggil")
+script = ExtResource("2_kyv51")
 id = &"rime_spire"
 display_name = "Rime Spire"
 role = "Slow single-target + 20% slow debuff (4s)"
 rune_element = 1
-tiers = Array[ExtResource("3_kcift")]([SubResource("Resource_bpj4e"), SubResource("Resource_5c5xe"), SubResource("Resource_kiwq7")])
+tiers = Array[ExtResource("3_pawsb")]([SubResource("Resource_e654p"), SubResource("Resource_v1sr5"), SubResource("Resource_g84j8")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_19.png"
-projectile_scene = ExtResource("1_nt234")
+projectile_scene = ExtResource("1_mvnhx")
 scene_path = "res://scenes/towers/RimeSpire.tscn"
 unlock_cost = 0
 required_account_level = 1

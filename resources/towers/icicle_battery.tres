@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_xio0t"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_82nip"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_lkgh7"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_vd38e"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_8dlem"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_2omiw"]
 
-[sub_resource type="Resource" id="Resource_53kjj"]
-script = ExtResource("3_lkgh7")
+[sub_resource type="Resource" id="Resource_aptns"]
+script = ExtResource("3_2omiw")
 cost = 35
 damage = 6.0
 range_tiles = 3.0
@@ -21,10 +21,10 @@ bonus_vs_slowed = 0.5
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_73dby"]
-script = ExtResource("3_lkgh7")
+[sub_resource type="Resource" id="Resource_gl4sp"]
+script = ExtResource("3_2omiw")
 cost = 55
-damage = 12.0
+damage = 15.0
 range_tiles = 3.5
 fire_rate = 1.03
 splash_radius = 0.0
@@ -38,10 +38,10 @@ bonus_vs_slowed = 0.5
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_1mlvt"]
-script = ExtResource("3_lkgh7")
+[sub_resource type="Resource" id="Resource_rwnjh"]
+script = ExtResource("3_2omiw")
 cost = 95
-damage = 24.0
+damage = 36.0
 range_tiles = 4.0
 fire_rate = 1.19
 splash_radius = 0.0
@@ -56,15 +56,15 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_82nip")
+script = ExtResource("2_8dlem")
 id = &"icicle_battery"
 display_name = "Icicle Battery"
 role = "Burst single-target, bonus vs slowed"
 rune_element = 1
-tiers = Array[ExtResource("3_lkgh7")]([SubResource("Resource_53kjj"), SubResource("Resource_73dby"), SubResource("Resource_1mlvt")])
+tiers = Array[ExtResource("3_2omiw")]([SubResource("Resource_aptns"), SubResource("Resource_gl4sp"), SubResource("Resource_rwnjh")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_18.png"
-projectile_scene = ExtResource("1_xio0t")
+projectile_scene = ExtResource("1_vd38e")
 scene_path = "res://scenes/towers/IcicleBattery.tscn"
 unlock_cost = 300
 required_account_level = 6

@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_gde6b"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_o66nr"]
 
 [resource]
-script = ExtResource("1_gde6b")
+script = ExtResource("1_o66nr")
 id = &"brute"
 display_name = "Brute"
 base_hp = 55.0
 base_speed = 0.9
-base_damage = 3.0
+base_damage = 2.0
 armor_type = 1
 budget_cost = 15
 unlock_wave = 9

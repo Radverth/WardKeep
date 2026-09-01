@@ -55,7 +55,13 @@ class_name BalanceConfig
 
 ## PROVISIONAL — the Feature Spec never states a Ward Stone HP pool.
 ## See SPEC_GAPS.md #1.
-@export var ward_stone_hp: int = 20
+##
+## Sized against §2.2's scaling leak damage rather than picked round: at 20 a
+## single wave-30 Ogre leak did 108% of the pool, so from roughly wave 22 the
+## Ward Stone bar stopped meaning anything and one mistake ended the run. At
+## 50, with the trimmed leak damages, an early leak costs a couple of percent
+## and a late one about a third — forgiving to start, unforgiving to finish.
+@export var ward_stone_hp: int = 50
 
 ## Feature Spec §4 names the element matchups ("strong vs", "weak vs") but
 ## gives no magnitudes. PROVISIONAL — see SPEC_GAPS.md #5.

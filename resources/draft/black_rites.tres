@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_54ocb"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_1xnvg"]
 
 [resource]
-script = ExtResource("1_54ocb")
+script = ExtResource("1_1xnvg")
 id = &"black_rites"
 title = "Black Rites"
 description = "+15% damage for Blight towers."

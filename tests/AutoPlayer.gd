@@ -14,7 +14,6 @@ signal report_ready(report: Dictionary)
 var arena: Arena = null
 var _elapsed: float = 0.0
 var _buy_timer: float = 0.0
-var _upgrade_timer: float = 0.0
 var _finished: bool = false
 var _debug_timer: float = 0.0
 
@@ -42,31 +41,49 @@ func _process(delta: float) -> void:
 		_buy_timer = 0.4
 		_buy_or_upgrade()
 
-## Buys the most expensive tower it can afford onto a free slot near the path,
-## then spends leftover gold upgrading — a crude but consistent stand-in for a
-## player, enough to keep the Ward Stone alive through the early curve.
+## A stand-in for a competent player rather than a hoarder: build a working
+## line first, then put gold into upgrades, which are more gold-efficient than
+## a tenth tier-1 tower. Falls back to placing when nothing can be upgraded.
+const SOFT_TOWER_CAP: int = 12
+
 func _buy_or_upgrade() -> void:
+	var towers: int = RunManager.placed_towers.size()
+	if towers < SOFT_TOWER_CAP and _place_best():
+		return
+	if _upgrade_cheapest():
+		return
+	_place_best()
+
+func _place_best() -> bool:
 	var affordable: Array[TowerDef] = []
 	for def: TowerDef in RunManager.available_towers():
 		if RunManager.can_afford(def.purchase_cost()):
 			affordable.append(def)
-	if not affordable.is_empty():
-		affordable.sort_custom(func(a: TowerDef, b: TowerDef) -> bool:
-			return a.purchase_cost() > b.purchase_cost())
-		var slot: TowerSlot = _free_slot()
-		if slot != null:
-			arena._armed_def = affordable[0]
-			arena._try_place(slot.grid_cell)
-			return
-	_upgrade_timer -= 0.4
-	if _upgrade_timer > 0.0:
-		return
-	_upgrade_timer = 2.0
+	if affordable.is_empty():
+		return false
+	affordable.sort_custom(func(a: TowerDef, b: TowerDef) -> bool:
+		return a.purchase_cost() > b.purchase_cost())
+	var slot: TowerSlot = _free_slot()
+	if slot == null:
+		return false
+	arena._armed_def = affordable[0]
+	arena._try_place(slot.grid_cell)
+	return true
+
+func _upgrade_cheapest() -> bool:
+	var best: Tower = null
 	for tower: Node in RunManager.placed_towers:
-		if tower is Tower and (tower as Tower).can_upgrade() \
-				and RunManager.can_afford((tower as Tower).upgrade_cost()):
-			(tower as Tower).upgrade()
-			return
+		if not (tower is Tower):
+			continue
+		var candidate: Tower = tower as Tower
+		if not candidate.can_upgrade() or not RunManager.can_afford(candidate.upgrade_cost()):
+			continue
+		if best == null or candidate.upgrade_cost() < best.upgrade_cost():
+			best = candidate
+	if best == null:
+		return false
+	best.upgrade()
+	return true
 
 func _free_slot() -> TowerSlot:
 	for slot: TowerSlot in arena._slots.values():
@@ -98,9 +115,14 @@ func _finish(reason: String) -> void:
 	if _finished:
 		return
 	_finished = true
+	var tiers: Array[int] = [0, 0, 0]
+	for tower: Node in RunManager.placed_towers:
+		if tower is Tower:
+			tiers[(tower as Tower).tier_index] += 1
 	report_ready.emit({
 		"reason": reason,
 		"wave": RunManager.wave,
+		"tiers_1_2_3": tiers,
 		"ward_stone_hp": RunManager.ward_stone_hp,
 		"gold": RunManager.gold,
 		"towers": RunManager.placed_towers.size(),

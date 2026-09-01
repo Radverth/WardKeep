@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_2bio6"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_vqy0c"]
 
 [resource]
-script = ExtResource("1_2bio6")
+script = ExtResource("1_vqy0c")
 id = &"virulence"
 title = "Virulence"
 description = "+30% damage-over-time damage."

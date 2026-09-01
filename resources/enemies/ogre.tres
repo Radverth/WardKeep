@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_3suat"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_lt5ml"]
 
 [resource]
-script = ExtResource("1_3suat")
+script = ExtResource("1_lt5ml")
 id = &"ogre"
 display_name = "Ogre"
 base_hp = 140.0
 base_speed = 0.7
-base_damage = 6.0
+base_damage = 4.0
 armor_type = 1
 budget_cost = 34
 unlock_wave = 22
