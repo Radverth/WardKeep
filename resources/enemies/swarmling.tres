@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_s0lsa"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_levi7"]
 
 [resource]
-script = ExtResource("1_s0lsa")
+script = ExtResource("1_levi7")
 id = &"swarmling"
 display_name = "Swarmling"
 base_hp = 6.0
@@ -12,10 +12,10 @@ base_damage = 1.0
 armor_type = 0
 budget_cost = 3
 unlock_wave = 1
-sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
-sprite_cell = Vector2i(0, 0)
-tint = Color(1, 0.95, 0.85, 1)
-scale_factor = 2.0
+sprite_atlas_path = "res://assets/sprites/enemies/creatures/fly.png"
+sprite_cell = Vector2i(-1, -1)
+tint = Color(1, 1, 1, 1)
+scale_factor = 0.6
 is_boss = false
 scene_path = "res://scenes/enemies/Swarmling.tscn"
 provisional = true

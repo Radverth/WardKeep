@@ -59,18 +59,69 @@ Pipeline/Integration Spec §6) — this manifest doesn't replace reading them.
 
 ## Added after the original bundle
 
-Two further Kenney packs (CC0, `License.txt` kept in each folder):
+WARDKEEP is **flat vector** throughout — Kenney's anti-aliased 2D art, not
+pixel art. Everything below is CC0 with its `License.txt` kept in place.
 
 | res:// path | Pack | Used for |
 |---|---|---|
-| `assets/sprites/environment/tiny_town/` | Tiny Town | The arena floor: grass, the 3x3 dirt-on-grass block that gives the path its grass borders, cobble build plots, trees and bushes, and the tiles the Ward Stone keep is built from |
-| `assets/sprites/ui/fantasy_borders/` | Fantasy UI Borders | Draft card frames, tinted per rarity (Feature Spec §5.2) |
+| `assets/sprites/enemies/creatures/` | Enemy sprites | All 12 enemy archetypes |
+| `assets/sprites/vfx/explosion_ground/` | Explosion Pack | Ward Stone impacts |
+| `assets/sprites/vfx/explosion_regular/` | Explosion Pack | Boss deaths |
+| `assets/sprites/vfx/explosion_sonic/` | Explosion Pack | Frostmaw's slow field |
+| `assets/sprites/ui/fantasy_borders/` | Fantasy UI Borders | Draft card frames, tinted per rarity |
 
-Tiny Town is **16px pixel art**, indexed `row * 12 + column` off
-`tilemap_packed.png`, and drawn at exactly 4x onto the 64px grid so the pixels
-stay square. That makes the floor pixel art, matching the enemy sprites, which
-come from the Roguelike Characters pack and are pixel art too. Enemy scale
-factors are therefore whole numbers.
+### The arena floor
 
-The towers are still RTS Medieval, which is flat vector rather than pixel art
-— see the note in README.
+The floor comes from the Tower Defense tilesheet that shipped with the
+original bundle — it was already there, just badly used. The first pass drew
+the board from four **uniform-colour** tiles picked by sampling the sheet for
+flat squares, which is why the map looked like a green field with a brown
+stripe.
+
+The sheet actually carries a full dirt-on-grass 3x3 transition block. It was
+found by classifying every one of the 299 tiles against the pack's four
+terrain colours (grass, dirt, sand, stone) rather than by eye:
+
+| | left | middle | right |
+|---|---|---|---|
+| **top** | 3 | 47 | 4 |
+| **middle** | 25 | 50 | 23 |
+| **bottom** | 26 | 1 | 27 |
+
+Index is `row * 23 + column`. A path cell picks the tile whose grass borders
+face whichever sides are not path. Tile 24 is grass, 84 a stone build
+foundation, 34 the Ward Stone platform, and 130/131/134-137 are bushes, a
+spiked tree and rocks on transparent backgrounds.
+
+### Enemy sprite to archetype
+
+Armour type is matched to the silhouette, so a player can read a matchup
+without memorising the table: shelled creatures are HEAVY, spectral ones
+ETHEREAL.
+
+| archetype | armour | sprite |
+|---|---|---|
+| grunt | none | slimeGreen |
+| swarmling | none | fly |
+| skirmisher | none | spider |
+| shieldbearer | heavy | snail |
+| wraith | ethereal | ghost |
+| brute | heavy | frog |
+| hexer | none | bee |
+| revenant | ethereal | ghost, tinted |
+| ironclad | heavy | barnacle |
+| shade | ethereal | bat |
+| ogre | heavy | slimeBlock |
+| warlord | none | snakeLava |
+
+### Packs supplied but not used
+
+- **Tower Defense (sci-fi/modern)** — its terrain is the tilesheet already in
+  use, so nothing to add. Its turrets, rockets, tanks and planes are wrong for
+  a medieval keep defense and are deliberately unused.
+- **The isometric bundle** (Medieval Town, Miniature Dungeon, Nature, Tower
+  Defense, Vector Buildings) — WARDKEEP is a flat top-down 12x20 grid per
+  Feature Spec §1. Adopting isometric would mean rebuilding the arena, path
+  and placement maths.
+- **Tiny Town** — 16px pixel art. Used briefly for the floor, then dropped
+  when the art direction settled on flat vector.

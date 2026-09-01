@@ -223,31 +223,37 @@ func _tier(index: int, cost: int, t1: Array, extras: Dictionary) -> TowerTierDat
 ## See SPEC_GAPS.md #3. Shapes chosen to exercise the three armour types the
 ## §4 matchup rules and the §2.5 boss roster depend on.
 func _build_enemies() -> void:
+	# Sprite, armour and role are matched deliberately: shelled creatures carry
+	# HEAVY, spectral ones ETHEREAL, so a player can read an enemy's matchup
+	# off its silhouette instead of memorising a table.
 	var enemies: Array = [
 		{"id": "grunt", "name": "Grunt", "hp": 12.0, "speed": 1.6, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 4, "wave": 1, "cell": Vector2i(0, 1), "tint": Color(1, 1, 1)},
+			"armor": WK.ArmorType.NONE, "cost": 4, "wave": 1, "art": "slimeGreen", "scale": 0.75},
 		{"id": "swarmling", "name": "Swarmling", "hp": 6.0, "speed": 2.4, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 3, "wave": 1, "cell": Vector2i(0, 0), "tint": Color(1, 0.95, 0.85), "scale": 2.0},
+			"armor": WK.ArmorType.NONE, "cost": 3, "wave": 1, "art": "fly", "scale": 0.6},
 		{"id": "skirmisher", "name": "Skirmisher", "hp": 18.0, "speed": 1.9, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 6, "wave": 3, "cell": Vector2i(0, 6), "tint": Color(1, 1, 1)},
+			"armor": WK.ArmorType.NONE, "cost": 6, "wave": 3, "art": "spider", "scale": 0.75},
 		{"id": "shieldbearer", "name": "Shieldbearer", "hp": 34.0, "speed": 1.1, "dmg": 2.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 10, "wave": 5, "cell": Vector2i(0, 11), "tint": Color(0.9, 0.92, 1.0)},
+			"armor": WK.ArmorType.HEAVY, "cost": 10, "wave": 5, "art": "snail", "scale": 0.8},
 		{"id": "wraith", "name": "Wraith", "hp": 20.0, "speed": 1.8, "dmg": 2.0,
-			"armor": WK.ArmorType.ETHEREAL, "cost": 9, "wave": 7, "cell": Vector2i(1, 5), "tint": Color(0.7, 0.9, 1.0, 0.72)},
+			"armor": WK.ArmorType.ETHEREAL, "cost": 9, "wave": 7, "art": "ghost",
+			"tint": Color(1, 1, 1, 0.8), "scale": 0.75},
 		{"id": "brute", "name": "Brute", "hp": 55.0, "speed": 0.9, "dmg": 3.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "cell": Vector2i(0, 2), "tint": Color(1, 1, 1), "scale": 4.0},
+			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "art": "frog", "scale": 0.95},
 		{"id": "hexer", "name": "Hexer", "hp": 26.0, "speed": 1.5, "dmg": 2.0,
-			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "cell": Vector2i(1, 7), "tint": Color(0.85, 0.75, 1.0)},
+			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "art": "bee", "scale": 0.75},
 		{"id": "revenant", "name": "Revenant", "hp": 44.0, "speed": 1.4, "dmg": 3.0,
-			"armor": WK.ArmorType.ETHEREAL, "cost": 16, "wave": 13, "cell": Vector2i(1, 9), "tint": Color(0.62, 0.85, 0.95, 0.72)},
+			"armor": WK.ArmorType.ETHEREAL, "cost": 16, "wave": 13, "art": "ghost",
+			"tint": Color(0.62, 0.85, 1.0, 0.8), "scale": 0.95},
 		{"id": "ironclad", "name": "Ironclad", "hp": 90.0, "speed": 0.8, "dmg": 4.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 24, "wave": 16, "cell": Vector2i(1, 11), "tint": Color(0.82, 0.86, 0.95)},
+			"armor": WK.ArmorType.HEAVY, "cost": 24, "wave": 16, "art": "barnacle", "scale": 0.9},
 		{"id": "shade", "name": "Shade", "hp": 30.0, "speed": 2.6, "dmg": 2.0,
-			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "cell": Vector2i(0, 8), "tint": Color(0.45, 0.42, 0.62, 0.7)},
+			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "art": "bat",
+			"tint": Color(0.75, 0.75, 0.95, 0.85), "scale": 0.7},
 		{"id": "ogre", "name": "Ogre", "hp": 140.0, "speed": 0.7, "dmg": 6.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "cell": Vector2i(0, 3), "tint": Color(1, 1, 1), "scale": 4.0},
+			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "art": "slimeBlock", "scale": 1.05},
 		{"id": "warlord", "name": "Warlord", "hp": 110.0, "speed": 1.3, "dmg": 5.0,
-			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "cell": Vector2i(1, 6), "tint": Color(1, 0.85, 0.8)},
+			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "art": "snakeLava", "scale": 0.95},
 	]
 	for entry: Dictionary in enemies:
 		var def := EnemyDef.new()
@@ -259,9 +265,12 @@ func _build_enemies() -> void:
 		def.armor_type = entry["armor"]
 		def.budget_cost = entry["cost"]
 		def.unlock_wave = entry["wave"]
-		def.sprite_cell = entry["cell"]
-		def.tint = entry["tint"]
-		def.scale_factor = float(entry.get("scale", 3.0))
+		# One PNG per creature rather than a cell in a sheet, so sprite_cell
+		# is the whole-image marker the boss composites already use.
+		def.sprite_atlas_path = "res://assets/sprites/enemies/creatures/%s.png" % entry["art"]
+		def.sprite_cell = Vector2i(-1, -1)
+		def.tint = entry.get("tint", Color.WHITE)
+		def.scale_factor = float(entry.get("scale", 0.8))
 		def.provisional = true
 		def.scene_path = "res://scenes/enemies/%s.tscn" % _pascal(entry["id"])
 		_save(def, ENEMY_DIR + entry["id"] + ".tres")

@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_45k7i"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_s66ga"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_wv6pn"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_xio0t"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_82nip"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_lkgh7"]
 
-[sub_resource type="Resource" id="Resource_m42a1"]
-script = ExtResource("3_wv6pn")
+[sub_resource type="Resource" id="Resource_53kjj"]
+script = ExtResource("3_lkgh7")
 cost = 35
 damage = 6.0
 range_tiles = 3.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.5
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_4qsgf"]
-script = ExtResource("3_wv6pn")
+[sub_resource type="Resource" id="Resource_73dby"]
+script = ExtResource("3_lkgh7")
 cost = 55
 damage = 12.0
 range_tiles = 3.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.5
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_5sufh"]
-script = ExtResource("3_wv6pn")
+[sub_resource type="Resource" id="Resource_1mlvt"]
+script = ExtResource("3_lkgh7")
 cost = 95
 damage = 24.0
 range_tiles = 4.0
@@ -56,15 +56,15 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_s66ga")
+script = ExtResource("2_82nip")
 id = &"icicle_battery"
 display_name = "Icicle Battery"
 role = "Burst single-target, bonus vs slowed"
 rune_element = 1
-tiers = Array[ExtResource("3_wv6pn")]([SubResource("Resource_m42a1"), SubResource("Resource_4qsgf"), SubResource("Resource_5sufh")])
+tiers = Array[ExtResource("3_lkgh7")]([SubResource("Resource_53kjj"), SubResource("Resource_73dby"), SubResource("Resource_1mlvt")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_18.png"
-projectile_scene = ExtResource("1_45k7i")
+projectile_scene = ExtResource("1_xio0t")
 scene_path = "res://scenes/towers/IcicleBattery.tscn"
 unlock_cost = 300
 required_account_level = 6

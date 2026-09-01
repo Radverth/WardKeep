@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_5wi2t"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_4cw8t"]
 
 [resource]
-script = ExtResource("1_5wi2t")
+script = ExtResource("1_4cw8t")
 id = &"hexer"
 display_name = "Hexer"
 base_hp = 26.0
@@ -12,10 +12,10 @@ base_damage = 2.0
 armor_type = 0
 budget_cost = 11
 unlock_wave = 11
-sprite_atlas_path = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
-sprite_cell = Vector2i(1, 7)
-tint = Color(0.85, 0.75, 1, 1)
-scale_factor = 3.0
+sprite_atlas_path = "res://assets/sprites/enemies/creatures/bee.png"
+sprite_cell = Vector2i(-1, -1)
+tint = Color(1, 1, 1, 1)
+scale_factor = 0.75
 is_boss = false
 scene_path = "res://scenes/enemies/Hexer.tscn"
 provisional = true

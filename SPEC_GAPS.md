@@ -75,7 +75,11 @@ against; neither exists for any enemy.
 **Provisional:** twelve archetypes in `resources/enemies/*.tres`, every one
 flagged `provisional = true`. Only the count (12), the three armour types the
 §4 matchups need, and the name "Grunt" (from the Brief) come from the
-documents. HP/speed/damage/cost/unlock-wave are all invented:
+documents. HP/speed/damage/cost/unlock-wave are all invented.
+
+The **art** is no longer placeholder — each archetype now has a matching
+creature sprite, with armour type matched to the silhouette (see MAPPING.md).
+The **numbers** below are still guesses:
 
 | id | armour | HP | speed | leak dmg | budget cost | unlock wave |
 |---|---|---|---|---|---|---|

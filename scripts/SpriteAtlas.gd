@@ -33,6 +33,7 @@ static func frame(atlas_name: String, frame_name: String) -> AtlasTexture:
 	var tex := AtlasTexture.new()
 	tex.atlas = texture(frames.texture_path)
 	tex.region = Rect2(frames.rect(frame_name))
+	tex.filter_clip = true
 	_cache[key] = tex
 	return tex
 
@@ -45,6 +46,10 @@ static func cell(sheet_path: String, column: int, row: int, size: int = 16, marg
 	var tex := AtlasTexture.new()
 	tex.atlas = texture(sheet_path)
 	tex.region = Rect2(column * (size + margin), row * (size + margin), size, size)
+	# Tiles in these sheets touch edge to edge, and the board is not drawn at
+	# 1:1 — the camera fits it to the space the HUD leaves. Without clipping,
+	# filtering samples the neighbouring tile and every seam shows a hairline.
+	tex.filter_clip = true
 	_cache[key] = tex
 	return tex
 

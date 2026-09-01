@@ -1,34 +1,34 @@
 [gd_resource type="Resource" script_class="BalanceConfig" load_steps=7 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/BalanceConfig.gd" id="1_5nwkd"]
-[ext_resource type="Script" path="res://resources/defs/WaveBand.gd" id="2_rpvmq"]
+[ext_resource type="Script" path="res://resources/defs/BalanceConfig.gd" id="1_nx8gw"]
+[ext_resource type="Script" path="res://resources/defs/WaveBand.gd" id="2_6p8b7"]
 
-[sub_resource type="Resource" id="Resource_d6xjp"]
-script = ExtResource("2_rpvmq")
+[sub_resource type="Resource" id="Resource_02krr"]
+script = ExtResource("2_6p8b7")
 from_wave = 1
 to_wave = 5
 base = 10.0
 step = 6.0
 spawn_interval = 1.2
 
-[sub_resource type="Resource" id="Resource_dg5yp"]
-script = ExtResource("2_rpvmq")
+[sub_resource type="Resource" id="Resource_od4ly"]
+script = ExtResource("2_6p8b7")
 from_wave = 6
 to_wave = 10
 base = 40.0
 step = 9.0
 spawn_interval = 1.0
 
-[sub_resource type="Resource" id="Resource_xssxa"]
-script = ExtResource("2_rpvmq")
+[sub_resource type="Resource" id="Resource_etdmf"]
+script = ExtResource("2_6p8b7")
 from_wave = 11
 to_wave = 30
 base = 80.0
 step = 12.0
 spawn_interval = 0.85
 
-[sub_resource type="Resource" id="Resource_klrmq"]
-script = ExtResource("2_rpvmq")
+[sub_resource type="Resource" id="Resource_5gtsa"]
+script = ExtResource("2_6p8b7")
 from_wave = 31
 to_wave = -1
 base = 308.0
@@ -36,8 +36,8 @@ step = 15.0
 spawn_interval = 0.7
 
 [resource]
-script = ExtResource("1_5nwkd")
-wave_bands = Array[ExtResource("2_rpvmq")]([SubResource("Resource_d6xjp"), SubResource("Resource_dg5yp"), SubResource("Resource_xssxa"), SubResource("Resource_klrmq")])
+script = ExtResource("1_nx8gw")
+wave_bands = Array[ExtResource("2_6p8b7")]([SubResource("Resource_02krr"), SubResource("Resource_od4ly"), SubResource("Resource_etdmf"), SubResource("Resource_5gtsa")])
 stat_scale_per_wave = 0.09
 elite_every = 5
 elite_budget_multiplier = 1.4

@@ -103,11 +103,10 @@ package fields in sync across both.
 
 ### Art direction
 
-The arena floor and the enemies are **16px pixel art** (Tiny Town and
-Roguelike Characters), drawn at whole-number scales onto the 64px grid. The
-towers are still RTS Medieval, which is flat vector — small enough on screen
-to pass, but it is a genuine style mix and worth deciding on before adding
-more tower art. See `MAPPING.md`.
+**Flat vector throughout** — Kenney's anti-aliased 2D art, not pixel art. The
+floor, towers, enemies, effects and UI are all drawn in the same style, so
+nothing on screen is at odds with anything else. `MAPPING.md` lists which pack
+each element comes from, and which supplied packs are deliberately unused.
 
 Android requires ETC2/ASTC-compressed textures, so `project.godot` sets
 `rendering/textures/vram_compression/import_etc2_astc=true`. Do not remove it:
