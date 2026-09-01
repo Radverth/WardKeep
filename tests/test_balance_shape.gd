@@ -56,3 +56,31 @@ func test_leak_cost_grows_with_the_wave() -> void:
 	var late: float = grunt.base_damage * Balance.stat_multiplier(30) / pool
 	assert_true(early < 0.05, "an opening leak costs %.1f%%" % (early * 100.0))
 	assert_gt(late, early * 2.0, "a late leak should cost materially more")
+
+
+## Feature Spec §2.5 — a boss that reaches the Ward Stone hits it repeatedly
+## rather than leaking through. That makes its damage a rate, not a one-off, so
+## a single blow must leave the player a window to kill it.
+func test_a_boss_blow_leaves_a_window() -> void:
+	var pool: float = float(Balance.config().ward_stone_hp)
+	for pair: Array in [["the_bulwark", 10], ["frostmaw", 20], ["the_hollow_king", 30]]:
+		var boss: EnemyDef = Registry.enemy(StringName(pair[0]))
+		assert_not_null(boss, "%s exists" % pair[0])
+		if boss == null:
+			continue
+		var blow: float = boss.base_damage * Balance.stat_multiplier(int(pair[1]))
+		assert_true(blow < pool * 0.5,
+			"a wave %d %s blow costs %.1f of a %.0f pool" % [int(pair[1]), boss.id, blow, pool])
+
+## The whole point of the change: a boss must outlive its arrival, or it is
+## still just a leak with extra steps.
+func test_bosses_carry_a_siege_pattern_not_a_leak() -> void:
+	for boss: EnemyDef in Registry.bosses():
+		assert_true(boss.is_boss, "%s is flagged as a boss" % boss.id)
+		var scene: PackedScene = load(boss.scene_path) as PackedScene
+		assert_not_null(scene, "%s scene loads" % boss.id)
+		if scene == null:
+			continue
+		var instance: Node = scene.instantiate()
+		assert_true(instance is Boss, "%s instantiates as a Boss" % boss.id)
+		instance.free()

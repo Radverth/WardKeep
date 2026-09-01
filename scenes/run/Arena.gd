@@ -323,6 +323,7 @@ func _take_enemy(def: EnemyDef) -> Enemy:
 	_enemy_layer.add_child(enemy)
 	enemy.died.connect(_on_enemy_died)
 	enemy.leaked.connect(_on_enemy_leaked)
+	enemy.struck_ward_stone.connect(_on_ward_stone_struck)
 	return enemy
 
 func _release_enemy(enemy: Enemy) -> void:
@@ -341,6 +342,11 @@ func _on_enemy_died(enemy: Enemy) -> void:
 		play_vfx("death", enemy.global_position)
 		AudioBus.play_random_sfx(AudioBus.SFX_ENEMY_DEATH)
 	_release_enemy(enemy)
+
+## A boss hitting the stone, rather than an enemy getting through it. The
+## enemy stays on the board, so nothing is released here.
+func _on_ward_stone_struck(_enemy: Enemy, amount: int) -> void:
+	RunManager.damage_ward_stone(amount)
 
 func _on_enemy_leaked(enemy: Enemy) -> void:
 	RunManager.damage_ward_stone(maxi(1, int(round(enemy.damage))))

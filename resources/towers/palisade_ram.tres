@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=6 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="1_8klos"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="2_q3d1w"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="1_3566s"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="2_bgnrb"]
 
-[sub_resource type="Resource" id="Resource_vv3f1"]
-script = ExtResource("2_q3d1w")
+[sub_resource type="Resource" id="Resource_mcsef"]
+script = ExtResource("2_bgnrb")
 cost = 25
 damage = 3.0
 range_tiles = 1.0
@@ -20,8 +20,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_tmxic"]
-script = ExtResource("2_q3d1w")
+[sub_resource type="Resource" id="Resource_nbfgs"]
+script = ExtResource("2_bgnrb")
 cost = 40
 damage = 7.5
 range_tiles = 1.5
@@ -37,8 +37,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_0lrti"]
-script = ExtResource("2_q3d1w")
+[sub_resource type="Resource" id="Resource_x08dh"]
+script = ExtResource("2_bgnrb")
 cost = 70
 damage = 18.0
 range_tiles = 2.0
@@ -55,12 +55,12 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("1_8klos")
+script = ExtResource("1_3566s")
 id = &"palisade_ram"
 display_name = "Palisade Ram"
 role = "Melee AoE, short range"
 rune_element = 0
-tiers = Array[ExtResource("2_q3d1w")]([SubResource("Resource_vv3f1"), SubResource("Resource_tmxic"), SubResource("Resource_0lrti")])
+tiers = Array[ExtResource("2_bgnrb")]([SubResource("Resource_mcsef"), SubResource("Resource_nbfgs"), SubResource("Resource_x08dh")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_23.png"
 scene_path = "res://scenes/towers/PalisadeRam.tscn"

@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_0fnea"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_tjh57"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_xqgdc"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_qxfhx"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_j5cyh"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_45fnr"]
 
-[sub_resource type="Resource" id="Resource_crc40"]
-script = ExtResource("3_xqgdc")
+[sub_resource type="Resource" id="Resource_k04ro"]
+script = ExtResource("3_45fnr")
 cost = 20
 damage = 4.0
 range_tiles = 3.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_8xv7m"]
-script = ExtResource("3_xqgdc")
+[sub_resource type="Resource" id="Resource_hya50"]
+script = ExtResource("3_45fnr")
 cost = 35
 damage = 10.0
 range_tiles = 3.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_ix17g"]
-script = ExtResource("3_xqgdc")
+[sub_resource type="Resource" id="Resource_0ukp2"]
+script = ExtResource("3_45fnr")
 cost = 60
 damage = 24.0
 range_tiles = 4.0
@@ -56,15 +56,15 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_tjh57")
+script = ExtResource("2_j5cyh")
 id = &"watchtower"
 display_name = "Watchtower"
 role = "Single-target, high rate"
 rune_element = 0
-tiers = Array[ExtResource("3_xqgdc")]([SubResource("Resource_crc40"), SubResource("Resource_8xv7m"), SubResource("Resource_ix17g")])
+tiers = Array[ExtResource("3_45fnr")]([SubResource("Resource_k04ro"), SubResource("Resource_hya50"), SubResource("Resource_0ukp2")])
 sprite_atlas_path = "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet.png"
 sprite_frame = "medievalStructure_16.png"
-projectile_scene = ExtResource("1_0fnea")
+projectile_scene = ExtResource("1_qxfhx")
 scene_path = "res://scenes/towers/Watchtower.tscn"
 unlock_cost = 0
 required_account_level = 1

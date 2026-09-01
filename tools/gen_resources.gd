@@ -286,12 +286,16 @@ func _build_enemies() -> void:
 
 	# Feature Spec §2.5 names the three bosses, their armour types and their
 	# patterns, but no stat line for any of them. PROVISIONAL — SPEC_GAPS.md #4.
+	# Boss damage is per *blow*, not per arrival: a boss that reaches the Ward
+	# Stone stands there and keeps hitting it (§2.5), so these are far lower
+	# than the old one-off leak values. Sized so a boss at its own wave needs
+	# several swings to fell a full Ward Stone, leaving a window to kill it.
 	var bosses: Array = [
-		{"id": "the_bulwark", "name": "The Bulwark", "hp": 450.0, "speed": 0.5, "dmg": 10.0,
+		{"id": "the_bulwark", "name": "The Bulwark", "hp": 450.0, "speed": 0.5, "dmg": 5.0,
 			"armor": WK.ArmorType.HEAVY, "script": "res://scenes/enemies/bosses/BulwarkPattern.gd"},
-		{"id": "frostmaw", "name": "Frostmaw", "hp": 700.0, "speed": 0.7, "dmg": 12.0,
+		{"id": "frostmaw", "name": "Frostmaw", "hp": 700.0, "speed": 0.7, "dmg": 6.0,
 			"armor": WK.ArmorType.ETHEREAL, "script": "res://scenes/enemies/bosses/FrostmawPattern.gd"},
-		{"id": "the_hollow_king", "name": "The Hollow King", "hp": 1000.0, "speed": 0.9, "dmg": 15.0,
+		{"id": "the_hollow_king", "name": "The Hollow King", "hp": 1000.0, "speed": 0.9, "dmg": 6.0,
 			"armor": WK.ArmorType.NONE, "script": "res://scenes/enemies/bosses/HollowKingPattern.gd"},
 	]
 	for entry: Dictionary in bosses:

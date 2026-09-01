@@ -9,6 +9,9 @@ class_name Enemy
 
 signal died(enemy: Enemy)
 signal leaked(enemy: Enemy)
+## Raised by anything that reaches the Ward Stone and keeps hitting it rather
+## than leaking through — see Boss (Feature Spec §2.5).
+signal struck_ward_stone(enemy: Enemy, amount: int)
 
 const HEALTH_BAR_SIZE := Vector2(46, 6)
 
@@ -32,6 +35,7 @@ var path_progress: float = 0.0
 
 var _path: PackedVector2Array = PackedVector2Array()
 var _segment: int = 0
+var reached_ward_stone: bool = false
 var _slows: Array[Dictionary] = []     ## [{ amount, remaining }]
 var _dots: Array[Dictionary] = []      ## [{ dps, remaining }]
 
@@ -48,6 +52,7 @@ func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector
 	_path = path
 	_segment = 0
 	path_progress = 0.0
+	reached_ward_stone = false
 	_slows.clear()
 	_dots.clear()
 	alive = true
@@ -70,7 +75,7 @@ func _process(delta: float) -> void:
 	if not alive:
 		return
 	_tick_effects(delta)
-	if not alive:
+	if not alive or reached_ward_stone:
 		return
 	_advance(delta * current_speed() * float(WK.TILE_SIZE))
 
@@ -111,8 +116,14 @@ func _advance(distance: float) -> void:
 			global_position += to_target / length * distance
 			path_progress += distance
 			distance = 0.0
-	if _segment >= _path.size() - 1:
-		_leak()
+	if _segment >= _path.size() - 1 and not reached_ward_stone:
+		reached_ward_stone = true
+		on_reach_ward_stone()
+
+## What happens on arrival. A regular enemy is through and gone; a boss stays
+## and lays into the Ward Stone (Feature Spec §2.5), so Boss overrides this.
+func on_reach_ward_stone() -> void:
+	_leak()
 
 ## Places the enemy `distance` pixels along the path — used when something
 ## spawns mid-path (the Bulwark's summons, the Hollow King's split copies).

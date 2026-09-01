@@ -143,19 +143,38 @@ for any of them.
 **Provisional** (`resources/enemies/{the_bulwark,frostmaw,the_hollow_king}.tres`
 and the three `BossPattern` scripts):
 
-| boss | HP | speed | leak dmg | pattern timing |
+| boss | HP | speed | dmg per blow | pattern timing |
 |---|---|---|---|---|
-| The Bulwark | 450 | 0.5 | 10 | summons 2 Grunts every 7s |
-| Frostmaw | 700 | 0.7 | 12 | every 8s, −40% fire rate for 4s within 3 tiles |
-| The Hollow King | 1000 | 0.9 | 15 | splits once at 50% into 2 copies at half max HP |
+| The Bulwark | 450 | 0.5 | 5 | summons 2 Grunts every 7s |
+| Frostmaw | 700 | 0.7 | 6 | every 8s, −40% fire rate for 4s within 3 tiles |
+| The Hollow King | 1000 | 0.9 | 6 | splits once at 50% into 2 copies at half max HP |
+
+Damage is **per blow, not per arrival**. §2.5 says a boss that reaches the
+Ward Stone makes "slow single-target melee hits" on it, so a boss does not leak
+through and vanish — it stops at the stone and keeps swinging until it is
+killed. It stays targetable throughout, so arriving is a crisis rather than an
+automatic loss, and User Flow §4's "a boss wave cannot end while the boss
+lives" falls out of it naturally.
+
+The blow interval is **2.0s** (`Boss.SIEGE_INTERVAL`) — the spec says "slow"
+without giving a number. Against the 50-point pool that gives:
+
+| boss | at wave | per blow | blows to fell a full Ward Stone |
+|---|---|---|---|
+| The Bulwark | 10 | 9.1 (18%) | 5.5, about 11s |
+| Frostmaw | 20 | 16.3 (33%) | 3.1, about 6s |
+| The Hollow King | 30 | 21.7 (43%) | 2.3, about 5s |
+
+`tests/test_balance_shape.gd` asserts no single blow can take half a full pool,
+so there is always a window to kill the boss.
 
 §2.2's global multiplier applies on top, so wave 10's Bulwark is ~814
 effective HP and wave 40's is ~1,880.
 
 Specifically unstated and invented: the Bulwark's summon interval
-("periodically"); Frostmaw's field radius, penalty size and duration; and
-whether the Hollow King's original dies on splitting (implemented: it does,
-consumed into the two copies).
+("periodically"); the blow interval for all three ("slow"); Frostmaw's field
+radius, penalty size and duration; and whether the Hollow King's original dies
+on splitting (implemented: it does, consumed into the two copies).
 
 ---
 
