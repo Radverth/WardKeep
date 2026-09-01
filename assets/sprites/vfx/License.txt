@@ -1,11 +1,8 @@
 	
 
-	Particle Pack (1.1)
+	Explosion Pack (1.0)
 
 	Created/distributed by Kenney (www.kenney.nl)
-
-	Additional credit for creating filter templates:
-	Indigo Ray, Craig Nisbet, Zoltan Erdokovy, Heliagon, ThreeDee, Killst4r and Tim2501
 
 			------------------------------
 

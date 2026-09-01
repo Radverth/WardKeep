@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_csms5"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_csav7"]
 
 [resource]
-script = ExtResource("1_csms5")
+script = ExtResource("1_csav7")
 id = &"ironclad"
 display_name = "Ironclad"
 base_hp = 90.0

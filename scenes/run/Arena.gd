@@ -236,7 +236,12 @@ func _place_ward_stone() -> void:
 	_ward_stone.position = (centre + Vector2(0.5, 0.5)) * float(WK.TILE_SIZE)
 
 func _cache_explosion_frames() -> void:
-	for entry: Array in [["explosion_pixel", "pixelExplosion"], ["explosion_simple", "simpleExplosion"]]:
+	for entry: Array in [
+			["explosion_pixel", "pixelExplosion"],
+			["explosion_simple", "simpleExplosion"],
+			["explosion_ground", "groundExplosion"],
+			["explosion_regular", "regularExplosion"],
+			["explosion_sonic", "sonicExplosion"]]:
 		var frames: Array = []
 		for index: int in 9:
 			var texture: AtlasTexture = SpriteAtlas.frame(entry[0], "%s%02d.png" % [entry[1], index])
@@ -403,13 +408,17 @@ func play_vfx(kind: String, at: Vector2) -> void:
 			effect.play_frames(_explosion_frames["explosion_pixel"], at, 0.5, Color.WHITE, 20.0)
 		"boss_death":
 			var effect: Vfx = _take_vfx()
-			effect.play_frames(_explosion_frames["explosion_simple"], at, 1.1, Color.WHITE, 16.0)
+			effect.play_frames(_explosion_frames["explosion_regular"], at, 1.3, Color.WHITE, 16.0)
 			_shake(0.5)
+		"ward_hit":
+			var effect: Vfx = _take_vfx()
+			effect.play_frames(_explosion_frames["explosion_ground"], at, 0.9, Color.WHITE, 18.0)
 		"frost_field":
 			if reduced:
 				return
-			_take_vfx().play_puff(load("res://assets/sprites/vfx/particle_magic_light/magic_01.png"),
-				at, 3.0, Color(0.6, 0.85, 1.0, 0.85), 0.6)
+			var effect: Vfx = _take_vfx()
+			effect.play_frames(_explosion_frames["explosion_sonic"], at, 1.6,
+				Color(0.65, 0.88, 1.0), 14.0)
 		_:
 			if reduced:
 				return
@@ -610,7 +619,7 @@ func _on_bank_pressed() -> void:
 
 func _on_ward_stone_damaged(hp: int, max_hp: int) -> void:
 	AudioBus.play_sfx(AudioBus.SFX_WARD_STONE_HIT)
-	play_vfx("boss_death" if hp <= 0 else "death", _ward_stone.global_position)
+	play_vfx("boss_death" if hp <= 0 else "ward_hit", _ward_stone.global_position)
 	_shake(0.35)
 	if hp < max_hp:
 		_ward_stone.modulate = Color(1.0, 0.75, 0.7)

@@ -385,6 +385,9 @@ func _build_atlases() -> void:
 		"medievalRTS": "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet",
 		"explosion_pixel": "res://assets/sprites/vfx/explosion_pixel/spritesheet_pixelExplosion",
 		"explosion_simple": "res://assets/sprites/vfx/explosion_simple/spritesheet_simpleExplosion",
+		"explosion_ground": "res://assets/sprites/vfx/explosion_ground/spritesheet_groundExplosion",
+		"explosion_regular": "res://assets/sprites/vfx/explosion_regular/spritesheet_regularExplosion",
+		"explosion_sonic": "res://assets/sprites/vfx/explosion_sonic/spritesheet_sonicExplosion",
 	}
 	for atlas_name: String in sheets:
 		var base: String = sheets[atlas_name]

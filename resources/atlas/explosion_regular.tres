@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AtlasFrames" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/AtlasFrames.gd" id="1_nuing"]
+
+[resource]
+script = ExtResource("1_nuing")
+texture_path = "res://assets/sprites/vfx/explosion_regular/spritesheet_regularExplosion.png"
+frames = {
+"regularExplosion00.png": Rect2i(0, 0, 192, 192),
+"regularExplosion01.png": Rect2i(0, 192, 152, 150),
+"regularExplosion02.png": Rect2i(292, 360, 82, 91),
+"regularExplosion03.png": Rect2i(292, 258, 92, 102),
+"regularExplosion04.png": Rect2i(290, 134, 120, 124),
+"regularExplosion05.png": Rect2i(192, 0, 133, 134),
+"regularExplosion06.png": Rect2i(152, 192, 138, 140),
+"regularExplosion07.png": Rect2i(149, 342, 143, 144),
+"regularExplosion08.png": Rect2i(0, 342, 149, 151)
+}

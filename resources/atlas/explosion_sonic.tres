@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AtlasFrames" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/AtlasFrames.gd" id="1_o6jqq"]
+
+[resource]
+script = ExtResource("1_o6jqq")
+texture_path = "res://assets/sprites/vfx/explosion_sonic/spritesheet_sonicExplosion.png"
+frames = {
+"sonicExplosion00.png": Rect2i(0, 284, 192, 192),
+"sonicExplosion01.png": Rect2i(284, 0, 152, 150),
+"sonicExplosion02.png": Rect2i(192, 284, 190, 190),
+"sonicExplosion03.png": Rect2i(0, 0, 284, 284),
+"sonicExplosion04.png": Rect2i(531, 140, 120, 124),
+"sonicExplosion05.png": Rect2i(525, 301, 133, 134),
+"sonicExplosion06.png": Rect2i(436, 0, 138, 140),
+"sonicExplosion07.png": Rect2i(382, 301, 143, 144),
+"sonicExplosion08.png": Rect2i(382, 150, 149, 151)
+}
