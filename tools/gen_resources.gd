@@ -290,13 +290,25 @@ func _build_enemies() -> void:
 	# Stone stands there and keeps hitting it (§2.5), so these are far lower
 	# than the old one-off leak values. Sized so a boss at its own wave needs
 	# several swings to fell a full Ward Stone, leaving a window to kill it.
+	# Bosses are oversized, darker kin of the creatures already on the board,
+	# not a separate art style. The previous composites were assembled from a
+	# modular monster-maker kit and read as a cartoon toy rather than anything
+	# threatening a medieval keep — and at 270px on a 64px grid they covered
+	# four tiles square, roughly seven times a regular enemy.
 	var bosses: Array = [
 		{"id": "the_bulwark", "name": "The Bulwark", "hp": 450.0, "speed": 0.5, "dmg": 5.0,
-			"armor": WK.ArmorType.HEAVY, "script": "res://scenes/enemies/bosses/BulwarkPattern.gd"},
+			"armor": WK.ArmorType.HEAVY, "art": "snail", "scale": 2.2,
+			"tint": Color(0.72, 0.74, 0.80),
+			"script": "res://scenes/enemies/bosses/BulwarkPattern.gd"},
 		{"id": "frostmaw", "name": "Frostmaw", "hp": 700.0, "speed": 0.7, "dmg": 6.0,
-			"armor": WK.ArmorType.ETHEREAL, "script": "res://scenes/enemies/bosses/FrostmawPattern.gd"},
+			"armor": WK.ArmorType.ETHEREAL, "art": "ghost", "scale": 2.0,
+			"tint": Color(0.60, 0.86, 1.0, 0.9),
+			"script": "res://scenes/enemies/bosses/FrostmawPattern.gd"},
+		# A slime is the one creature whose splitting reads as intended.
 		{"id": "the_hollow_king", "name": "The Hollow King", "hp": 1000.0, "speed": 0.9, "dmg": 6.0,
-			"armor": WK.ArmorType.NONE, "script": "res://scenes/enemies/bosses/HollowKingPattern.gd"},
+			"armor": WK.ArmorType.NONE, "art": "slime", "scale": 2.2,
+			"tint": Color(0.86, 0.84, 0.72),
+			"script": "res://scenes/enemies/bosses/HollowKingPattern.gd"},
 	]
 	for entry: Dictionary in bosses:
 		var def := EnemyDef.new()
@@ -310,9 +322,10 @@ func _build_enemies() -> void:
 		def.unlock_wave = 10
 		def.is_boss = true
 		def.provisional = true
-		def.sprite_atlas_path = "res://assets/sprites/enemies/bosses_composite/%s.png" % entry["id"]
+		def.sprite_atlas_path = "res://assets/sprites/enemies/creatures/%s.png" % entry["art"]
 		def.sprite_cell = Vector2i(-1, -1)   # whole-image sprite, not a sheet cell
-		def.scale_factor = 1.0
+		def.tint = entry["tint"]
+		def.scale_factor = float(entry["scale"])
 		def.boss_pattern_script = load(entry["script"]) if ResourceLoader.exists(entry["script"]) else null
 		def.scene_path = "res://scenes/enemies/bosses/%s.tscn" % _pascal(entry["id"])
 		_save(def, ENEMY_DIR + entry["id"] + ".tres")

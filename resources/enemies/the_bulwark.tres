@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_u38mp"]
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_gttat"]
+[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_x83qc"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_itxbm"]
 
 [resource]
-script = ExtResource("2_gttat")
+script = ExtResource("2_itxbm")
 id = &"the_bulwark"
 display_name = "The Bulwark"
 base_hp = 450.0
@@ -13,11 +13,11 @@ base_damage = 5.0
 armor_type = 1
 budget_cost = 0
 unlock_wave = 10
-sprite_atlas_path = "res://assets/sprites/enemies/bosses_composite/the_bulwark.png"
+sprite_atlas_path = "res://assets/sprites/enemies/creatures/snail.png"
 sprite_cell = Vector2i(-1, -1)
-tint = Color(1, 1, 1, 1)
-scale_factor = 1.0
+tint = Color(0.72, 0.74, 0.8, 1)
+scale_factor = 2.2
 is_boss = true
-boss_pattern_script = ExtResource("1_u38mp")
+boss_pattern_script = ExtResource("1_x83qc")
 scene_path = "res://scenes/enemies/bosses/TheBulwark.tscn"
 provisional = true

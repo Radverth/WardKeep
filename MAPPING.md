@@ -64,7 +64,7 @@ pixel art. Everything below is CC0 with its `License.txt` kept in place.
 
 | res:// path | Pack | Used for |
 |---|---|---|
-| `assets/sprites/enemies/creatures/` | Enemy sprites | All 12 enemy archetypes |
+| `assets/sprites/enemies/creatures/` | Enemy sprites | All 12 enemy archetypes, and the 3 bosses as oversized kin |
 | `assets/sprites/vfx/explosion_ground/` | Explosion Pack | Ward Stone impacts |
 | `assets/sprites/vfx/explosion_regular/` | Explosion Pack | Boss deaths |
 | `assets/sprites/vfx/explosion_sonic/` | Explosion Pack | Frostmaw's slow field |
@@ -125,3 +125,17 @@ ETHEREAL.
   and placement maths.
 - **Tiny Town** — 16px pixel art. Used briefly for the floor, then dropped
   when the art direction settled on flat vector.
+
+
+### Bosses
+
+Bosses are oversized, tinted versions of the same creature family as the rest
+of the roster — the Bulwark a shelled snail, Frostmaw a ghost, the Hollow King
+a slime (the one creature whose splitting reads as intended).
+
+They were previously composites assembled from Kenney's Monster Builder kit by
+a build script. Two problems: the kit is a modular googly-eye monster maker
+and read as a cartoon toy rather than anything besieging a medieval keep, and
+at 270px on a 64px grid each boss covered **four tiles square** — about seven
+times the footprint of a regular enemy. Both the composites and the script
+that built them are gone.
