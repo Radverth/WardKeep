@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_7no2p"]
+
+[resource]
+script = ExtResource("1_7no2p")
+id = &"switchback"
+display_name = "Hairpins"
+blurb = "Six hairpins in a short run. Everything is in range of something."
+order = 1
+columns = 12
+rows = 20
+legend = PackedStringArray("..#.........", "..#.........", "..#.........", "..#B........", "..########..", "........B#..", "........B#..", "...BBBBBB#..", "..########..", "..#BBBBBBB..", "..#B........", "..#BBBBBBB..", "..########..", "...BBBBBB#..", "......BBB#..", "......####..", "......#B....", "......WW....", "......WW....", "............")
+waypoints = Array[Vector2i]([Vector2i(2, 0), Vector2i(2, 4), Vector2i(9, 4), Vector2i(9, 8), Vector2i(2, 8), Vector2i(2, 12), Vector2i(9, 12), Vector2i(9, 15), Vector2i(6, 15), Vector2i(6, 17)])

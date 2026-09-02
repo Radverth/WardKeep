@@ -80,17 +80,53 @@ func test_all_three_armour_types_are_represented() -> void:
 			seen.append(def.armor_type)
 	assert_eq(seen.size(), 3, "unarmoured, heavy and ethereal all present")
 
-func test_arena_matches_the_feature_spec_geometry() -> void:
-	# §1: 12 x 20 grid, 34 build tiles, a path and a Ward Stone platform.
-	var map: ArenaMap = Registry.arena_map()
-	assert_eq(map.columns, 12, "12 columns")
-	assert_eq(map.rows, 20, "20 rows")
-	assert_eq(map.legend.size(), 20, "one legend row per grid row")
-	assert_eq(map.build_tiles().size(), 34, "34 build tiles")
-	assert_gt(float(map.waypoints.size()), 3.0, "the path has switchbacks")
-	for waypoint: Vector2i in map.waypoints:
-		assert_true(waypoint.x >= 0 and waypoint.x < map.columns, "waypoint inside the grid")
-		assert_true(waypoint.y >= 0 and waypoint.y < map.rows, "waypoint inside the grid")
+## §1 fixes the geometry, and every alternate board is cut to the same rules —
+## so this runs over all of them, not just the spec's own.
+func test_every_arena_matches_the_feature_spec_geometry() -> void:
+	var boards: Array[ArenaMap] = Registry.maps()
+	assert_gt(float(boards.size()), 1.0, "more than one board to choose from")
+	for map: ArenaMap in boards:
+		assert_eq(map.columns, 12, "%s: 12 columns" % map.id)
+		assert_eq(map.rows, 20, "%s: 20 rows" % map.id)
+		assert_eq(map.legend.size(), 20, "%s: one legend row per grid row" % map.id)
+		assert_eq(map.build_tiles().size(), 34, "%s: 34 build tiles" % map.id)
+		assert_gt(float(map.waypoints.size()), 3.0, "%s: the path has switchbacks" % map.id)
+		assert_true(String(map.id) != "" and map.display_name != "",
+			"%s: named for the picker" % map.id)
+		for waypoint: Vector2i in map.waypoints:
+			assert_true(waypoint.x >= 0 and waypoint.x < map.columns,
+				"%s: waypoint inside the grid" % map.id)
+			assert_true(waypoint.y >= 0 and waypoint.y < map.rows,
+				"%s: waypoint inside the grid" % map.id)
+
+## A tower on a longer lane gets more seconds of fire, so a board far longer
+## than the spec's own would quietly be an easier difficulty setting.
+func test_every_lane_is_comparable_in_length() -> void:
+	var shortest: int = 9999
+	var longest: int = 0
+	for map: ArenaMap in Registry.maps():
+		shortest = mini(shortest, map.lane_length())
+		longest = maxi(longest, map.lane_length())
+	assert_gt(float(shortest), 30.0, "no board is a sprint")
+	assert_true(float(longest) <= float(shortest) * 1.25,
+		"longest lane %d is within a quarter of the shortest %d" % [longest, shortest])
+
+## The lane is one tile wide everywhere: the road tiler composites from a
+## nine-slice ring and has no junction piece to draw.
+func test_no_board_branches_its_lane() -> void:
+	for map: ArenaMap in Registry.maps():
+		for row: int in map.rows:
+			for column: int in map.columns:
+				if not map.is_path_tile(column, row):
+					continue
+				var neighbours: int = 0
+				for offset: Vector2i in [Vector2i(0, -1), Vector2i(1, 0),
+						Vector2i(0, 1), Vector2i(-1, 0)]:
+					if map.is_path_tile(column + offset.x, row + offset.y) \
+							or map.is_ward_stone(column + offset.x, row + offset.y):
+						neighbours += 1
+				assert_true(neighbours <= 2,
+					"%s: lane branches at %d,%d" % [map.id, column, row])
 
 func test_wave_table_is_authored_to_sixty() -> void:
 	var table: WaveTable = Registry.wave_table()

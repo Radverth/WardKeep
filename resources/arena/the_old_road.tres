@@ -1,9 +1,13 @@
 [gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_scplc"]
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_dggtd"]
 
 [resource]
-script = ExtResource("1_scplc")
+script = ExtResource("1_dggtd")
+id = &"the_old_road"
+display_name = "The Old Road"
+blurb = "The long switchback. Four tight corners and room to build at each."
+order = 0
 columns = 12
 rows = 20
 legend = PackedStringArray("....B#B.....", "....B#......", "....B#......", ".....#####B.", ".....B.BB#B.", "........B#..", "........B#..", ".B########..", ".B#BBBBB.B..", ".B#.........", ".B#.........", "..#######B..", "..B.BBBB#B..", ".......B#...", ".......B#...", "....B####...", "....B#B.B...", ".....WW.....", ".....WW.....", "............")

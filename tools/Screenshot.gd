@@ -28,6 +28,8 @@ func _ready() -> void:
 			auto_play = true
 		elif argument == "--showcase":
 			showcase = true
+		elif argument.begins_with("--map="):
+			GameState.pending_map_id = StringName(argument.trim_prefix("--map="))
 		elif argument.begins_with("--boss="):
 			boss_id = argument.trim_prefix("--boss=")
 	# The first-run tutorial dims the whole board, which is exactly what a

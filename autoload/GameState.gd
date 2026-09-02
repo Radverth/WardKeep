@@ -15,6 +15,22 @@ const SCENE_RUN_SUMMARY: String = "res://scenes/menu/RunSummary.tscn"
 ## Set before entering the Arena; read by RunManager on run start.
 var pending_run_mode: WK.RunMode = WK.RunMode.STANDARD
 
+## The board picked at Run Setup. Empty falls back to the first map, so a save
+## naming a board a later build removed still starts.
+var pending_map_id: StringName = &""
+
+## The board this run is played on. The Daily cannot let the player choose one:
+## Feature Spec §7 wants every player on the same waves and the same offers on a
+## given day, and the board is part of that, so it comes from the date's seed.
+func resolve_arena_map() -> ArenaMap:
+	var boards: Array[ArenaMap] = Registry.maps()
+	if boards.is_empty():
+		push_error("WARDKEEP: no arena maps generated.")
+		return null
+	if pending_run_mode == WK.RunMode.DAILY:
+		return boards[absi(RunManager.daily_seed()) % boards.size()]
+	return Registry.map(pending_map_id)
+
 ## Result of the last finished run, handed to RunSummary. See RunManager.end_run().
 var last_run_result: Dictionary = {}
 

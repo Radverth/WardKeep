@@ -9,7 +9,7 @@ extends SceneTree
 ## Feature Spec table are marked PROVISIONAL and listed in SPEC_GAPS.md.
 
 const OUT_BALANCE := "res://resources/balance/Balance.tres"
-const OUT_ARENA := "res://resources/arena/ArenaMap.tres"
+const ARENA_DIR := "res://resources/arena/"
 const OUT_WAVES := "res://resources/waves/WaveTable.tres"
 const TOWER_DIR := "res://resources/towers/"
 const ENEMY_DIR := "res://resources/enemies/"
@@ -31,7 +31,7 @@ func _initialize() -> void:
 	var cfg: BalanceConfig = _build_balance()
 	_save(cfg, OUT_BALANCE)
 	Balance.set_config(cfg)
-	_save(_build_arena(), OUT_ARENA)
+	_build_arena_maps()
 	_build_atlases()
 	_build_towers()
 	_build_enemies()
@@ -77,11 +77,29 @@ func _band(from_wave: int, to_wave: int, base: float, step: float, interval: flo
 
 ## --- arena (Feature Spec §1) --------------------------------------------
 
-func _build_arena() -> ArenaMap:
-	var map := ArenaMap.new()
-	map.columns = WK.GRID_COLUMNS
-	map.rows = WK.GRID_ROWS
-	map.legend = PackedStringArray([
+## Feature Spec §1 fixes the geometry: 12x20, a one-tile lane, 34 build tiles
+## and a 2x2 Ward Stone platform. The Old Road is the spec's own board,
+## transcribed verbatim. The other four are alternates authored as a corner
+## list; _trace_lane fills the cells between and _place_build_tiles picks the
+## 34, so a new board is four lines and cannot disagree with itself.
+##
+## Lane length is the number to watch when adding one: a tower on a longer lane
+## gets more seconds of fire, so a much longer board is a much easier board.
+## These run 36-45 against The Old Road's 38, which _check_map asserts.
+const LANE_LENGTH_MIN: int = 34
+const LANE_LENGTH_MAX: int = 46
+const BUILD_TILES: int = 34
+
+func _build_arena_maps() -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(ARENA_DIR))
+	var old_road := ArenaMap.new()
+	old_road.id = &"the_old_road"
+	old_road.display_name = "The Old Road"
+	old_road.blurb = "The long switchback. Four tight corners and room to build at each."
+	old_road.order = 0
+	old_road.columns = WK.GRID_COLUMNS
+	old_road.rows = WK.GRID_ROWS
+	old_road.legend = PackedStringArray([
 		"....B#B.....",
 		"....B#......",
 		"....B#......",
@@ -103,12 +121,158 @@ func _build_arena() -> ArenaMap:
 		".....WW.....",
 		"............",
 	])
-	map.waypoints = [
+	old_road.waypoints = [
 		Vector2i(5, 0), Vector2i(5, 3), Vector2i(9, 3), Vector2i(9, 7),
 		Vector2i(2, 7), Vector2i(2, 11), Vector2i(8, 11), Vector2i(8, 15),
 		Vector2i(5, 15), Vector2i(5, 17),
 	]
+	_check_map(old_road)
+	_save(old_road, ARENA_DIR + "the_old_road.tres")
+
+	# Corner list, then the Ward Stone's top-left cell. The final leg descends a
+	# column, one row clear of the platform: a lane running along the platform's
+	# full two-tile width would give the cell above its second column three lane
+	# neighbours, which _check_map rejects and the road tiler cannot draw.
+	var authored: Array = [
+		{"id": "switchback", "name": "Hairpins",
+			"blurb": "Six hairpins in a short run. Everything is in range of something.",
+			"corners": [Vector2i(2, 0), Vector2i(2, 4), Vector2i(9, 4), Vector2i(9, 8),
+				Vector2i(2, 8), Vector2i(2, 12), Vector2i(9, 12), Vector2i(9, 15),
+				Vector2i(6, 15), Vector2i(6, 17)]},
+		{"id": "the_gauntlet", "name": "The Gauntlet",
+			"blurb": "Long open straights. Range matters more than rate of fire.",
+			"corners": [Vector2i(6, 0), Vector2i(6, 6), Vector2i(1, 6), Vector2i(1, 13),
+				Vector2i(10, 13), Vector2i(10, 15), Vector2i(5, 15), Vector2i(5, 17)]},
+		{"id": "two_rivers", "name": "Two Rivers",
+			"blurb": "The lane hugs the walls, so the whole middle is yours to build on.",
+			"corners": [Vector2i(10, 0), Vector2i(10, 5), Vector2i(1, 5), Vector2i(1, 10),
+				Vector2i(10, 10), Vector2i(10, 15), Vector2i(3, 15), Vector2i(3, 17)]},
+		{"id": "the_spiral", "name": "The Spiral",
+			"blurb": "Winds inward past the same ground twice. Slow towers earn their keep.",
+			"corners": [Vector2i(1, 0), Vector2i(1, 2), Vector2i(9, 2), Vector2i(9, 6),
+				Vector2i(4, 6), Vector2i(4, 11), Vector2i(9, 11), Vector2i(9, 15),
+				Vector2i(2, 15), Vector2i(2, 17)]},
+	]
+	for index: int in authored.size():
+		var entry: Dictionary = authored[index]
+		var map: ArenaMap = _map_from_corners(entry)
+		map.order = index + 1
+		_check_map(map)
+		_save(map, ARENA_DIR + entry["id"] + ".tres")
+
+## Fills the cells between authored corners, plants the 2x2 Ward Stone on the
+## last one and picks the build tiles around the result.
+func _map_from_corners(entry: Dictionary) -> ArenaMap:
+	var map := ArenaMap.new()
+	map.id = StringName(entry["id"])
+	map.display_name = entry["name"]
+	map.blurb = entry["blurb"]
+	map.columns = WK.GRID_COLUMNS
+	map.rows = WK.GRID_ROWS
+	var corners: Array = entry["corners"]
+	map.waypoints = []
+	for corner: Vector2i in corners:
+		map.waypoints.append(corner)
+
+	var grid: Array = []
+	for _row: int in map.rows:
+		var line: PackedStringArray = PackedStringArray()
+		for _column: int in map.columns:
+			line.append(".")
+		grid.append(line)
+
+	var stone: Vector2i = corners[corners.size() - 1]
+	for lane: Vector2i in _trace_lane(corners):
+		grid[lane.y][lane.x] = "#"
+	for offset: Vector2i in [Vector2i.ZERO, Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)]:
+		grid[stone.y + offset.y][stone.x + offset.x] = "W"
+	for build: Vector2i in _place_build_tiles(grid, map.columns, map.rows):
+		grid[build.y][build.x] = "B"
+
+	map.legend = PackedStringArray()
+	for row: int in map.rows:
+		map.legend.append("".join(grid[row]))
 	return map
+
+## Every cell the lane occupies, corner to corner. Legs are axis-aligned, so
+## each step is one tile in one direction.
+func _trace_lane(corners: Array) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for index: int in corners.size() - 1:
+		var from: Vector2i = corners[index]
+		var to: Vector2i = corners[index + 1]
+		var step := Vector2i(signi(to.x - from.x), signi(to.y - from.y))
+		var at: Vector2i = from
+		while at != to:
+			if not cells.has(at):
+				cells.append(at)
+			at += step
+	if not cells.has(corners[corners.size() - 1]):
+		cells.append(corners[corners.size() - 1])
+	return cells
+
+## Build tiles go where a tower would actually want to stand: cells touching the
+## most lane, then the ones nearest the middle of the board, so a board's towers
+## cluster around its corners rather than trailing off into the edges.
+func _place_build_tiles(grid: Array, columns: int, rows: int) -> Array[Vector2i]:
+	var centre := Vector2(float(columns) * 0.5, float(rows) * 0.5)
+	var candidates: Array = []
+	for row: int in rows:
+		for column: int in columns:
+			if grid[row][column] != ".":
+				continue
+			var touching: int = 0
+			for offset: Vector2i in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
+				var at := Vector2i(column + offset.x, row + offset.y)
+				if at.x < 0 or at.x >= columns or at.y < 0 or at.y >= rows:
+					continue
+				if grid[at.y][at.x] == "#":
+					touching += 1
+			if touching > 0:
+				candidates.append({"at": Vector2i(column, row), "touching": touching,
+					"distance": Vector2(column, row).distance_to(centre)})
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if a["touching"] != b["touching"]:
+			return a["touching"] > b["touching"]
+		if not is_equal_approx(a["distance"], b["distance"]):
+			return a["distance"] < b["distance"]
+		# Ties broken on position so the same board is generated every time.
+		return a["at"].y * 100 + a["at"].x < b["at"].y * 100 + b["at"].x)
+	var out: Array[Vector2i] = []
+	for index: int in mini(BUILD_TILES, candidates.size()):
+		out.append(candidates[index]["at"])
+	return out
+
+## A board that fails any of these would break the lane's autotiling, strand the
+## pathing or move the balance, so generation stops rather than shipping it.
+func _check_map(map: ArenaMap) -> void:
+	assert(map.columns == WK.GRID_COLUMNS and map.rows == WK.GRID_ROWS)
+	assert(map.legend.size() == map.rows)
+	assert(map.build_tiles().size() == BUILD_TILES,
+		"%s has %d build tiles" % [map.id, map.build_tiles().size()])
+	var lane: int = map.lane_length()
+	assert(lane >= LANE_LENGTH_MIN and lane <= LANE_LENGTH_MAX,
+		"%s lane is %d tiles" % [map.id, lane])
+	var stone_cells: int = 0
+	for row: int in map.rows:
+		assert(map.legend[row].length() == map.columns)
+		for column: int in map.columns:
+			if map.is_ward_stone(column, row):
+				stone_cells += 1
+				continue
+			if not map.is_path_tile(column, row):
+				continue
+			# A one-tile lane means no cell may touch more than two others, or
+			# the road tiler would have to draw a junction it has no art for.
+			var neighbours: int = 0
+			for offset: Vector2i in [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]:
+				if map.is_path_tile(column + offset.x, row + offset.y) \
+						or map.is_ward_stone(column + offset.x, row + offset.y):
+					neighbours += 1
+			assert(neighbours <= 2, "%s branches at %d,%d" % [map.id, column, row])
+	assert(stone_cells == 4, "%s Ward Stone is not 2x2" % map.id)
+	assert(map.waypoints.size() > 3, "%s has no switchbacks" % map.id)
+	print("  map %s: lane %d, %d build tiles" % [map.id, lane, map.build_tiles().size()])
 
 ## --- towers (Feature Spec §4) -------------------------------------------
 

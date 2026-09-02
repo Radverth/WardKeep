@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_byg8f"]
+
+[resource]
+script = ExtResource("1_byg8f")
+id = &"the_gauntlet"
+display_name = "The Gauntlet"
+blurb = "Long open straights. Range matters more than rate of fire."
+order = 2
+columns = 12
+rows = 20
+legend = PackedStringArray("......#.....", "......#.....", "......#.....", "......#.....", "......#.....", "...BBB#B....", ".######B....", ".#BBBBB.....", ".#B.........", ".#B.........", ".#B.........", ".#B.........", ".#BBBBBBBBB.", ".##########B", "..BBBBBBBB#.", "....B######.", ".....#B.....", ".....WW.....", ".....WW.....", "............")
+waypoints = Array[Vector2i]([Vector2i(6, 0), Vector2i(6, 6), Vector2i(1, 6), Vector2i(1, 13), Vector2i(10, 13), Vector2i(10, 15), Vector2i(5, 15), Vector2i(5, 17)])

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_urup3"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_aa06d"]
 
 [resource]
-script = ExtResource("1_urup3")
+script = ExtResource("1_aa06d")
 id = &"skirmisher"
 display_name = "Skirmisher"
 base_hp = 18.0

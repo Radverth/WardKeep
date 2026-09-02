@@ -4,14 +4,15 @@ class_name Registry
 
 const TOWER_DIR: String = "res://resources/towers/"
 const ENEMY_DIR: String = "res://resources/enemies/"
-const ARENA_MAP_PATH: String = "res://resources/arena/ArenaMap.tres"
+const ARENA_DIR: String = "res://resources/arena/"
 const WAVE_TABLE_PATH: String = "res://resources/waves/WaveTable.tres"
 
 static var _towers: Dictionary = {}      ## StringName -> TowerDef
 static var _enemies: Dictionary = {}     ## StringName -> EnemyDef
 static var _tower_order: Array[StringName] = []
 static var _enemy_order: Array[StringName] = []
-static var _arena_map: ArenaMap = null
+static var _maps: Dictionary = {}        ## StringName -> ArenaMap
+static var _map_order: Array[StringName] = []
 static var _wave_table: WaveTable = null
 
 static func _file_names(dir_path: String) -> Array[String]:
@@ -86,10 +87,37 @@ static func bosses() -> Array[EnemyDef]:
 			out.append(_enemies[id])
 	return out
 
-static func arena_map() -> ArenaMap:
-	if _arena_map == null:
-		_arena_map = load(ARENA_MAP_PATH) as ArenaMap
-	return _arena_map
+static func _ensure_maps() -> void:
+	if not _maps.is_empty():
+		return
+	var loaded: Array[ArenaMap] = []
+	for file_name: String in _file_names(ARENA_DIR):
+		var map: ArenaMap = load(ARENA_DIR + file_name) as ArenaMap
+		if map == null:
+			continue
+		loaded.append(map)
+	loaded.sort_custom(func(a: ArenaMap, b: ArenaMap) -> bool:
+		return a.order < b.order if a.order != b.order else String(a.id) < String(b.id))
+	for map: ArenaMap in loaded:
+		_maps[map.id] = map
+		_map_order.append(map.id)
+
+## Every board, in a stable order — the map picker and the Daily's deterministic
+## pick both index into this, so the order must not depend on load timing.
+static func maps() -> Array[ArenaMap]:
+	_ensure_maps()
+	var out: Array[ArenaMap] = []
+	for id: StringName in _map_order:
+		out.append(_maps[id])
+	return out
+
+## The named board, or the first one when the id is unknown or empty — a save
+## naming a board that a later build removed must not strand the player.
+static func map(id: StringName) -> ArenaMap:
+	_ensure_maps()
+	if _maps.has(id):
+		return _maps[id]
+	return _maps[_map_order[0]] if not _map_order.is_empty() else null
 
 static func wave_table() -> WaveTable:
 	if _wave_table == null:
@@ -101,5 +129,6 @@ static func clear() -> void:
 	_enemies.clear()
 	_tower_order.clear()
 	_enemy_order.clear()
-	_arena_map = null
+	_maps.clear()
+	_map_order.clear()
 	_wave_table = null

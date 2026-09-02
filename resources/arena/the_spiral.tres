@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_jiics"]
+
+[resource]
+script = ExtResource("1_jiics")
+id = &"the_spiral"
+display_name = "The Spiral"
+blurb = "Winds inward past the same ground twice. Slow towers earn their keep."
+order = 4
+columns = 12
+rows = 20
+legend = PackedStringArray(".#..........", ".#B.........", ".#########..", "........B#..", ".........#..", "........B#..", "....######..", "...B#BBBBB..", "...B#B......", "...B#B......", "...B#BBBBB..", "...B######B.", "....BBBBB#B.", "........B#..", "....BBBBB#..", "..########..", "..#B........", "..WW........", "..WW........", "............")
+waypoints = Array[Vector2i]([Vector2i(1, 0), Vector2i(1, 2), Vector2i(9, 2), Vector2i(9, 6), Vector2i(4, 6), Vector2i(4, 11), Vector2i(9, 11), Vector2i(9, 15), Vector2i(2, 15), Vector2i(2, 17)])

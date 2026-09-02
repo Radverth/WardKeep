@@ -1,16 +1,52 @@
 extends Control
-## User Flow §3.2 — read-only roster, one Begin button. No pre-run loadout
-## picking in v1.0: every unlocked tower is available in-run via gold.
+## User Flow §3.2 — read-only roster, one Begin button. Towers are still not
+## picked before a run: every unlocked one is available in-run via gold. The
+## board is, because the map is the one thing that makes two runs of an endless
+## game feel different before the first wave lands.
+
+## Five boards fit the portrait width without scrolling at this size.
+const THUMB_SIZE: Vector2 = Vector2(128, 196)
 
 @onready var _roster: GridContainer = %Roster
+@onready var _map_row: HBoxContainer = %MapRow
+@onready var _map_blurb: Label = %MapBlurb
 @onready var _begin_button: Button = %BeginButton
 @onready var _back_button: Button = %BackButton
 @onready var _hint: Label = %Hint
 
+var _thumbs: Array[MapThumb] = []
+
 func _ready() -> void:
 	_begin_button.pressed.connect(_on_begin)
 	_back_button.pressed.connect(_on_back)
+	_populate_maps()
 	_populate()
+
+func _populate_maps() -> void:
+	var boards: Array[ArenaMap] = Registry.maps()
+	if boards.is_empty():
+		return
+	# Nothing chosen yet on a fresh install, and a board from an older build may
+	# be gone, so resolve through the Registry rather than trusting the id.
+	var chosen: ArenaMap = Registry.map(GameState.pending_map_id)
+	for board: ArenaMap in boards:
+		var thumb := MapThumb.new()
+		thumb.custom_minimum_size = THUMB_SIZE
+		thumb.toggle_mode = true
+		thumb.bind(board)
+		thumb.pressed.connect(_on_map_chosen.bind(board))
+		_map_row.add_child(thumb)
+		_thumbs.append(thumb)
+	_on_map_chosen(chosen)
+
+func _on_map_chosen(board: ArenaMap) -> void:
+	if board == null:
+		return
+	AudioBus.click()
+	GameState.pending_map_id = board.id
+	_map_blurb.text = board.blurb
+	for thumb: MapThumb in _thumbs:
+		thumb.button_pressed = thumb.map != null and thumb.map.id == board.id
 
 func _populate() -> void:
 	for child: Node in _roster.get_children():

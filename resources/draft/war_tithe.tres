@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_y214y"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_wyhkj"]
 
 [resource]
-script = ExtResource("1_y214y")
+script = ExtResource("1_wyhkj")
 id = &"war_tithe"
 title = "War Tithe"
 description = "+1 gold from every kill."

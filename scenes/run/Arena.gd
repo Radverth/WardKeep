@@ -59,7 +59,7 @@ var _explosion_frames: Dictionary = {}     ## atlas name -> Array[AtlasTexture]
 
 func _ready() -> void:
 	current = self
-	map = Registry.arena_map()
+	map = GameState.resolve_arena_map()
 	_build_ground()
 	_build_path_points()
 	_build_slots()

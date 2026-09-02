@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scenes/enemies/bosses/FrostmawPattern.gd" id="1_fw6g4"]
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_xdybr"]
+[ext_resource type="Script" path="res://scenes/enemies/bosses/FrostmawPattern.gd" id="1_nosb1"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_hv3cg"]
 
 [resource]
-script = ExtResource("2_xdybr")
+script = ExtResource("2_hv3cg")
 id = &"frostmaw"
 display_name = "Frostmaw"
 base_hp = 700.0
@@ -20,6 +20,6 @@ sprite_cell_margin = 0
 tint = Color(1, 1, 1, 1)
 scale_factor = 2.0
 is_boss = true
-boss_pattern_script = ExtResource("1_fw6g4")
+boss_pattern_script = ExtResource("1_nosb1")
 scene_path = "res://scenes/enemies/bosses/Frostmaw.tscn"
 provisional = true
