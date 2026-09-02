@@ -34,9 +34,15 @@ func _ready() -> void:
 				continue
 			total += 1
 			var suite: WardKeepTest = script.new()
+			# Suites that build real nodes parent them under a scratch node in
+			# the live tree, so @onready children resolve as they do in a run.
+			var scratch := Node.new()
+			add_child(scratch)
+			suite.host = scratch
 			suite.before_each()
 			suite.call(method_name)
 			suite.after_each()
+			scratch.free()
 			if suite.failures.is_empty():
 				passed += 1
 				print("  PASS  ", method_name)

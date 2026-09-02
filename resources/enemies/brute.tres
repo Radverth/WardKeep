@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_f4qes"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_nudpb"]
 
 [resource]
-script = ExtResource("1_f4qes")
+script = ExtResource("1_nudpb")
 id = &"brute"
 display_name = "Brute"
 base_hp = 55.0
@@ -18,6 +18,13 @@ sprite_cell_size = 16
 sprite_cell_margin = 0
 tint = Color(1, 1, 1, 1)
 scale_factor = 4.8
+pack_size = 1
+aura_radius_tiles = 0.0
+aura_damage_reduction = 0.0
+aura_speed_bonus = 0.0
+aura_heal_per_second = 0.0
+phase_visible_seconds = 0.0
+phase_hidden_seconds = 0.0
 is_boss = false
 scene_path = "res://scenes/enemies/Brute.tscn"
 provisional = true

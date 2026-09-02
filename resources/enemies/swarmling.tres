@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_o8wpb"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_xwqe3"]
 
 [resource]
-script = ExtResource("1_o8wpb")
+script = ExtResource("1_xwqe3")
 id = &"swarmling"
 display_name = "Swarmling"
 base_hp = 6.0
 base_speed = 2.4
 base_damage = 1.0
 armor_type = 0
-budget_cost = 3
+budget_cost = 9
 unlock_wave = 1
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(5, 14)
@@ -18,6 +18,13 @@ sprite_cell_size = 16
 sprite_cell_margin = 0
 tint = Color(1, 1, 1, 1)
 scale_factor = 3.6
+pack_size = 3
+aura_radius_tiles = 0.0
+aura_damage_reduction = 0.0
+aura_speed_bonus = 0.0
+aura_heal_per_second = 0.0
+phase_visible_seconds = 0.0
+phase_hidden_seconds = 0.0
 is_boss = false
 scene_path = "res://scenes/enemies/Swarmling.tscn"
 provisional = true

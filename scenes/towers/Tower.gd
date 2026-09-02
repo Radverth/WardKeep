@@ -163,7 +163,9 @@ func acquire_target() -> Enemy:
 	var best: Enemy = null
 	var range_squared: float = effective_range() * effective_range()
 	for enemy: Enemy in arena.active_enemies:
-		if not enemy.alive:
+		# is_targetable rather than alive: a phased Shade is still walking and
+		# still takes splash, but no tower may acquire it.
+		if not enemy.is_targetable():
 			continue
 		if enemy.global_position.distance_squared_to(global_position) > range_squared:
 			continue

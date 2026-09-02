@@ -7,6 +7,7 @@ extends Node
 ##       tools/Screenshot.tscn -- --scene=res://scenes/run/Arena.tscn \
 ##       --out=/tmp/arena.png --frames=120
 ##
+## --boss= takes any enemy id, or several separated by commas.
 ## Also takes --showcase (one funded tower of every archetype), --boss=<id>
 ## (or --boss=all) and --play (hand the board to the smoke-test driver).
 
@@ -65,7 +66,8 @@ func _ready() -> void:
 	if boss_id != "":
 		await get_tree().process_frame
 		await get_tree().process_frame
-		var wanted: Array = ([boss_id] if boss_id != "all" else
+		# Any enemy id, not only bosses — the supports need a shot too.
+		var wanted: Array = (boss_id.split(",") if boss_id != "all" else
 			["the_bulwark", "frostmaw", "the_hollow_king"])
 		for index: int in wanted.size():
 			var boss: Resource = Registry.enemy(StringName(wanted[index]))

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_tdkjl"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_wvgla"]
 
 [resource]
-script = ExtResource("1_tdkjl")
+script = ExtResource("1_wvgla")
 id = &"revenant"
 display_name = "Revenant"
 base_hp = 44.0
@@ -18,6 +18,13 @@ sprite_cell_size = 16
 sprite_cell_margin = 0
 tint = Color(0.66, 0.86, 1, 0.74)
 scale_factor = 4.6
+pack_size = 1
+aura_radius_tiles = 0.0
+aura_damage_reduction = 0.0
+aura_speed_bonus = 0.0
+aura_heal_per_second = 0.0
+phase_visible_seconds = 0.0
+phase_hidden_seconds = 0.0
 is_boss = false
 scene_path = "res://scenes/enemies/Revenant.tscn"
 provisional = true

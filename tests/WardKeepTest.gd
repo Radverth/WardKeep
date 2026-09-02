@@ -11,11 +11,25 @@ class_name WardKeepTest
 var failures: Array[String] = []
 var assertions: int = 0
 
+## A node in the live tree, set by the runner. A suite that needs a real node —
+## an Enemy has @onready children and cannot be exercised as a bare object —
+## parents it here, and after_each frees whatever is left.
+var host: Node = null
+
 func before_each() -> void:
 	pass
 
 func after_each() -> void:
-	pass
+	if host != null:
+		for child: Node in host.get_children():
+			child.free()
+
+## Adds `node` to the live tree and returns it, so a test can call _ready-time
+## behaviour without managing the tree itself.
+func attach(node: Node) -> Node:
+	if host != null:
+		host.add_child(node)
+	return node
 
 func _fail(message: String) -> void:
 	failures.append(message)

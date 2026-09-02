@@ -23,6 +23,29 @@ class_name EnemyDef
 @export var tint: Color = Color.WHITE
 @export var scale_factor: float = 4.0
 
+## --- archetype behaviour (all PROVISIONAL, SPEC_GAPS.md #3) --------------
+## The document suite has no enemy table, so what each archetype *does* is a
+## design decision rather than a transcription. Every field below is inert at
+## its default, so an archetype with no behaviour needs nothing set.
+
+## Enemies spawned together for one entry in the wave plan. budget_cost covers
+## the whole pack, so a pack does not buy extra enemies out of the wave budget.
+@export var pack_size: int = 1
+
+## Radius of whatever this archetype projects onto its neighbours, in tiles.
+@export var aura_radius_tiles: float = 0.0
+## Fraction of incoming damage nearby enemies shrug off.
+@export var aura_damage_reduction: float = 0.0
+## Fraction of base speed added to nearby enemies.
+@export var aura_speed_bonus: float = 0.0
+## HP per second restored to nearby damaged enemies.
+@export var aura_heal_per_second: float = 0.0
+
+## Seconds spent targetable, then untargetable, on a repeating cycle. Zero for
+## anything that is always a legal target.
+@export var phase_visible_seconds: float = 0.0
+@export var phase_hidden_seconds: float = 0.0
+
 @export var is_boss: bool = false
 @export var boss_pattern_script: Script = null
 @export var scene_path: String = ""

@@ -15,6 +15,9 @@ enum Phase { INTRO, ACTIVE, CLEARED, DRAFT, ENDED }
 ## Everything on the board is 16px art shown on a 64px grid, so ground sprites
 ## are drawn at WK.PIXEL_ZOOM and the project filters textures nearest.
 
+## Gap between the members of a pack, in pixels along the lane.
+const PACK_SPACING: float = float(WK.TILE_SIZE) * 0.7
+
 const WAVE_INTRO_SECONDS: float = 1.5
 ## The HUD's top bar and tower tray sit over the board. The board is exactly
 ## 12x20 tiles, so without framing, the Ward Stone platform on rows 17-18 ends
@@ -277,7 +280,11 @@ func _spawn_next() -> void:
 	if def == null:
 		push_warning("WARDKEEP: wave plan referenced unknown enemy %s" % entry["id"])
 		return
-	_spawn(def, bool(entry["elite"]), 0.0)
+	# A pack archetype spends one plan entry on several bodies. They are strung
+	# out along the lane rather than stacked on the spawn point, or they would
+	# read as one enemy and every splash would hit the whole pack at once.
+	for index: int in maxi(1, def.pack_size):
+		_spawn(def, bool(entry["elite"]), float(index) * PACK_SPACING)
 
 func spawn_extra(enemy_id: StringName, wave: int, elite: bool, at_progress: float) -> Enemy:
 	var def: EnemyDef = Registry.enemy(enemy_id)

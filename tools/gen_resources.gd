@@ -414,22 +414,44 @@ func _build_enemies() -> void:
 	#
 	# `art` indexes Toen's sheet. The besieging host is its red faction, with
 	# the gold and blue ranks kept for the spectral dead.
+	#
+	# Five archetypes carry behaviour beyond walking (PROVISIONAL, SPEC_GAPS.md
+	# #3 — the suite has no enemy table, so what each one *does* is a design
+	# decision). They are sized to be a reason to retarget rather than a wall:
+	#
+	# - swarmling arrives three at a time; its budget cost covers the pack, so
+	#   a pack does not buy extra bodies out of the wave budget.
+	# - shieldbearer wards a 2-tile circle for 22% less damage taken. Two of
+	#   them overlapping do not stack — refresh_aura keeps the stronger.
+	# - hexer mends 2 HP/s inside 2 tiles, about half a tier-1 Watchtower's
+	#   output at its wave-11 unlock, so damage that does not finish a target
+	#   is wasted while it lives.
+	# - shade is untargetable 1.1s in every 3.1s. It still walks and still
+	#   takes splash it is standing in.
+	# - warlord drives a 2.5-tile circle 30% faster, shortening the window
+	#   every tower on the lane gets.
+	#
+	# Frostmaw keeps sole ownership of tower fire-rate suppression (§2.5), so
+	# none of these touch towers.
 	var enemies: Array = [
 		{"id": "grunt", "name": "Grunt", "hp": 12.0, "speed": 1.6, "dmg": 1.0,
 			"armor": WK.ArmorType.NONE, "cost": 4, "wave": 1, "art": 252, "scale": 4.2},
 		{"id": "swarmling", "name": "Swarmling", "hp": 6.0, "speed": 2.4, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 3, "wave": 1, "art": 103, "scale": 3.6},
+			"armor": WK.ArmorType.NONE, "cost": 9, "wave": 1, "art": 103, "scale": 3.6,
+			"pack": 3},
 		{"id": "skirmisher", "name": "Skirmisher", "hp": 18.0, "speed": 1.9, "dmg": 1.0,
 			"armor": WK.ArmorType.NONE, "cost": 6, "wave": 3, "art": 119, "scale": 4.2},
 		{"id": "shieldbearer", "name": "Shieldbearer", "hp": 34.0, "speed": 1.1, "dmg": 2.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 10, "wave": 5, "art": 121, "scale": 4.4},
+			"armor": WK.ArmorType.HEAVY, "cost": 10, "wave": 5, "art": 121, "scale": 4.4,
+			"aura_radius": 2.0, "aura_ward": 0.22},
 		{"id": "wraith", "name": "Wraith", "hp": 20.0, "speed": 1.8, "dmg": 2.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 9, "wave": 7, "art": 120,
 			"tint": Color(0.72, 0.90, 1.0, 0.72), "scale": 4.2},
 		{"id": "brute", "name": "Brute", "hp": 55.0, "speed": 0.9, "dmg": 2.0,
 			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "art": 122, "scale": 4.8},
 		{"id": "hexer", "name": "Hexer", "hp": 26.0, "speed": 1.5, "dmg": 2.0,
-			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "art": 104, "scale": 4.2},
+			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "art": 104, "scale": 4.2,
+			"aura_radius": 2.0, "aura_heal": 2.0},
 		{"id": "revenant", "name": "Revenant", "hp": 44.0, "speed": 1.4, "dmg": 3.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 16, "wave": 13, "art": 128,
 			"tint": Color(0.66, 0.86, 1.0, 0.74), "scale": 4.6},
@@ -437,11 +459,13 @@ func _build_enemies() -> void:
 			"armor": WK.ArmorType.HEAVY, "cost": 24, "wave": 16, "art": 124, "scale": 4.6},
 		{"id": "shade", "name": "Shade", "hp": 30.0, "speed": 2.6, "dmg": 2.0,
 			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "art": 112,
-			"tint": Color(0.80, 0.84, 1.0, 0.66), "scale": 4.0},
+			"tint": Color(0.80, 0.84, 1.0, 0.66), "scale": 4.0,
+			"phase_visible": 2.0, "phase_hidden": 1.1},
 		{"id": "ogre", "name": "Ogre", "hp": 140.0, "speed": 0.7, "dmg": 4.0,
 			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "art": 123, "scale": 5.4},
 		{"id": "warlord", "name": "Warlord", "hp": 110.0, "speed": 1.3, "dmg": 3.0,
-			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "art": 167, "scale": 5.0},
+			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "art": 167, "scale": 5.0,
+			"aura_radius": 2.5, "aura_haste": 0.30},
 	]
 	for entry: Dictionary in enemies:
 		var def := EnemyDef.new()
@@ -458,6 +482,13 @@ func _build_enemies() -> void:
 			int(entry["art"]) / TOEN_COLUMNS)
 		def.tint = entry.get("tint", Color.WHITE)
 		def.scale_factor = float(entry.get("scale", 0.8))
+		def.pack_size = int(entry.get("pack", 1))
+		def.aura_radius_tiles = float(entry.get("aura_radius", 0.0))
+		def.aura_damage_reduction = float(entry.get("aura_ward", 0.0))
+		def.aura_speed_bonus = float(entry.get("aura_haste", 0.0))
+		def.aura_heal_per_second = float(entry.get("aura_heal", 0.0))
+		def.phase_visible_seconds = float(entry.get("phase_visible", 0.0))
+		def.phase_hidden_seconds = float(entry.get("phase_hidden", 0.0))
 		def.provisional = true
 		def.scene_path = "res://scenes/enemies/%s.tscn" % _pascal(entry["id"])
 		_save(def, ENEMY_DIR + entry["id"] + ".tres")

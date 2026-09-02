@@ -15,6 +15,19 @@ signal struck_ward_stone(enemy: Enemy, amount: int)
 
 const HEALTH_BAR_SIZE := Vector2(46, 6)
 
+## Timed effects one enemy projects onto another. Auras are re-applied on a
+## cadence rather than tracked as a live list of sources, so a support dying
+## mid-pulse simply stops refreshing and its effect lapses.
+const AURA_WARD: StringName = &"ward"
+const AURA_HASTE: StringName = &"haste"
+## How often a support re-applies, and how long one application lasts. The
+## lifetime is the longer of the two so the effect does not strobe between
+## pulses.
+const AURA_PULSE: float = 0.4
+const AURA_LIFETIME: float = 0.7
+## Alpha the sprite drops to while an archetype is phased out.
+const PHASED_ALPHA: float = 0.28
+
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _health_bar: Node2D = $HealthBar
 
@@ -38,6 +51,12 @@ var _segment: int = 0
 var reached_ward_stone: bool = false
 var _slows: Array[Dictionary] = []     ## [{ amount, remaining }]
 var _dots: Array[Dictionary] = []      ## [{ dps, remaining }]
+var _auras: Dictionary = {}            ## kind -> { amount, remaining }
+
+## Untargetable but still walking — see Shade.
+var phased: bool = false
+var _phase_timer: float = 0.0
+var _aura_timer: float = 0.0
 
 func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector2Array) -> void:
 	def = enemy_def
@@ -55,6 +74,10 @@ func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector
 	reached_ward_stone = false
 	_slows.clear()
 	_dots.clear()
+	_auras.clear()
+	phased = false
+	_phase_timer = def.phase_visible_seconds
+	_aura_timer = 0.0
 	alive = true
 	global_position = path[0] if path.size() > 0 else Vector2.ZERO
 	_apply_sprite()
@@ -67,11 +90,19 @@ func _apply_sprite() -> void:
 	_sprite.scale = Vector2.ONE * def.scale_factor
 	# §2.3 — an Elite is the same archetype with a glow tint over it.
 	_sprite.modulate = def.tint * (Color(1.35, 1.15, 0.75) if is_elite else Color.WHITE)
+	if phased:
+		_sprite.modulate.a *= PHASED_ALPHA
+	queue_redraw()
 
 func _process(delta: float) -> void:
 	if not alive:
 		return
 	_tick_effects(delta)
+	if not alive:
+		return
+	_tick_phase(delta)
+	_tick_aura(delta)
+	on_tick(delta)
 	if not alive or reached_ward_stone:
 		return
 	_advance(delta * current_speed() * float(WK.TILE_SIZE))
@@ -80,7 +111,12 @@ func current_speed() -> float:
 	var strongest: float = 0.0
 	for slow: Dictionary in _slows:
 		strongest = maxf(strongest, float(slow["amount"]))
-	return base_speed * (1.0 - clampf(strongest, 0.0, 0.9))
+	return base_speed * (1.0 - clampf(strongest, 0.0, 0.9)) * (1.0 + aura(AURA_HASTE))
+
+## Towers only shoot what they can see. A phased archetype keeps walking and
+## keeps taking splash it happens to sit in, but cannot be acquired.
+func is_targetable() -> bool:
+	return alive and not phased
 
 func is_slowed() -> bool:
 	return not _slows.is_empty()
@@ -90,6 +126,11 @@ func _tick_effects(delta: float) -> void:
 		_slows[index]["remaining"] = float(_slows[index]["remaining"]) - delta
 		if float(_slows[index]["remaining"]) <= 0.0:
 			_slows.remove_at(index)
+	for kind: StringName in _auras.keys():
+		var entry: Dictionary = _auras[kind]
+		entry["remaining"] = float(entry["remaining"]) - delta
+		if float(entry["remaining"]) <= 0.0:
+			_auras.erase(kind)
 	for index: int in range(_dots.size() - 1, -1, -1):
 		var dot: Dictionary = _dots[index]
 		take_damage(float(dot["dps"]) * delta, WK.RuneElement.BLIGHT, true)
@@ -141,6 +182,7 @@ func take_damage(raw: float, element: WK.RuneElement, ignore_matchup: bool = fal
 	var amount: float = raw
 	if not ignore_matchup:
 		amount *= Balance.element_multiplier(element, def.armor_type)
+	amount *= 1.0 - clampf(aura(AURA_WARD), 0.0, 0.9)
 	hp -= amount
 	_refresh_health_bar()
 	if hp <= 0.0:
@@ -193,6 +235,75 @@ func _leak() -> void:
 func on_death() -> void:
 	pass
 
+## Called every frame while alive, after effects and before movement.
+func on_tick(_delta: float) -> void:
+	pass
+
+## --- auras and phasing --------------------------------------------------
+
+## Strength of a projected effect currently on this enemy, 0.0 when none.
+func aura(kind: StringName) -> float:
+	return float(_auras[kind]["amount"]) if _auras.has(kind) else 0.0
+
+## Latest application wins on strength but never shortens the timer, so two
+## supports overlapping do not fight each other.
+func refresh_aura(kind: StringName, amount: float, duration: float) -> void:
+	if not alive or amount <= 0.0:
+		return
+	if _auras.has(kind):
+		var entry: Dictionary = _auras[kind]
+		entry["amount"] = maxf(float(entry["amount"]), amount)
+		entry["remaining"] = maxf(float(entry["remaining"]), duration)
+		return
+	_auras[kind] = {"amount": amount, "remaining": duration}
+
+func heal(amount: float) -> void:
+	if not alive or amount <= 0.0 or hp >= max_hp:
+		return
+	hp = minf(max_hp, hp + amount)
+	_refresh_health_bar()
+
+## Every living enemy within this archetype's aura radius, itself included —
+## a support that cannot benefit from its own ward would have to be handled
+## as a special case everywhere it is read.
+func aura_neighbours() -> Array[Enemy]:
+	var out: Array[Enemy] = []
+	var arena: Node = Arena.current
+	if arena == null or def == null or def.aura_radius_tiles <= 0.0:
+		return out
+	var radius: float = def.aura_radius_tiles * float(WK.TILE_SIZE)
+	var radius_squared: float = radius * radius
+	for other: Enemy in arena.active_enemies:
+		if other.alive and other.global_position.distance_squared_to(global_position) <= radius_squared:
+			out.append(other)
+	return out
+
+## Runs the archetype's aura on a cadence rather than every frame: an aura is a
+## sweep over every live enemy, and at 1.0s spawn intervals a wave can hold
+## dozens of them.
+func _tick_aura(delta: float) -> void:
+	if def == null or def.aura_radius_tiles <= 0.0:
+		return
+	_aura_timer -= delta
+	if _aura_timer > 0.0:
+		return
+	_aura_timer = AURA_PULSE
+	on_aura_pulse()
+
+## What a support projects. Overridden by the archetypes that have one.
+func on_aura_pulse() -> void:
+	pass
+
+func _tick_phase(delta: float) -> void:
+	if def == null or def.phase_hidden_seconds <= 0.0:
+		return
+	_phase_timer -= delta
+	if _phase_timer > 0.0:
+		return
+	phased = not phased
+	_phase_timer = def.phase_hidden_seconds if phased else def.phase_visible_seconds
+	_apply_sprite()
+
 func despawn() -> void:
 	alive = false
 	set_process(false)
@@ -202,6 +313,20 @@ func despawn() -> void:
 
 func _ready() -> void:
 	_health_bar.draw.connect(_draw_health_bar)
+
+## The ring a support projects, drawn on the enemy itself so it sits under the
+## sprite. Without it a player has no way to see why a pack is not dying, and
+## "kill the support first" is not a decision they can make.
+func _draw() -> void:
+	if not alive or def == null or def.aura_radius_tiles <= 0.0:
+		return
+	var radius: float = def.aura_radius_tiles * float(WK.TILE_SIZE)
+	draw_circle(Vector2.ZERO, radius, aura_ring_color() * Color(1, 1, 1, 0.13))
+	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 48, aura_ring_color(), 2.0, true)
+
+## Overridden by each support so its ring reads as its own effect.
+func aura_ring_color() -> Color:
+	return Color(1, 1, 1, 0.5)
 
 func _draw_health_bar() -> void:
 	if not alive or hp >= max_hp:

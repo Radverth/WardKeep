@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_hynek"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_wkrdb"]
 
 [resource]
-script = ExtResource("1_hynek")
+script = ExtResource("1_wkrdb")
 id = &"keen_edge"
 title = "Keen Edge"
 description = "+10% damage for all towers."

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_i7il4"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_4inps"]
 
 [resource]
-script = ExtResource("1_i7il4")
+script = ExtResource("1_4inps")
 id = &"far_sight"
 title = "Far Sight"
 description = "+10% range for all towers."
