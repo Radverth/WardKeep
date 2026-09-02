@@ -13,6 +13,9 @@ var data: Dictionary = {}
 
 func _ready() -> void:
 	load_save()
+	# Perks reads ranks through this rather than naming the autoload, so it
+	# still compiles when the project is scanned before autoloads exist.
+	Perks.bind(self)
 
 ## --- schema -------------------------------------------------------------
 
@@ -20,6 +23,8 @@ func default_data() -> Dictionary:
 	return {
 		"schema_version": CURRENT_SCHEMA_VERSION,
 		"runestones": 0,
+		## Keep Hub perk id -> ranks bought. See PerkDef / Perks.
+		"perk_ranks": {},
 		"account_level": 1,
 		"account_xp": 0,
 		"unlocked_towers": Balance.STARTER_TOWERS.duplicate(),
@@ -126,6 +131,22 @@ func add_stat(key: String, amount: int) -> void:
 	set_stat(key, int(get_stat(key, 0)) + amount)
 
 ## --- currency & progression --------------------------------------------
+
+## --- perks ---------------------------------------------------------------
+
+func perk_rank(id: String) -> int:
+	return int((data.get("perk_ranks", {}) as Dictionary).get(id, 0))
+
+## Buys one rank, or returns false and changes nothing. The cost is passed in
+## rather than looked up so this stays a pure ledger operation — PerkDef owns
+## what a rank costs, SaveManager owns whether it can be afforded.
+func buy_perk_rank(id: String, cost: int) -> bool:
+	if not spend_runestones(cost):
+		return false
+	var ranks: Dictionary = data["perk_ranks"] as Dictionary
+	ranks[id] = perk_rank(id) + 1
+	write_save()
+	return true
 
 func runestones() -> int:
 	return int(data.get("runestones", 0))

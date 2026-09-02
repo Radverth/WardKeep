@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scenes/enemies/bosses/HollowKingPattern.gd" id="1_3yaeo"]
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_ovxij"]
+[ext_resource type="Script" path="res://scenes/enemies/bosses/HollowKingPattern.gd" id="1_ebcyg"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_u6vql"]
 
 [resource]
-script = ExtResource("2_ovxij")
+script = ExtResource("2_u6vql")
 id = &"the_hollow_king"
 display_name = "The Hollow King"
 base_hp = 1000.0
@@ -27,6 +27,6 @@ aura_heal_per_second = 0.0
 phase_visible_seconds = 0.0
 phase_hidden_seconds = 0.0
 is_boss = true
-boss_pattern_script = ExtResource("1_3yaeo")
+boss_pattern_script = ExtResource("1_ebcyg")
 scene_path = "res://scenes/enemies/bosses/TheHollowKing.tscn"
 provisional = true

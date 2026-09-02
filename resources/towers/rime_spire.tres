@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_ob0ia"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_68un1"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_1h7tg"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_gvt57"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_qwimm"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_772ds"]
 
-[sub_resource type="Resource" id="Resource_uswrf"]
-script = ExtResource("3_1h7tg")
+[sub_resource type="Resource" id="Resource_1wohp"]
+script = ExtResource("3_772ds")
 cost = 25
 damage = 3.0
 range_tiles = 3.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_uuovg"]
-script = ExtResource("3_1h7tg")
+[sub_resource type="Resource" id="Resource_0gjv4"]
+script = ExtResource("3_772ds")
 cost = 40
 damage = 7.5
 range_tiles = 3.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_74w5q"]
-script = ExtResource("3_1h7tg")
+[sub_resource type="Resource" id="Resource_bffoj"]
+script = ExtResource("3_772ds")
 cost = 75
 damage = 18.0
 range_tiles = 4.0
@@ -56,17 +56,17 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_68un1")
+script = ExtResource("2_qwimm")
 id = &"rime_spire"
 display_name = "Rime Spire"
 role = "Slow single-target + 20% slow debuff (4s)"
 rune_element = 1
-tiers = Array[ExtResource("3_1h7tg")]([SubResource("Resource_uswrf"), SubResource("Resource_uuovg"), SubResource("Resource_74w5q")])
+tiers = Array[ExtResource("3_772ds")]([SubResource("Resource_1wohp"), SubResource("Resource_0gjv4"), SubResource("Resource_bffoj")])
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(4, 3)
 sprite_cell_size = 16
 sprite_cell_margin = 0
-projectile_scene = ExtResource("1_ob0ia")
+projectile_scene = ExtResource("1_gvt57")
 scene_path = "res://scenes/towers/RimeSpire.tscn"
 unlock_cost = 0
 required_account_level = 1

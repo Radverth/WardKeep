@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PerkDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_wd38l"]
+
+[resource]
+script = ExtResource("1_wd38l")
+id = &"kings_tithe"
+display_name = "King's Tithe"
+description = "Every run banks more Runestones."
+effect = &"runestone_bonus"
+per_rank = 0.1
+costs = PackedInt32Array(200, 420)
+order = 5

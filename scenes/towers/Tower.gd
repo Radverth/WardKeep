@@ -116,7 +116,11 @@ func upgrade_cost() -> int:
 	if not can_upgrade():
 		return 0
 	var base: int = def.tier(tier_index + 1).cost
-	return maxi(1, int(round(float(base) * (1.0 - _modifiers().upgrade_discount))))
+	# The run's own discount and the Keep Hub perk are separate ledgers — each
+	# is capped on its own, and the combined floor keeps an upgrade from ever
+	# being free no matter how the two stack.
+	var discount: float = clampf(_modifiers().upgrade_discount + Perks.upgrade_discount(), 0.0, 0.85)
+	return maxi(1, int(round(float(base) * (1.0 - discount))))
 
 func upgrade() -> bool:
 	if not can_upgrade():

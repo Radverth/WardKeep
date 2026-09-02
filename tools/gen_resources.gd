@@ -14,6 +14,7 @@ const OUT_WAVES := "res://resources/waves/WaveTable.tres"
 const TOWER_DIR := "res://resources/towers/"
 const ENEMY_DIR := "res://resources/enemies/"
 const DRAFT_DIR := "res://resources/draft/"
+const PERK_DIR := "res://resources/perks/"
 
 ## Toen's Medieval Strategy sheet: 7 columns of 16px tiles, no margin, so a
 ## tile is addressed by one index. Everything standing on the board — terrain,
@@ -32,6 +33,7 @@ func _initialize() -> void:
 	_save(cfg, OUT_BALANCE)
 	Balance.set_config(cfg)
 	_build_arena_maps()
+	_build_perks()
 	_build_atlases()
 	_build_towers()
 	_build_enemies()
@@ -273,6 +275,56 @@ func _check_map(map: ArenaMap) -> void:
 	assert(stone_cells == 4, "%s Ward Stone is not 2x2" % map.id)
 	assert(map.waypoints.size() > 3, "%s has no switchbacks" % map.id)
 	print("  map %s: lane %d, %d build tiles" % [map.id, lane, map.build_tiles().size()])
+
+## --- Keep Hub perks -----------------------------------------------------
+
+## Feature Spec §6 has no perk table: the Keep Hub it describes sells tower
+## unlocks and cosmetics only. Runestones therefore bought nine towers and then
+## had nothing left to buy but skins — a meta currency that stops mattering
+## exactly when a player has proved they intend to keep playing. These are an
+## addition and the whole set is PROVISIONAL (SPEC_GAPS.md #10).
+##
+## Costs are sized against §6's own scale, where a tower unlock is 150-300 and
+## the Legendary skin is 800. A full board of perks is a little over 2000, so it
+## is a long tail rather than a second afternoon.
+##
+## Every one of them is small on its own. A meta upgrade that visibly wins a run
+## by itself turns the early waves into a formality for a returning player and
+## a wall for a new one, and this game has no separate difficulty setting to
+## absorb that.
+func _build_perks() -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(PERK_DIR))
+	var perks: Array = [
+		{"id": "deep_coffers", "name": "Deep Coffers",
+			"desc": "Start every run with more gold in hand.",
+			"effect": Perks.STARTING_GOLD, "per_rank": 8.0, "costs": [60, 140, 260]},
+		{"id": "reinforced_keep", "name": "Reinforced Keep",
+			"desc": "The Ward Stone can take more punishment before a run ends.",
+			"effect": Perks.WARD_STONE_HP, "per_rank": 5.0, "costs": [80, 180, 320]},
+		{"id": "quarry_rights", "name": "Quarry Rights",
+			"desc": "Every kill is worth a little more gold.",
+			"effect": Perks.GOLD_PER_KILL, "per_rank": 1.0, "costs": [120, 300]},
+		{"id": "master_masons", "name": "Master Masons",
+			"desc": "Tower upgrades cost less, so going tall comes sooner.",
+			"effect": Perks.UPGRADE_DISCOUNT, "per_rank": 0.05, "costs": [100, 220, 400]},
+		{"id": "field_repairs", "name": "Field Repairs",
+			"desc": "The Ward Stone is mended a little after every wave cleared.",
+			"effect": Perks.WAVE_REPAIR, "per_rank": 1.0, "costs": [150, 350]},
+		{"id": "kings_tithe", "name": "King\'s Tithe",
+			"desc": "Every run banks more Runestones.",
+			"effect": Perks.RUNESTONE_BONUS, "per_rank": 0.10, "costs": [200, 420]},
+	]
+	for index: int in perks.size():
+		var entry: Dictionary = perks[index]
+		var perk := PerkDef.new()
+		perk.id = StringName(entry["id"])
+		perk.display_name = entry["name"]
+		perk.description = entry["desc"]
+		perk.effect = entry["effect"]
+		perk.per_rank = float(entry["per_rank"])
+		perk.costs = PackedInt32Array(entry["costs"])
+		perk.order = index
+		_save(perk, PERK_DIR + entry["id"] + ".tres")
 
 ## --- towers (Feature Spec §4) -------------------------------------------
 

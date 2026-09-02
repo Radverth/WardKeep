@@ -1,6 +1,11 @@
 extends Control
-## User Flow §3.6 — three tabs: Towers (permanent unlocks), Cosmetics (skins),
-## Account (level, medals, lifetime stats). Costs come from Feature Spec §6.
+## User Flow §3.6 — Towers (permanent unlocks), Cosmetics (skins) and Account
+## (level, medals, lifetime stats). Costs come from Feature Spec §6.
+##
+## Perks is a fourth tab and an addition: §6 sells unlocks and cosmetics only,
+## so once nine towers were bought Runestones had nothing left to buy but skins
+## — a meta currency that stops mattering exactly when a player has proved they
+## intend to keep playing. PROVISIONAL, SPEC_GAPS.md #10.
 
 ## Feature Spec §6.4 — Veteran needs account level 10; Legendary is the IAP
 ## bundle or 800 Runestones.
@@ -12,6 +17,7 @@ const SKIN_TIERS: Array[Dictionary] = [
 
 @onready var _balance_label: Label = %BalanceLabel
 @onready var _towers_list: VBoxContainer = %TowersList
+@onready var _perks_list: VBoxContainer = %PerksList
 @onready var _cosmetics_list: VBoxContainer = %CosmeticsList
 @onready var _account_list: VBoxContainer = %AccountList
 @onready var _medal_row: HBoxContainer = %MedalRow
@@ -26,12 +32,73 @@ func _ready() -> void:
 func _refresh() -> void:
 	_balance_label.text = "%d Runestones" % SaveManager.runestones()
 	_build_towers()
+	_build_perks()
 	_build_cosmetics()
 	_build_account()
 
 func _clear(container: Node) -> void:
 	for child: Node in container.get_children():
 		child.queue_free()
+
+## --- perks tab ----------------------------------------------------------
+
+func _build_perks() -> void:
+	_clear(_perks_list)
+	for perk: PerkDef in Registry.perks():
+		_perks_list.add_child(_perk_row(perk))
+
+func _perk_row(perk: PerkDef) -> Control:
+	var row := PanelContainer.new()
+	var box := HBoxContainer.new()
+	box.add_theme_constant_override("separation", 14)
+	row.add_child(box)
+
+	var text := VBoxContainer.new()
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(text)
+
+	var rank: int = SaveManager.perk_rank(String(perk.id))
+	var title := Label.new()
+	title.text = "%s   %s" % [perk.display_name, _pips(rank, perk.max_rank())]
+	title.add_theme_font_size_override("font_size", 24)
+	text.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.text = perk.description
+	subtitle.add_theme_font_size_override("font_size", 17)
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text.add_child(subtitle)
+
+	var action := Button.new()
+	action.custom_minimum_size = Vector2(190, 72)
+	if rank >= perk.max_rank():
+		action.text = "Maxed"
+		action.disabled = true
+	else:
+		var cost: int = perk.cost_for_next(rank)
+		action.text = "%d ◆" % cost
+		action.disabled = SaveManager.runestones() < cost
+		action.pressed.connect(func() -> void:
+			# Re-read the rank on press: the row was built before the player
+			# could have bought anything else, and the cost climbs per rank.
+			var current: int = SaveManager.perk_rank(String(perk.id))
+			if current >= perk.max_rank():
+				return
+			if not SaveManager.buy_perk_rank(String(perk.id), perk.cost_for_next(current)):
+				_show_toast("Not enough Runestones.")
+				return
+			AudioBus.select()
+			_show_toast("%s is now rank %d." % [perk.display_name, current + 1])
+			_refresh())
+	box.add_child(action)
+	return row
+
+## Ranks as filled and empty pips, so the tab reads at a glance.
+func _pips(rank: int, maximum: int) -> String:
+	var out: String = ""
+	for index: int in maximum:
+		out += "●" if index < rank else "○"
+	return out
 
 ## --- towers tab (Feature Spec §6.2) -------------------------------------
 

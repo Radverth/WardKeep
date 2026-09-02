@@ -5,12 +5,14 @@ class_name Registry
 const TOWER_DIR: String = "res://resources/towers/"
 const ENEMY_DIR: String = "res://resources/enemies/"
 const ARENA_DIR: String = "res://resources/arena/"
+const PERK_DIR: String = "res://resources/perks/"
 const WAVE_TABLE_PATH: String = "res://resources/waves/WaveTable.tres"
 
 static var _towers: Dictionary = {}      ## StringName -> TowerDef
 static var _enemies: Dictionary = {}     ## StringName -> EnemyDef
 static var _tower_order: Array[StringName] = []
 static var _enemy_order: Array[StringName] = []
+static var _perks: Array[PerkDef] = []
 static var _maps: Dictionary = {}        ## StringName -> ArenaMap
 static var _map_order: Array[StringName] = []
 static var _wave_table: WaveTable = null
@@ -119,6 +121,17 @@ static func map(id: StringName) -> ArenaMap:
 		return _maps[id]
 	return _maps[_map_order[0]] if not _map_order.is_empty() else null
 
+## Keep Hub perks in display order.
+static func perks() -> Array[PerkDef]:
+	if not _perks.is_empty():
+		return _perks
+	for file_name: String in _file_names(PERK_DIR):
+		var perk: PerkDef = load(PERK_DIR + file_name) as PerkDef
+		if perk != null:
+			_perks.append(perk)
+	_perks.sort_custom(func(a: PerkDef, b: PerkDef) -> bool: return a.order < b.order)
+	return _perks
+
 static func wave_table() -> WaveTable:
 	if _wave_table == null:
 		_wave_table = load(WAVE_TABLE_PATH) as WaveTable
@@ -129,6 +142,7 @@ static func clear() -> void:
 	_enemies.clear()
 	_tower_order.clear()
 	_enemy_order.clear()
+	_perks.clear()
 	_maps.clear()
 	_map_order.clear()
 	_wave_table = null

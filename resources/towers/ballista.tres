@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_n505o"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_7t07p"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_yv4kf"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_dwduv"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_btrud"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_sbjtr"]
 
-[sub_resource type="Resource" id="Resource_v0ofh"]
-script = ExtResource("3_yv4kf")
+[sub_resource type="Resource" id="Resource_13siy"]
+script = ExtResource("3_sbjtr")
 cost = 30
 damage = 10.0
 range_tiles = 4.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = true
 
-[sub_resource type="Resource" id="Resource_u38wd"]
-script = ExtResource("3_yv4kf")
+[sub_resource type="Resource" id="Resource_0y4av"]
+script = ExtResource("3_sbjtr")
 cost = 50
 damage = 25.0
 range_tiles = 4.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = true
 
-[sub_resource type="Resource" id="Resource_euget"]
-script = ExtResource("3_yv4kf")
+[sub_resource type="Resource" id="Resource_5bip4"]
+script = ExtResource("3_sbjtr")
 cost = 90
 damage = 60.0
 range_tiles = 5.0
@@ -56,17 +56,17 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = true
 
 [resource]
-script = ExtResource("2_7t07p")
+script = ExtResource("2_btrud")
 id = &"ballista"
 display_name = "Ballista"
 role = "Single-target, armour-piercing"
 rune_element = 0
-tiers = Array[ExtResource("3_yv4kf")]([SubResource("Resource_v0ofh"), SubResource("Resource_u38wd"), SubResource("Resource_euget")])
+tiers = Array[ExtResource("3_sbjtr")]([SubResource("Resource_13siy"), SubResource("Resource_0y4av"), SubResource("Resource_5bip4")])
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(5, 16)
 sprite_cell_size = 16
 sprite_cell_margin = 0
-projectile_scene = ExtResource("1_n505o")
+projectile_scene = ExtResource("1_dwduv")
 scene_path = "res://scenes/towers/Ballista.tscn"
 unlock_cost = 150
 required_account_level = 3

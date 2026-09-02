@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_nq3el"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_icxdo"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_0cs00"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_vbuu0"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_gm3a2"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_pp5k2"]
 
-[sub_resource type="Resource" id="Resource_l5tum"]
-script = ExtResource("3_0cs00")
+[sub_resource type="Resource" id="Resource_n43pj"]
+script = ExtResource("3_pp5k2")
 cost = 30
 damage = 5.0
 range_tiles = 3.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 1.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_383y5"]
-script = ExtResource("3_0cs00")
+[sub_resource type="Resource" id="Resource_jgbgl"]
+script = ExtResource("3_pp5k2")
 cost = 50
 damage = 12.5
 range_tiles = 3.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 1.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_8gqej"]
-script = ExtResource("3_0cs00")
+[sub_resource type="Resource" id="Resource_4306b"]
+script = ExtResource("3_pp5k2")
 cost = 90
 damage = 30.0
 range_tiles = 4.0
@@ -56,17 +56,17 @@ bonus_vs_ethereal = 1.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_icxdo")
+script = ExtResource("2_gm3a2")
 id = &"bone_turret"
 display_name = "Bone Turret"
 role = "Anti-ethereal specialist"
 rune_element = 2
-tiers = Array[ExtResource("3_0cs00")]([SubResource("Resource_l5tum"), SubResource("Resource_383y5"), SubResource("Resource_8gqej")])
+tiers = Array[ExtResource("3_pp5k2")]([SubResource("Resource_n43pj"), SubResource("Resource_jgbgl"), SubResource("Resource_4306b")])
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(0, 5)
 sprite_cell_size = 16
 sprite_cell_margin = 0
-projectile_scene = ExtResource("1_nq3el")
+projectile_scene = ExtResource("1_vbuu0")
 scene_path = "res://scenes/towers/BoneTurret.tscn"
 unlock_cost = 300
 required_account_level = 6

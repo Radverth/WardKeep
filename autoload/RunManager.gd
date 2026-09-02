@@ -52,9 +52,11 @@ func start_run(run_mode: WK.RunMode = WK.RunMode.STANDARD) -> void:
 	pending_draft.clear()
 	placed_towers.clear()
 	run_unlocked_towers.clear()
-	ward_stone_max_hp = Balance.config().ward_stone_hp
+	# Keep Hub perks are permanent and apply before the first wave, so they are
+	# folded into the starting values rather than treated as run modifiers.
+	ward_stone_max_hp = Balance.config().ward_stone_hp + Perks.ward_stone_bonus()
 	ward_stone_hp = ward_stone_max_hp
-	gold = Balance.config().starting_gold
+	gold = Balance.config().starting_gold + Perks.starting_gold_bonus()
 	WaveDirector.begin_run(seed_value)
 	run_started.emit(int(mode))
 	gold_changed.emit(gold)
@@ -95,7 +97,7 @@ func on_enemy_killed(def: EnemyDef, is_elite: bool) -> void:
 	enemies_killed += 1
 	var reward: int = Balance.gold_for_kill(wave, is_elite, def.is_boss)
 	if not def.is_boss:
-		reward += modifiers.gold_per_kill
+		reward += modifiers.gold_per_kill + Perks.gold_per_kill_bonus()
 	add_gold(reward)
 
 ## --- ward stone ---------------------------------------------------------
@@ -135,6 +137,7 @@ func begin_wave() -> void:
 
 func complete_wave() -> void:
 	add_gold(int(round(float(Balance.wave_clear_bonus(wave)) * modifiers.wave_clear_mult)))
+	repair_ward_stone(Perks.repair_per_wave())
 	wave_cleared.emit(wave)
 	offer_draft()
 
@@ -207,7 +210,8 @@ func end_run(banked: bool) -> void:
 		return
 	run_active = false
 	var waves_survived: int = maxi(0, wave - 1) if ward_stone_hp <= 0 else wave
-	var runestones: int = Balance.runestones_for_run(waves_survived, banked)
+	var runestones: int = int(round(float(Balance.runestones_for_run(waves_survived, banked))
+		* Perks.runestone_multiplier()))
 	var daily_bonus: int = 0
 	if mode == WK.RunMode.DAILY:
 		daily_bonus = Balance.config().daily_completion_bonus

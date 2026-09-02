@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PerkDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_fgb77"]
+
+[resource]
+script = ExtResource("1_fgb77")
+id = &"reinforced_keep"
+display_name = "Reinforced Keep"
+description = "The Ward Stone can take more punishment before a run ends."
+effect = &"ward_stone_hp"
+per_rank = 5.0
+costs = PackedInt32Array(80, 180, 320)
+order = 1

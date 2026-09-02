@@ -19,6 +19,7 @@ func _ready() -> void:
 	var showcase: bool = false
 	var boss_id: String = ""
 	var inspect_id: String = ""
+	var tab_index: int = -1
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--scene="):
 			scene_path = argument.trim_prefix("--scene=")
@@ -30,6 +31,8 @@ func _ready() -> void:
 			auto_play = true
 		elif argument == "--showcase":
 			showcase = true
+		elif argument.begins_with("--tab="):
+			tab_index = int(argument.trim_prefix("--tab="))
 		elif argument.begins_with("--inspect="):
 			inspect_id = argument.trim_prefix("--inspect=")
 		elif argument.begins_with("--map="):
@@ -89,6 +92,11 @@ func _ready() -> void:
 		driver.set("arena", scene)
 		driver.set("verbose", false)
 		get_tree().root.add_child(driver)
+	if tab_index >= 0:
+		await get_tree().process_frame
+		var tabs: Node = scene.find_child("Tabs", true, false)
+		if tabs != null:
+			tabs.set("current_tab", tab_index)
 	if inspect_id != "":
 		await get_tree().process_frame
 		await get_tree().process_frame
