@@ -233,6 +233,7 @@ func end_run(banked: bool) -> void:
 	SaveManager.add_runestones(runestones)
 	SaveManager.add_account_xp(xp)
 	SaveManager.add_stat("total_runs", 1)
+	SaveManager.record_run_end(waves_survived)
 	SaveManager.add_stat("total_enemies_killed", enemies_killed)
 	var best_before: int = int(SaveManager.get_stat("best_wave", 0))
 	var new_best: bool = waves_survived > best_before

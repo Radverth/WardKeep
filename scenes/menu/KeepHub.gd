@@ -17,6 +17,11 @@ const SKIN_TIERS: Array[Dictionary] = [
 
 @onready var _balance_label: Label = %BalanceLabel
 @onready var _towers_list: VBoxContainer = %TowersList
+## Runs are bucketed this many waves wide in the where-runs-end chart.
+const CHART_BUCKET: int = 5
+const CHART_BAR: Color = Color(0.85, 0.72, 0.36)
+const CHART_TRACK: Color = Color(0.22, 0.20, 0.20)
+
 @onready var _perks_list: VBoxContainer = %PerksList
 @onready var _cosmetics_list: VBoxContainer = %CosmeticsList
 @onready var _account_list: VBoxContainer = %AccountList
@@ -233,6 +238,10 @@ func _build_account() -> void:
 	_add_stat("Enemies killed", str(int(SaveManager.get_stat("total_enemies_killed", 0))))
 	_add_stat("Runestones earned", str(int(SaveManager.get_stat("total_runestones_earned", 0))))
 	_add_stat("Daily streak", str(int(SaveManager.get_value("daily_challenge_streak", 0))))
+	var median: int = SaveManager.median_run_end()
+	if median > 0:
+		_add_stat("Runs usually end at", "Wave %d" % median)
+	_build_run_end_chart()
 
 	for index: int in UiKit.MEDAL_LEVELS.size():
 		var milestone: int = UiKit.MEDAL_LEVELS[index]
@@ -244,6 +253,61 @@ func _build_account() -> void:
 		icon.modulate = Color.WHITE if level >= milestone else Color(0.3, 0.3, 0.3, 0.55)
 		icon.tooltip_text = "Level %d" % milestone
 		_medal_row.add_child(icon)
+
+## Where runs actually end, bucketed in fives. Tuning an endless game's later
+## waves needs to know where the wall is, and the smoke-test bot is not a
+## player. Local only — nothing here leaves the device.
+func _build_run_end_chart() -> void:
+	var histogram: Dictionary = SaveManager.run_end_histogram()
+	if histogram.is_empty():
+		return
+	var buckets: Dictionary = {}
+	var tallest: int = 0
+	for key: String in histogram:
+		var bucket: int = (int(key) / CHART_BUCKET) * CHART_BUCKET
+		buckets[bucket] = int(buckets.get(bucket, 0)) + int(histogram[key])
+		tallest = maxi(tallest, int(buckets[bucket]))
+	var edges: Array[int] = []
+	for bucket: int in buckets:
+		edges.append(bucket)
+	edges.sort()
+	var heading := Label.new()
+	heading.text = "Where runs end"
+	heading.add_theme_font_size_override("font_size", 22)
+	_account_list.add_child(heading)
+	for edge: int in edges:
+		var count: int = int(buckets[edge])
+		var row := HBoxContainer.new()
+		var label := Label.new()
+		label.text = "%d-%d" % [edge, edge + CHART_BUCKET - 1]
+		label.custom_minimum_size = Vector2(120, 0)
+		label.add_theme_font_size_override("font_size", 18)
+		row.add_child(label)
+		# Two stretched rectangles rather than a ProgressBar: the theme styles
+		# the bar for the Ward Stone, where fill and track are both red, and a
+		# histogram drawn in it reads as full at every height.
+		var bar := HBoxContainer.new()
+		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		bar.custom_minimum_size = Vector2(0, 26)
+		bar.add_theme_constant_override("separation", 0)
+		var filled := ColorRect.new()
+		filled.color = CHART_BAR
+		filled.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		filled.size_flags_stretch_ratio = maxf(0.001, float(count))
+		bar.add_child(filled)
+		var empty := ColorRect.new()
+		empty.color = CHART_TRACK
+		empty.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		empty.size_flags_stretch_ratio = maxf(0.001, float(tallest - count))
+		bar.add_child(empty)
+		row.add_child(bar)
+		var tally := Label.new()
+		tally.text = str(count)
+		tally.custom_minimum_size = Vector2(56, 0)
+		tally.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		tally.add_theme_font_size_override("font_size", 18)
+		row.add_child(tally)
+		_account_list.add_child(row)
 
 func _add_stat(name: String, value: String) -> void:
 	var row := HBoxContainer.new()

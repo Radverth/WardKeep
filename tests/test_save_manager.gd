@@ -35,3 +35,38 @@ func test_migration_does_not_clobber_nested_values() -> void:
 	var migrated: Dictionary = SaveManager.migrate(save)
 	assert_almost_eq(float(migrated["settings"]["music_volume"]), 0.2, 0.001, "player's volume kept")
 	assert_true((migrated["settings"] as Dictionary).has("sfx_volume"), "sibling default added")
+
+## --- run-end histogram ---------------------------------------------------
+##
+## These exercise the live singleton because the histogram is instance state,
+## not a pure function. record_run_end deliberately does not write to disk —
+## RunManager saves once at the end of a run — so this stays in memory, and
+## the player's real save is put back afterwards regardless.
+
+var _saved_data: Dictionary = {}
+
+func before_each() -> void:
+	_saved_data = SaveManager.data.duplicate(true)
+	SaveManager.data = SaveManager.default_data()
+
+func after_each() -> void:
+	super.after_each()
+	SaveManager.data = _saved_data
+
+func test_the_histogram_counts_where_runs_ended() -> void:
+	for wave: int in [4, 9, 9, 12, 30]:
+		SaveManager.record_run_end(wave)
+	var histogram: Dictionary = SaveManager.run_end_histogram()
+	assert_eq(int(histogram.get("9", 0)), 2, "two runs ended on wave 9")
+	assert_eq(int(histogram.get("30", 0)), 1, "one reached wave 30")
+
+## The median rather than the mean: one lucky run to wave 60 should not move the
+## number that says where the wall is.
+func test_the_median_ignores_one_lucky_run() -> void:
+	for _repeat: int in 9:
+		SaveManager.record_run_end(8)
+	SaveManager.record_run_end(60)
+	assert_eq(SaveManager.median_run_end(), 8, "nine runs at wave 8 outweigh one at 60")
+
+func test_an_empty_histogram_has_no_median() -> void:
+	assert_eq(SaveManager.median_run_end(), 0, "nothing recorded yet")

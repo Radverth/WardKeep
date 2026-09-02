@@ -48,6 +48,9 @@ func default_data() -> Dictionary:
 			"total_runestones_earned": 0,
 			"run_ends_since_interstitial": 0,
 			"onboarding_complete": false,
+			## Wave a run ended on -> how many runs ended there, as string keys
+			## because JSON has no integer keys. See record_run_end.
+			"run_end_waves": {},
 		},
 	}
 
@@ -120,6 +123,41 @@ func get_setting(key: String, fallback: Variant = null) -> Variant:
 func set_setting(key: String, value: Variant) -> void:
 	(data["settings"] as Dictionary)[key] = value
 	write_save()
+
+## --- run-end histogram ---------------------------------------------------
+
+## Where runs actually end, which is the only way to tune an endless game's
+## later waves on evidence rather than on how the smoke-test bot happened to
+## do. Local only — nothing here is sent anywhere.
+func record_run_end(wave: int) -> void:
+	var histogram: Dictionary = data["stats_lifetime"].get("run_end_waves", {}) as Dictionary
+	var key: String = str(maxi(0, wave))
+	histogram[key] = int(histogram.get(key, 0)) + 1
+	(data["stats_lifetime"] as Dictionary)["run_end_waves"] = histogram
+
+func run_end_histogram() -> Dictionary:
+	return (data.get("stats_lifetime", {}) as Dictionary).get("run_end_waves", {}) as Dictionary
+
+## Median wave a run ends on, or 0 with nothing recorded. The median rather than
+## the mean: one lucky run to wave 60 should not move the number that says where
+## the wall is.
+func median_run_end() -> int:
+	var histogram: Dictionary = run_end_histogram()
+	var total: int = 0
+	for key: String in histogram:
+		total += int(histogram[key])
+	if total == 0:
+		return 0
+	var waves: Array[int] = []
+	for key: String in histogram:
+		waves.append(int(key))
+	waves.sort()
+	var seen: int = 0
+	for wave: int in waves:
+		seen += int(histogram[str(wave)])
+		if seen * 2 >= total:
+			return wave
+	return waves[waves.size() - 1]
 
 func get_stat(key: String, fallback: Variant = 0) -> Variant:
 	return (data.get("stats_lifetime", {}) as Dictionary).get(key, fallback)

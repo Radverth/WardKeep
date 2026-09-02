@@ -31,6 +31,9 @@ func _ready() -> void:
 			auto_play = true
 		elif argument == "--showcase":
 			showcase = true
+		elif argument == "--seed-history":
+			for wave: int in [6, 8, 8, 9, 11, 12, 12, 13, 14, 17, 19, 22, 28]:
+				SaveManager.record_run_end(wave)
 		elif argument.begins_with("--tab="):
 			tab_index = int(argument.trim_prefix("--tab="))
 		elif argument.begins_with("--inspect="):
