@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_iropj"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_ihtdj"]
 
 [resource]
-script = ExtResource("1_iropj")
+script = ExtResource("1_ihtdj")
 id = &"hollow_charter"
 title = "Hollow Charter"
 description = "Unlock one locked tower for the rest of this run."

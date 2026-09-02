@@ -15,6 +15,33 @@ const SCENE_RUN_SUMMARY: String = "res://scenes/menu/RunSummary.tscn"
 ## Set before entering the Arena; read by RunManager on run start.
 var pending_run_mode: WK.RunMode = WK.RunMode.STANDARD
 
+## The opening tower draft: what this run was offered, and what was taken.
+## Held here rather than regenerated on every visit to Run Setup, or backing out
+## and returning would reroll the offer until it was one the player liked.
+var pending_tower_offer: Array[StringName] = []
+var pending_tower_ids: Array[StringName] = []
+var _offer_signature: String = ""
+
+## Builds the offer once per (mode, day). The Daily's has to be the same for
+## everyone — Feature Spec §7 — so it comes from the date's seed; a standard
+## run's is rolled fresh each time the previous one is consumed.
+func ensure_tower_offer() -> void:
+	var signature: String = "%d/%s" % [int(pending_run_mode),
+		Time.get_date_string_from_system(true) if pending_run_mode == WK.RunMode.DAILY else "run"]
+	if signature == _offer_signature and not pending_tower_offer.is_empty():
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = RunManager.daily_seed() if pending_run_mode == WK.RunMode.DAILY \
+		else int(Time.get_unix_time_from_system() * 1000.0) ^ randi()
+	pending_tower_offer = TowerDraft.offer(rng, RunManager.unlocked_towers())
+	pending_tower_ids.clear()
+	_offer_signature = signature
+
+## Called when a run actually begins, so the next standard run is offered a new
+## hand rather than the one that was just played.
+func consume_tower_offer() -> void:
+	_offer_signature = ""
+
 ## The board picked at Run Setup. Empty falls back to the first map, so a save
 ## naming a board a later build removed still starts.
 var pending_map_id: StringName = &""

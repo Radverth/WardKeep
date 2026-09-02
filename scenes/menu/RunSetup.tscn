@@ -30,7 +30,7 @@ theme_override_constants/separation = 18
 [node name="Title" type="Label" parent="Root"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Your Roster"
+text = "Prepare a Run"
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="Root"]
@@ -66,6 +66,13 @@ text = ""
 horizontal_alignment = 1
 autowrap_mode = 3
 
+[node name="TowerHeading" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Choose your towers"
+horizontal_alignment = 1
+
 [node name="Scroll" type="ScrollContainer" parent="Root"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -76,7 +83,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 14
 theme_override_constants/v_separation = 14
-columns = 3
+columns = 1
 
 [node name="BeginButton" type="Button" parent="Root"]
 unique_name_in_owner = true

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_pwg8g"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_dpryt"]
 
 [resource]
-script = ExtResource("1_pwg8g")
+script = ExtResource("1_dpryt")
 id = &"grunt"
 display_name = "Grunt"
 base_hp = 12.0

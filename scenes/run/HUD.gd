@@ -153,10 +153,11 @@ func refresh_tray() -> void:
 		# portrait screen, so the tray only has to be swiped once the roster
 		# grows past the starters.
 		button.custom_minimum_size = Vector2(190, 128)
-		# No separator between element and price: "Blight · 25g" overran the
-		# button at every width that still fit three towers on screen.
-		button.text = "%s\n%s %dg" % [def.display_name,
-			WK.element_name(def.rune_element), def.purchase_cost()]
+		# Name and price only. The element used to sit here too and clipped the
+		# longer names at every width that still fit three towers on a phone;
+		# arming one now shows a card that carries the element and the matchup,
+		# which is a better place for it than a button this size.
+		button.text = "%s\n%dg" % [def.display_name, def.purchase_cost()]
 		button.add_theme_font_size_override("font_size", 16)
 		button.clip_text = true
 		button.pressed.connect(func() -> void:

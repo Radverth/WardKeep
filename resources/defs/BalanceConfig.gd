@@ -33,6 +33,13 @@ class_name BalanceConfig
 @export var gold_wave_clear_per_wave: int = 1
 @export var sell_refund_ratio: float = 0.6
 
+## --- opening tower draft (PROVISIONAL, SPEC_GAPS.md #15) ----------------
+## How many unlocked towers a run offers, and how many of them the player takes
+## into it. Five of nine picking three gives ten possible hands at a full Keep
+## Hub, and leaves two thirds of the roster out of any given run.
+@export var tower_offer_size: int = 5
+@export var tower_draft_picks: int = 3
+
 ## --- Ward Flare (PROVISIONAL, SPEC_GAPS.md #12) -------------------------
 ## The spec has no player ability: once towers are placed a wave plays itself
 ## out, and on a phone that is a lot of watching. Damage is multiplied by the

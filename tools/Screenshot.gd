@@ -37,6 +37,12 @@ func _ready() -> void:
 			arm_tower = true
 		elif argument == "--flare":
 			arm_flare = true
+		elif argument.begins_with("--roster="):
+			for id: String in argument.trim_prefix("--roster=").split(","):
+				GameState.pending_tower_ids.append(StringName(id))
+		elif argument == "--unlock-all":
+			for def: Resource in Registry.towers():
+				SaveManager.unlock_tower(String(def.id))
 		elif argument == "--seed-history":
 			for wave: int in [6, 8, 8, 9, 11, 12, 12, 13, 14, 17, 19, 22, 28]:
 				SaveManager.record_run_end(wave)

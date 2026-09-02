@@ -13,8 +13,11 @@ const THUMB_SIZE: Vector2 = Vector2(128, 196)
 @onready var _begin_button: Button = %BeginButton
 @onready var _back_button: Button = %BackButton
 @onready var _hint: Label = %Hint
+@onready var _heading: Label = %TowerHeading
 
 var _thumbs: Array[MapThumb] = []
+var _cards: Dictionary = {}          ## StringName -> Button
+var _required: int = 3
 
 func _ready() -> void:
 	# The device may put a punch-hole over the top of this screen and a
@@ -53,44 +56,100 @@ func _on_map_chosen(board: ArenaMap) -> void:
 	for thumb: MapThumb in _thumbs:
 		thumb.button_pressed = thumb.map != null and thumb.map.id == board.id
 
+## The opening draft. Every unlocked tower used to be buyable in every run,
+## which made the roster a menu rather than a hand — nine towers, always the
+## same nine. Three of an offer turns the opening into a decision, and a run is
+## frost-heavy or blight-heavy before the first wave lands.
 func _populate() -> void:
 	for child: Node in _roster.get_children():
 		child.queue_free()
-	var available: Array[TowerDef] = RunManager.available_towers()
-	for def: TowerDef in available:
-		_roster.add_child(_make_card(def))
-	var locked: int = Registry.towers().size() - available.size()
-	_hint.text = "%d towers ready · %d still locked in the Keep Hub" % [available.size(), locked]
+	_cards.clear()
+	GameState.ensure_tower_offer()
+	var offer: Array[StringName] = GameState.pending_tower_offer
+	_required = TowerDraft.picks_for(offer.size())
+	for id: StringName in offer:
+		var def: TowerDef = Registry.tower(id)
+		if def == null:
+			continue
+		var card: Button = _make_card(def)
+		_roster.add_child(card)
+		_cards[id] = card
+	# An account with only the starters is offered exactly those and asked for
+	# all of them, so it takes them rather than making the player tap three
+	# cards to reach the only possible answer.
+	if offer.size() <= _required:
+		GameState.pending_tower_ids = offer.duplicate()
+	_refresh_selection()
 
-func _make_card(def: TowerDef) -> Control:
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(0, 150)
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	panel.add_child(box)
+## A row rather than a tile. A Button is not a Container, so a grid of them
+## gave every card the width of its own text and the labels wrapped one letter
+## per line; and the §4 role strings need a line to themselves anyway, which is
+## the whole reason to show them here.
+func _make_card(def: TowerDef) -> Button:
+	var card := Button.new()
+	card.custom_minimum_size = Vector2(0, 116)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.toggle_mode = true
+	card.pressed.connect(_on_card_pressed.bind(def.id))
+
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for side: String in ["left", "right"]:
+		margin.add_theme_constant_override("margin_" + side, 14)
+	card.add_child(margin)
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_child(row)
 
 	var icon := TextureRect.new()
 	icon.texture = def.texture()
-	icon.custom_minimum_size = Vector2(0, 64)
+	icon.custom_minimum_size = Vector2(68, 68)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.modulate = WK.element_tint(def.rune_element) * UiKit.skin_modulate(
 		SaveManager.equipped_skin(String(def.id)))
-	box.add_child(icon)
+	row.add_child(icon)
 
-	var name_label := Label.new()
-	name_label.text = def.display_name
-	name_label.add_theme_font_size_override("font_size", 20)
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(name_label)
+	var text := VBoxContainer.new()
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	text.add_theme_constant_override("separation", 1)
+	row.add_child(text)
+	text.add_child(_card_label("%s  ·  %dg" % [def.display_name, def.purchase_cost()], 22))
+	text.add_child(_card_label("%s — %s" % [WK.element_name(def.rune_element), def.role], 16))
+	return card
 
-	var cost_label := Label.new()
-	cost_label.text = "%s · %dg" % [WK.element_name(def.rune_element), def.purchase_cost()]
-	cost_label.add_theme_font_size_override("font_size", 17)
-	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(cost_label)
-	return panel
+func _card_label(text: String, size: int) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", size)
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return label
+
+## Taking one too many drops the oldest pick rather than refusing the tap: on a
+## phone, a card that does nothing when pressed reads as a broken button.
+func _on_card_pressed(id: StringName) -> void:
+	AudioBus.click()
+	var chosen: Array[StringName] = GameState.pending_tower_ids
+	if id in chosen:
+		chosen.erase(id)
+	else:
+		chosen.append(id)
+		while chosen.size() > _required:
+			chosen.remove_at(0)
+	_refresh_selection()
+
+func _refresh_selection() -> void:
+	var chosen: Array[StringName] = GameState.pending_tower_ids
+	for id: StringName in _cards:
+		_cards[id].button_pressed = id in chosen
+	_heading.text = "Choose %d towers  ·  %d picked" % [_required, chosen.size()]
+	var locked: int = Registry.towers().size() - RunManager.unlocked_towers().size()
+	_hint.text = "Only what you take can be built this run. %d still locked in the Keep Hub." % locked
+	_begin_button.disabled = chosen.size() != _required
 
 func _on_begin() -> void:
 	AudioBus.click()

@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_60884"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_iaali"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_hig23"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_akfos"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_kuu73"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_qoddh"]
 
-[sub_resource type="Resource" id="Resource_7ab4s"]
-script = ExtResource("3_hig23")
+[sub_resource type="Resource" id="Resource_6to6q"]
+script = ExtResource("3_qoddh")
 cost = 30
 damage = 4.0
 range_tiles = 3.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_1ojdd"]
-script = ExtResource("3_hig23")
+[sub_resource type="Resource" id="Resource_f62ln"]
+script = ExtResource("3_qoddh")
 cost = 50
 damage = 10.0
 range_tiles = 3.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_38vjw"]
-script = ExtResource("3_hig23")
+[sub_resource type="Resource" id="Resource_bb4ov"]
+script = ExtResource("3_qoddh")
 cost = 85
 damage = 24.0
 range_tiles = 4.0
@@ -56,17 +56,17 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_iaali")
+script = ExtResource("2_kuu73")
 id = &"plague_caster"
 display_name = "Plague Caster"
 role = "Single-target, spreads DoT on splash death"
 rune_element = 2
-tiers = Array[ExtResource("3_hig23")]([SubResource("Resource_7ab4s"), SubResource("Resource_1ojdd"), SubResource("Resource_38vjw")])
+tiers = Array[ExtResource("3_qoddh")]([SubResource("Resource_6to6q"), SubResource("Resource_f62ln"), SubResource("Resource_bb4ov")])
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(3, 3)
 sprite_cell_size = 16
 sprite_cell_margin = 0
-projectile_scene = ExtResource("1_60884")
+projectile_scene = ExtResource("1_akfos")
 scene_path = "res://scenes/towers/PlagueCaster.tscn"
 unlock_cost = 150
 required_account_level = 3

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_nuu1j"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_vu60c"]
 
 [resource]
-script = ExtResource("1_nuu1j")
+script = ExtResource("1_vu60c")
 id = &"hair_trigger"
 title = "Hair Trigger"
 description = "+40% fire rate for all towers, but they reach 20% less far."

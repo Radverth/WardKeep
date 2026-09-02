@@ -38,8 +38,10 @@ jobs:
 
       # Boots a real Arena and plays it to the wave-10 boss fight. Catches
       # regressions that only appear once enemies are actually walking.
+      # --fixed-fps reports a constant delta and disables real-time sync, so the
+      # run is reproducible: without it the result swung on CI load alone.
       - name: Headless playtest
-        run: godot --headless res://tests/Playtest.tscn -- --waves 12
+        run: godot --headless --fixed-fps 60 res://tests/Playtest.tscn -- --waves 12
 
   build-test-apk:
     name: Build debug test APK

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_wabvk"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_twggn"]
 
 [resource]
-script = ExtResource("1_wabvk")
+script = ExtResource("1_twggn")
 id = &"long_watch"
 title = "Long Watch"
 description = "+45% range for all towers, but they fire 18% slower."

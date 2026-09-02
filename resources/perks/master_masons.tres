@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PerkDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_dboil"]
+[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_51srg"]
 
 [resource]
-script = ExtResource("1_dboil")
+script = ExtResource("1_51srg")
 id = &"master_masons"
 display_name = "Master Masons"
 description = "Tower upgrades cost less, so going tall comes sooner."

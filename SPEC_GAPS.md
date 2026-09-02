@@ -316,6 +316,30 @@ the balance was measured against.
 
 ---
 
+## 15. Every unlocked tower is available in every run
+
+**Where it bites:** User Flow §3.2 says "no pre-run loadout picking in v1.0:
+every unlocked tower is available in-run via gold". That makes the roster a
+menu rather than a hand — nine towers, always the same nine, so two runs of an
+endless roguelite differ only in the cards that fall.
+
+**Implemented:** an opening draft. Run Setup offers five of what the Keep Hub
+has unlocked and the player takes three; only those can be built. A Hollow
+Charter now opens a tower left out of the draft as well as one never bought,
+which is what makes the card worth taking.
+
+An account with only the three starters is offered exactly those and takes all
+of them — the same game §3.2 describes — so the draft opens up as the Keep Hub
+fills, and unlocking a tower widens the pool rather than adding one more thing
+to the tray. A run that starts with no draft recorded falls back to every
+unlock, so a save from before this existed cannot land in the Arena with an
+empty tray.
+
+The Daily's offer comes from the date's seed: §7 wants every player on the same
+run, and the hand they are dealt is part of that. What they take is theirs.
+
+---
+
 ## Deviations from the documents that are not gaps
 
 - **GUT** (Technical Architecture §7) is not vendored — it is a third-party

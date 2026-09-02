@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PerkDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_iilmm"]
+[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_rg3cx"]
 
 [resource]
-script = ExtResource("1_iilmm")
+script = ExtResource("1_rg3cx")
 id = &"reinforced_keep"
 display_name = "Reinforced Keep"
 description = "The Ward Stone can take more punishment before a run ends."

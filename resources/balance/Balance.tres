@@ -1,34 +1,34 @@
 [gd_resource type="Resource" script_class="BalanceConfig" load_steps=7 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/BalanceConfig.gd" id="1_66kkk"]
-[ext_resource type="Script" path="res://resources/defs/WaveBand.gd" id="2_1ip4f"]
+[ext_resource type="Script" path="res://resources/defs/BalanceConfig.gd" id="1_gfe3s"]
+[ext_resource type="Script" path="res://resources/defs/WaveBand.gd" id="2_xlumt"]
 
-[sub_resource type="Resource" id="Resource_1pb7t"]
-script = ExtResource("2_1ip4f")
+[sub_resource type="Resource" id="Resource_36hbu"]
+script = ExtResource("2_xlumt")
 from_wave = 1
 to_wave = 5
 base = 10.0
 step = 6.0
 spawn_interval = 1.2
 
-[sub_resource type="Resource" id="Resource_iq3wb"]
-script = ExtResource("2_1ip4f")
+[sub_resource type="Resource" id="Resource_cw6wo"]
+script = ExtResource("2_xlumt")
 from_wave = 6
 to_wave = 10
 base = 40.0
 step = 9.0
 spawn_interval = 1.0
 
-[sub_resource type="Resource" id="Resource_6c2bf"]
-script = ExtResource("2_1ip4f")
+[sub_resource type="Resource" id="Resource_eoark"]
+script = ExtResource("2_xlumt")
 from_wave = 11
 to_wave = 30
 base = 80.0
 step = 12.0
 spawn_interval = 0.85
 
-[sub_resource type="Resource" id="Resource_jxgwt"]
-script = ExtResource("2_1ip4f")
+[sub_resource type="Resource" id="Resource_iip50"]
+script = ExtResource("2_xlumt")
 from_wave = 31
 to_wave = -1
 base = 308.0
@@ -36,8 +36,8 @@ step = 15.0
 spawn_interval = 0.7
 
 [resource]
-script = ExtResource("1_66kkk")
-wave_bands = Array[ExtResource("2_1ip4f")]([SubResource("Resource_1pb7t"), SubResource("Resource_iq3wb"), SubResource("Resource_6c2bf"), SubResource("Resource_jxgwt")])
+script = ExtResource("1_gfe3s")
+wave_bands = Array[ExtResource("2_xlumt")]([SubResource("Resource_36hbu"), SubResource("Resource_cw6wo"), SubResource("Resource_eoark"), SubResource("Resource_iip50")])
 stat_scale_per_wave = 0.09
 elite_every = 5
 elite_budget_multiplier = 1.4
@@ -53,6 +53,8 @@ gold_boss_per_wave = 5
 gold_wave_clear_base = 5
 gold_wave_clear_per_wave = 1
 sell_refund_ratio = 0.6
+tower_offer_size = 5
+tower_draft_picks = 3
 ability_cooldown = 24.0
 ability_radius_tiles = 1.6
 ability_base_damage = 30.0

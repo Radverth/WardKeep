@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_rb4t6"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_b6pqn"]
 
 [resource]
-script = ExtResource("1_rb4t6")
+script = ExtResource("1_b6pqn")
 id = &"blood_price"
 title = "Blood Price"
 description = "+35% damage for all towers. The Ward Stone loses 8 maximum health."

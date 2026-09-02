@@ -32,6 +32,8 @@ var pending_draft: Array[DraftCardDef] = []
 var placed_towers: Array = []
 ## Tower ids unlocked for this run only (Feature Spec §5.2 "Hollow Charter").
 var run_unlocked_towers: Array[StringName] = []
+## The towers drafted into this run at Run Setup.
+var run_roster: Array[StringName] = []
 
 func _ready() -> void:
 	modifiers = RunModifiers.new()
@@ -52,6 +54,8 @@ func start_run(run_mode: WK.RunMode = WK.RunMode.STANDARD) -> void:
 	pending_draft.clear()
 	placed_towers.clear()
 	run_unlocked_towers.clear()
+	run_roster = GameState.pending_tower_ids.duplicate()
+	GameState.consume_tower_offer()
 	# Keep Hub perks are permanent and apply before the first wave, so they are
 	# folded into the starting values rather than treated as run modifiers.
 	ward_stone_max_hp = Balance.config().ward_stone_hp + Perks.ward_stone_bonus()
@@ -62,9 +66,16 @@ func start_run(run_mode: WK.RunMode = WK.RunMode.STANDARD) -> void:
 	gold_changed.emit(gold)
 	ward_stone_damaged.emit(ward_stone_hp, ward_stone_max_hp)
 
+## Set by the headless playtest so CI runs the same wave order every time. A
+## smoke test on a random seed is a flaky test by construction: it samples the
+## balance distribution instead of proving the game runs.
+var seed_override: int = -1
+
 ## Feature Spec §7 — the Daily Challenge seed is the UTC date, so every player
 ## sees the same waves and the same draft offers on a given day.
 func _seed_for(run_mode: WK.RunMode) -> int:
+	if seed_override >= 0:
+		return seed_override
 	if run_mode == WK.RunMode.DAILY:
 		return daily_seed()
 	return int(Time.get_unix_time_from_system() * 1000.0) ^ randi()
@@ -190,9 +201,25 @@ func _unlock_random_locked_tower() -> void:
 	run_unlocked_towers.append(locked[rng.randi_range(0, locked.size() - 1)])
 	run_unlocks_changed.emit()
 
-## Permanent Keep Hub unlocks plus anything the draft opened for this run.
+## Everything the Keep Hub has bought, which is the pool the opening draft is
+## dealt from — not the same thing as what this run may build.
+func unlocked_towers() -> Array[TowerDef]:
+	var out: Array[TowerDef] = []
+	for def: TowerDef in Registry.towers():
+		if SaveManager.is_tower_unlocked(String(def.id)):
+			out.append(def)
+	return out
+
+## What this run may build: the three drafted at Run Setup, plus anything a
+## Hollow Charter opened mid-run. A run with no draft recorded — the smoke test,
+## or a save from before the draft existed — falls back to every unlock, so the
+## Arena is never left with an empty tray.
 func is_tower_available(tower_id: StringName) -> bool:
-	return SaveManager.is_tower_unlocked(String(tower_id)) or tower_id in run_unlocked_towers
+	if tower_id in run_unlocked_towers:
+		return true
+	if run_roster.is_empty():
+		return SaveManager.is_tower_unlocked(String(tower_id))
+	return tower_id in run_roster
 
 func available_towers() -> Array[TowerDef]:
 	var out: Array[TowerDef] = []
