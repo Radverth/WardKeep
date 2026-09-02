@@ -75,12 +75,15 @@ func refresh_tray() -> void:
 	_buttons.clear()
 	for def: TowerDef in RunManager.available_towers():
 		var button := Button.new()
-		# Wide enough for the longest tower name plus its element on one line
-		# each — the tray scrolls, so width costs nothing but a swipe.
-		button.custom_minimum_size = Vector2(212, 128)
-		button.text = "%s\n%s · %dg" % [def.display_name,
+		# Narrow enough that three towers and the Ward Flare fit the width of a
+		# portrait screen, so the tray only has to be swiped once the roster
+		# grows past the starters.
+		button.custom_minimum_size = Vector2(190, 128)
+		# No separator between element and price: "Blight · 25g" overran the
+		# button at every width that still fit three towers on screen.
+		button.text = "%s\n%s %dg" % [def.display_name,
 			WK.element_name(def.rune_element), def.purchase_cost()]
-		button.add_theme_font_size_override("font_size", 17)
+		button.add_theme_font_size_override("font_size", 16)
 		button.clip_text = true
 		button.pressed.connect(func() -> void:
 			AudioBus.click()

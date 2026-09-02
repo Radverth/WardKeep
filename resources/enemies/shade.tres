@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_gpvyf"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_qna0f"]
 
 [resource]
-script = ExtResource("1_gpvyf")
+script = ExtResource("1_qna0f")
 id = &"shade"
 display_name = "Shade"
 base_hp = 30.0
@@ -16,6 +16,8 @@ sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toe
 sprite_cell = Vector2i(0, 16)
 sprite_cell_size = 16
 sprite_cell_margin = 0
+sprite_faces_left = false
+sprite_faces_camera = false
 tint = Color(0.8, 0.84, 1, 0.66)
 scale_factor = 4.0
 pack_size = 1

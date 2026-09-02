@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_4nu0d"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_25ooi"]
 
 [resource]
-script = ExtResource("1_4nu0d")
+script = ExtResource("1_25ooi")
 id = &"swarmling"
 display_name = "Swarmling"
 base_hp = 6.0
@@ -16,6 +16,8 @@ sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toe
 sprite_cell = Vector2i(5, 14)
 sprite_cell_size = 16
 sprite_cell_margin = 0
+sprite_faces_left = false
+sprite_faces_camera = false
 tint = Color(1, 1, 1, 1)
 scale_factor = 3.6
 pack_size = 3

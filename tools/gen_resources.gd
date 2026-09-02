@@ -534,6 +534,8 @@ func _build_enemies() -> void:
 			int(entry["art"]) / TOEN_COLUMNS)
 		def.tint = entry.get("tint", Color.WHITE)
 		def.scale_factor = float(entry.get("scale", 0.8))
+		def.sprite_faces_left = bool(entry.get("faces_left", false))
+		def.sprite_faces_camera = bool(entry.get("faces_camera", false))
 		def.pack_size = int(entry.get("pack", 1))
 		def.aura_radius_tiles = float(entry.get("aura_radius", 0.0))
 		def.aura_damage_reduction = float(entry.get("aura_ward", 0.0))
@@ -565,15 +567,15 @@ func _build_enemies() -> void:
 	var bosses: Array = [
 		{"id": "the_bulwark", "name": "The Bulwark", "hp": 450.0, "speed": 0.5, "dmg": 5.0,
 			"armor": WK.ArmorType.HEAVY, "art": "World01_005_Shello", "scale": 2.0,
-			"tint": Color.WHITE,
+			"tint": Color.WHITE, "faces_camera": true,
 			"script": "res://scenes/enemies/bosses/BulwarkPattern.gd"},
 		{"id": "frostmaw", "name": "Frostmaw", "hp": 700.0, "speed": 0.7, "dmg": 6.0,
 			"armor": WK.ArmorType.ETHEREAL, "art": "Frostmaw_from_Salamander", "scale": 2.0,
-			"tint": Color.WHITE,
+			"tint": Color.WHITE, "faces_left": true,
 			"script": "res://scenes/enemies/bosses/FrostmawPattern.gd"},
 		{"id": "the_hollow_king", "name": "The Hollow King", "hp": 1000.0, "speed": 0.9, "dmg": 6.0,
 			"armor": WK.ArmorType.NONE, "art": "World01_004_WailingPrince", "scale": 1.5,
-			"tint": Color.WHITE,
+			"tint": Color.WHITE, "faces_camera": true,
 			"script": "res://scenes/enemies/bosses/HollowKingPattern.gd"},
 	]
 	for entry: Dictionary in bosses:
@@ -588,6 +590,8 @@ func _build_enemies() -> void:
 		def.unlock_wave = 10
 		def.is_boss = true
 		def.provisional = true
+		def.sprite_faces_left = bool(entry.get("faces_left", false))
+		def.sprite_faces_camera = bool(entry.get("faces_camera", false))
 		def.sprite_atlas_path = BATTLER_DIR + str(entry["art"]) + ".png"
 		def.sprite_cell = Vector2i(-1, -1)   # whole-image sprite, not a sheet cell
 		def.tint = entry["tint"]

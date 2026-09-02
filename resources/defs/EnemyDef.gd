@@ -20,6 +20,13 @@ class_name EnemyDef
 @export var sprite_cell: Vector2i = Vector2i(-1, -1)
 @export var sprite_cell_size: int = 16
 @export var sprite_cell_margin: int = 0
+## True when the artwork is drawn facing left. Enemy flips the sprite to match
+## the direction of travel, and it has to know which way the source faces to do
+## that: Toen's soldiers face right, Frostmaw faces left.
+@export var sprite_faces_left: bool = false
+## Front-on portrait art has no left or right to turn, so flipping it only
+## mirrors detail for no gain. True for the Battlers drawn head-on.
+@export var sprite_faces_camera: bool = false
 @export var tint: Color = Color.WHITE
 @export var scale_factor: float = 4.0
 

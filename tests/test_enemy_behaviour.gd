@@ -88,3 +88,44 @@ func test_every_aura_ring_means_something() -> void:
 		var projects: bool = def.aura_damage_reduction > 0.0 \
 			or def.aura_speed_bonus > 0.0 or def.aura_heal_per_second > 0.0
 		assert_true(projects, "%s draws a ring, so it must project something" % def.id)
+
+## --- facing --------------------------------------------------------------
+
+## A lane that runs right to left had every soldier moonwalking down it: the
+## artwork all faces one way and nothing ever turned it.
+func test_an_enemy_turns_to_face_the_way_it_walks() -> void:
+	var grunt: Enemy = _spawn(&"grunt")
+	assert_false(grunt.def.sprite_faces_camera, "the Grunt is drawn from the side")
+	grunt._face_along(Vector2.LEFT)
+	var facing_left: bool = grunt.get_node("Sprite").flip_h
+	grunt._face_along(Vector2.RIGHT)
+	assert_ne(grunt.get_node("Sprite").flip_h, facing_left,
+		"walking the other way turns it round")
+
+## Vertical legs must not snap the sprite back to the artwork's default, or an
+## enemy flickers every time the lane turns a corner.
+func test_a_vertical_leg_keeps_the_last_facing() -> void:
+	var grunt: Enemy = _spawn(&"grunt")
+	grunt._face_along(Vector2.LEFT)
+	var before: bool = grunt.get_node("Sprite").flip_h
+	grunt._face_along(Vector2.DOWN)
+	assert_eq(grunt.get_node("Sprite").flip_h, before, "still facing the same way")
+
+## Art drawn head-on has no side to turn, so mirroring it only swaps detail
+## around for no gain.
+func test_head_on_art_is_never_mirrored() -> void:
+	for id: StringName in [&"the_bulwark", &"the_hollow_king"]:
+		var boss: Enemy = _spawn(id, 10)
+		assert_true(boss.def.sprite_faces_camera, "%s is drawn head-on" % id)
+		boss._face_along(Vector2.LEFT)
+		assert_false(boss.get_node("Sprite").flip_h, "%s is left alone" % id)
+
+## Whichever way a sprite is drawn, it ends up facing its direction of travel.
+func test_every_side_on_sprite_ends_up_facing_forward() -> void:
+	for def: EnemyDef in Registry.spawnable_enemies() + Registry.bosses():
+		if def.sprite_faces_camera:
+			continue
+		var enemy: Enemy = _spawn(def.id, 10)
+		enemy._face_along(Vector2.RIGHT)
+		assert_eq(enemy.get_node("Sprite").flip_h, def.sprite_faces_left,
+			"%s faces right when walking right" % def.id)

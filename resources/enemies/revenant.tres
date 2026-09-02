@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_itucm"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_0devr"]
 
 [resource]
-script = ExtResource("1_itucm")
+script = ExtResource("1_0devr")
 id = &"revenant"
 display_name = "Revenant"
 base_hp = 44.0
@@ -16,6 +16,8 @@ sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toe
 sprite_cell = Vector2i(2, 18)
 sprite_cell_size = 16
 sprite_cell_margin = 0
+sprite_faces_left = false
+sprite_faces_camera = false
 tint = Color(0.66, 0.86, 1, 0.74)
 scale_factor = 4.6
 pack_size = 1

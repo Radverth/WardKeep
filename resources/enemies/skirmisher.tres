@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_1ww1c"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_siixv"]
 
 [resource]
-script = ExtResource("1_1ww1c")
+script = ExtResource("1_siixv")
 id = &"skirmisher"
 display_name = "Skirmisher"
 base_hp = 18.0
@@ -16,6 +16,8 @@ sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toe
 sprite_cell = Vector2i(0, 17)
 sprite_cell_size = 16
 sprite_cell_margin = 0
+sprite_faces_left = false
+sprite_faces_camera = false
 tint = Color(1, 1, 1, 1)
 scale_factor = 4.2
 pack_size = 1

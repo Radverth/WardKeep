@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_vijng"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_ndc52"]
 
 [resource]
-script = ExtResource("1_vijng")
+script = ExtResource("1_ndc52")
 id = &"contagion"
 title = "Contagion"
 description = "Every tower spreads its Blight when a victim dies."

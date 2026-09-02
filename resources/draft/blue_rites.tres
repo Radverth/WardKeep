@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_ec1rl"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_2iqyh"]
 
 [resource]
-script = ExtResource("1_ec1rl")
+script = ExtResource("1_2iqyh")
 id = &"blue_rites"
 title = "Blue Rites"
 description = "+15% damage for Frost towers."

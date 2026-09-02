@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_p5nt1"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_pag66"]
 
 [resource]
-script = ExtResource("1_p5nt1")
+script = ExtResource("1_pag66")
 id = &"scorched_earth"
 title = "Scorched Earth"
 description = "+45% damage-over-time damage, but Physical towers hit 18% softer."

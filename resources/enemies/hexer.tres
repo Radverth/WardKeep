@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_yvuqs"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_u2w5w"]
 
 [resource]
-script = ExtResource("1_yvuqs")
+script = ExtResource("1_u2w5w")
 id = &"hexer"
 display_name = "Hexer"
 base_hp = 26.0
@@ -16,6 +16,8 @@ sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toe
 sprite_cell = Vector2i(6, 14)
 sprite_cell_size = 16
 sprite_cell_margin = 0
+sprite_faces_left = false
+sprite_faces_camera = false
 tint = Color(1, 1, 1, 1)
 scale_factor = 4.2
 pack_size = 1

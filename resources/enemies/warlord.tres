@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_av6j3"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_jqflx"]
 
 [resource]
-script = ExtResource("1_av6j3")
+script = ExtResource("1_jqflx")
 id = &"warlord"
 display_name = "Warlord"
 base_hp = 110.0
@@ -16,6 +16,8 @@ sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toe
 sprite_cell = Vector2i(6, 23)
 sprite_cell_size = 16
 sprite_cell_margin = 0
+sprite_faces_left = false
+sprite_faces_camera = false
 tint = Color(1, 1, 1, 1)
 scale_factor = 5.0
 pack_size = 1

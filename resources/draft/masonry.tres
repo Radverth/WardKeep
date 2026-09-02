@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_pf8um"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_p1esy"]
 
 [resource]
-script = ExtResource("1_pf8um")
+script = ExtResource("1_p1esy")
 id = &"masonry"
 title = "Masonry"
 description = "Repair 2 Ward Stone health."

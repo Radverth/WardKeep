@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_11lyc"]
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_487ws"]
+[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_t2jlg"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_0k853"]
 
 [resource]
-script = ExtResource("2_487ws")
+script = ExtResource("2_0k853")
 id = &"the_bulwark"
 display_name = "The Bulwark"
 base_hp = 450.0
@@ -17,6 +17,8 @@ sprite_atlas_path = "res://assets/sprites/enemies/battlers/World01_005_Shello.pn
 sprite_cell = Vector2i(-1, -1)
 sprite_cell_size = 16
 sprite_cell_margin = 0
+sprite_faces_left = false
+sprite_faces_camera = true
 tint = Color(1, 1, 1, 1)
 scale_factor = 2.0
 pack_size = 1
@@ -27,6 +29,6 @@ aura_heal_per_second = 0.0
 phase_visible_seconds = 0.0
 phase_hidden_seconds = 0.0
 is_boss = true
-boss_pattern_script = ExtResource("1_11lyc")
+boss_pattern_script = ExtResource("1_t2jlg")
 scene_path = "res://scenes/enemies/bosses/TheBulwark.tscn"
 provisional = true

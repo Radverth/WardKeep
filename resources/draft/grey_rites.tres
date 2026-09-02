@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_r4wjt"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_y64qx"]
 
 [resource]
-script = ExtResource("1_r4wjt")
+script = ExtResource("1_y64qx")
 id = &"grey_rites"
 title = "Grey Rites"
 description = "+15% damage for Physical towers."

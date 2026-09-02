@@ -8,7 +8,7 @@ class_name TowerSlot
 ## checkerboard laid over the map; corner ticks over a barely-darkened square
 ## say "you may build here" without competing with the terrain.
 
-enum Marker { RESTING, VALID, INVALID, SELECTED }
+enum Marker { RESTING, VALID, TAKEN, SELECTED }
 
 ## One source pixel of the 16px art, so every edge lands on a pixel boundary.
 const STROKE: float = float(WK.TILE_SIZE) / 12.0
@@ -16,16 +16,24 @@ const INSET: float = float(WK.TILE_SIZE) / 16.0
 ## How far along each edge the corner ticks run.
 const TICK: float = float(WK.TILE_SIZE) * 0.24
 
+## A free tile lights green while placing; a tile already built on does not
+## light at all. It used to go red, which put a wall of alarm colour across
+## every tower the player had bought — a tile being occupied is not an error,
+## it is just not a target.
+## Resting is quiet enough to sit under a whole board of towers without reading
+## as a grid; armed is loud, because that is the one moment the player needs to
+## see every tile they can build on. A green highlight was tried first and is
+## useless here — the field is green, so it vanished into it.
 const FILL_COLORS: Dictionary = {
-	Marker.RESTING: Color(0.10, 0.20, 0.06, 0.13),
-	Marker.VALID: Color(0.42, 0.85, 0.28, 0.30),
-	Marker.INVALID: Color(0.70, 0.12, 0.10, 0.30),
-	Marker.SELECTED: Color(0.98, 0.82, 0.28, 0.24),
+	Marker.RESTING: Color(0.10, 0.20, 0.06, 0.10),
+	Marker.VALID: Color(1.0, 0.97, 0.80, 0.40),
+	Marker.TAKEN: Color(0.06, 0.10, 0.06, 0.22),
+	Marker.SELECTED: Color(0.98, 0.82, 0.28, 0.26),
 }
 const EDGE_COLORS: Dictionary = {
-	Marker.RESTING: Color(0.99, 0.96, 0.84, 0.34),
-	Marker.VALID: Color(0.97, 0.99, 0.82, 0.95),
-	Marker.INVALID: Color(0.95, 0.45, 0.40, 0.95),
+	Marker.RESTING: Color(0.94, 0.92, 0.80, 0.26),
+	Marker.VALID: Color(1.0, 0.95, 0.62, 0.95),
+	Marker.TAKEN: Color(0.0, 0.0, 0.0, 0.0),
 	Marker.SELECTED: Color(1.0, 0.86, 0.34, 1.0),
 }
 
@@ -41,10 +49,10 @@ func setup(cell: Vector2i) -> void:
 func is_free() -> bool:
 	return tower == null
 
-## Shown on every build tile while a tower is armed: a lit pad where it can go,
-## a red one where it cannot.
+## Shown on every build tile while a tower is armed: a lit pad where the tower
+## can go, and a tile that is merely dimmed where one already stands.
 func show_placement_hint(valid: bool) -> void:
-	_set_marker(Marker.VALID if valid else Marker.INVALID)
+	_set_marker(Marker.VALID if valid else Marker.TAKEN)
 
 func show_selected() -> void:
 	_set_marker(Marker.SELECTED)
@@ -69,6 +77,8 @@ func _draw() -> void:
 	var box := Rect2(-half, -half, half * 2.0, half * 2.0)
 	draw_rect(box, FILL_COLORS[_marker], true)
 	var edge: Color = EDGE_COLORS[_marker]
+	if edge.a <= 0.0:
+		return
 	for corner: Vector2 in [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)]:
 		var at := Vector2(corner.x * half, corner.y * half)
 		# Horizontal arm, then vertical arm, both drawn inward from the corner.

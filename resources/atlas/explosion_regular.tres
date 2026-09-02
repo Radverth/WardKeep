@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="AtlasFrames" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/AtlasFrames.gd" id="1_26n2e"]
+[ext_resource type="Script" path="res://resources/defs/AtlasFrames.gd" id="1_0kube"]
 
 [resource]
-script = ExtResource("1_26n2e")
+script = ExtResource("1_0kube")
 texture_path = "res://assets/sprites/vfx/explosion_regular/spritesheet_regularExplosion.png"
 frames = {
 "regularExplosion00.png": Rect2i(0, 0, 192, 192),

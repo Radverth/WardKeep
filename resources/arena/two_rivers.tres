@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_q0lff"]
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_s3137"]
 
 [resource]
-script = ExtResource("1_q0lff")
+script = ExtResource("1_s3137")
 id = &"two_rivers"
 display_name = "Two Rivers"
 blurb = "The lane hugs the walls, so the whole middle is yours to build on."

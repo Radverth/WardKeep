@@ -18,6 +18,10 @@ enum Phase { INTRO, ACTIVE, CLEARED, DRAFT, ENDED }
 ## Gap between the members of a pack, in pixels along the lane.
 const PACK_SPACING: float = float(WK.TILE_SIZE) * 0.7
 
+## How red the keep goes at zero health. Scaled by how hurt it is, so the board
+## carries the same information as the bar at the top of the screen.
+const WARD_STONE_HURT_TINT: Color = Color(1.0, 0.62, 0.55)
+
 const WAVE_INTRO_SECONDS: float = 1.5
 ## The HUD's top bar and tower tray sit over the board. The board is exactly
 ## 12x20 tiles, so without framing, the Ward Stone platform on rows 17-18 ends
@@ -64,6 +68,8 @@ var _speed_step: int = 0
 ## armed it and is choosing where it lands.
 var _ability_cooldown: float = 0.0
 var _ability_armed: bool = false
+## Last Ward Stone health seen, so a repair does not play the damage cue.
+var _ward_stone_hp_seen: int = -1
 
 var _enemy_pools: Dictionary = {}          ## StringName -> Array[Enemy]
 var _projectile_pool: Array[Projectile] = []
@@ -223,6 +229,10 @@ func _place_ward_stone() -> void:
 	_ward_stone.scale = Vector2.ONE * WK.PIXEL_ZOOM
 	_ward_stone.visible = true
 	_ward_stone.position = (centre + Vector2(0.5, 0.5)) * float(WK.TILE_SIZE)
+	_ward_stone.modulate = Color.WHITE
+	# -1 means "nothing seen yet": the first signal arrives from start_run and
+	# is a full Ward Stone, not a hit, so it must not play the damage cue.
+	_ward_stone_hp_seen = -1
 
 func _cache_explosion_frames() -> void:
 	for entry: Array in [
@@ -709,12 +719,20 @@ func _on_bank_pressed() -> void:
 	get_tree().paused = false
 	RunManager.bank_and_retreat()
 
+## Fires on repairs as well as hits, so the tint has to be recomputed from the
+## current health rather than only ever set. It used to be set on damage and
+## never cleared, which left the keep permanently red for the rest of a run —
+## including after a Masonry card or a Field Repairs perk put it back to full.
 func _on_ward_stone_damaged(hp: int, max_hp: int) -> void:
+	var hurt: float = 1.0 - clampf(float(hp) / maxf(1.0, float(max_hp)), 0.0, 1.0)
+	_ward_stone.modulate = Color.WHITE.lerp(WARD_STONE_HURT_TINT, hurt)
+	if hp >= _ward_stone_hp_seen:
+		_ward_stone_hp_seen = hp
+		return
+	_ward_stone_hp_seen = hp
 	AudioBus.play_sfx(AudioBus.SFX_WARD_STONE_HIT)
 	play_vfx("boss_death" if hp <= 0 else "ward_hit", _ward_stone.global_position)
 	_shake(0.35)
-	if hp < max_hp:
-		_ward_stone.modulate = Color(1.0, 0.75, 0.7)
 
 func _on_run_ended(_victory: bool, _waves: int, _runestones: int) -> void:
 	phase = Phase.ENDED

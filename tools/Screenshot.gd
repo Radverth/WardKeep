@@ -21,6 +21,7 @@ func _ready() -> void:
 	var inspect_id: String = ""
 	var tab_index: int = -1
 	var arm_flare: bool = false
+	var arm_tower: bool = false
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--scene="):
 			scene_path = argument.trim_prefix("--scene=")
@@ -32,6 +33,8 @@ func _ready() -> void:
 			auto_play = true
 		elif argument == "--showcase":
 			showcase = true
+		elif argument == "--arm":
+			arm_tower = true
 		elif argument == "--flare":
 			arm_flare = true
 		elif argument == "--seed-history":
@@ -98,6 +101,10 @@ func _ready() -> void:
 		driver.set("arena", scene)
 		driver.set("verbose", false)
 		get_tree().root.add_child(driver)
+	if arm_tower:
+		await get_tree().process_frame
+		await get_tree().process_frame
+		scene.call("_on_tower_armed", Registry.towers()[0])
 	if arm_flare:
 		await get_tree().process_frame
 		await get_tree().process_frame

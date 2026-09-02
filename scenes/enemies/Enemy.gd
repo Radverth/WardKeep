@@ -28,6 +28,15 @@ const AURA_LIFETIME: float = 0.7
 ## Alpha the sprite drops to while an archetype is phased out.
 const PHASED_ALPHA: float = 0.28
 
+## Walk bob: without it everything on the lane slides rather than walks, which
+## is most obvious on the bosses, whose art is too big to read as anything but
+## a shape being moved. Height in pixels and cycles per second.
+const BOB_HEIGHT: float = 3.0
+const BOB_SPEED: float = 5.0
+
+const AURA_RING_ALPHA: float = 0.42
+const AURA_RING_WIDTH: float = 1.5
+
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _health_bar: Node2D = $HealthBar
 
@@ -57,6 +66,10 @@ var _auras: Dictionary = {}            ## kind -> { amount, remaining }
 var phased: bool = false
 var _phase_timer: float = 0.0
 var _aura_timer: float = 0.0
+## Which way the enemy last travelled horizontally, so it keeps facing that way
+## through a vertical leg rather than snapping back to the artwork's default.
+var _facing_left: bool = false
+var _bob_phase: float = 0.0
 
 func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector2Array) -> void:
 	def = enemy_def
@@ -78,6 +91,9 @@ func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector
 	phased = false
 	_phase_timer = def.phase_visible_seconds
 	_aura_timer = 0.0
+	_facing_left = false
+	# Staggered per enemy, or a whole wave bobs in lockstep like a chorus line.
+	_bob_phase = randf() * TAU
 	alive = true
 	global_position = path[0] if path.size() > 0 else Vector2.ZERO
 	_apply_sprite()
@@ -88,6 +104,7 @@ func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector
 func _apply_sprite() -> void:
 	_sprite.texture = def.texture()
 	_sprite.scale = Vector2.ONE * def.scale_factor
+	_sprite.flip_h = false if def.sprite_faces_camera else (_facing_left != def.sprite_faces_left)
 	# §2.3 — an Elite is the same archetype with a glow tint over it.
 	_sprite.modulate = def.tint * (Color(1.35, 1.15, 0.75) if is_elite else Color.WHITE)
 	if phased:
@@ -102,6 +119,7 @@ func _process(delta: float) -> void:
 		return
 	_tick_phase(delta)
 	_tick_aura(delta)
+	_tick_bob(delta)
 	on_tick(delta)
 	if not alive or reached_ward_stone:
 		return
@@ -140,10 +158,20 @@ func _tick_effects(delta: float) -> void:
 		if not alive:
 			return
 
+## Bobs the sprite rather than the node: the node's position is the enemy's
+## place on the lane, which targeting, splash and the tap-to-inspect radius all
+## measure against, and none of them should wobble.
+func _tick_bob(delta: float) -> void:
+	if reached_ward_stone:
+		return
+	_bob_phase += delta * BOB_SPEED * maxf(0.2, current_speed())
+	_sprite.position.y = -absf(sin(_bob_phase)) * BOB_HEIGHT
+
 func _advance(distance: float) -> void:
 	while distance > 0.0 and _segment < _path.size() - 1:
 		var target: Vector2 = _path[_segment + 1]
 		var to_target: Vector2 = target - global_position
+		_face_along(to_target)
 		var length: float = to_target.length()
 		if length <= distance:
 			global_position = target
@@ -157,6 +185,18 @@ func _advance(distance: float) -> void:
 	if _segment >= _path.size() - 1 and not reached_ward_stone:
 		reached_ward_stone = true
 		on_reach_ward_stone()
+
+## Turns to face the way it is walking. A lane that runs right to left had
+## every soldier moonwalking down it, because the artwork all faces one way.
+## Vertical legs keep the last horizontal facing rather than snapping.
+func _face_along(direction: Vector2) -> void:
+	if def == null or def.sprite_faces_camera or absf(direction.x) < 0.01:
+		return
+	var moving_left: bool = direction.x < 0.0
+	if moving_left == _facing_left:
+		return
+	_facing_left = moving_left
+	_sprite.flip_h = moving_left != def.sprite_faces_left
 
 ## What happens on arrival. A regular enemy is through and gone; a boss stays
 ## and lays into the Ward Stone (Feature Spec §2.5), so Boss overrides this.
@@ -320,9 +360,13 @@ func _ready() -> void:
 func _draw() -> void:
 	if not alive or def == null or def.aura_radius_tiles <= 0.0:
 		return
+	# Outline only, and thin. Supports arrive in groups, and a filled disc each
+	# turned four Shieldbearers walking together into a wash of overlapping
+	# circles that read as a rendering fault rather than as information.
 	var radius: float = def.aura_radius_tiles * float(WK.TILE_SIZE)
-	draw_circle(Vector2.ZERO, radius, aura_ring_color() * Color(1, 1, 1, 0.13))
-	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 48, aura_ring_color(), 2.0, true)
+	var colour: Color = aura_ring_color()
+	colour.a = AURA_RING_ALPHA
+	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 40, colour, AURA_RING_WIDTH, true)
 
 ## Overridden by each support so its ring reads as its own effect.
 func aura_ring_color() -> Color:
