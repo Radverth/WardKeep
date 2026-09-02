@@ -17,6 +17,11 @@ const THUMB_SIZE: Vector2 = Vector2(128, 196)
 var _thumbs: Array[MapThumb] = []
 
 func _ready() -> void:
+	# The device may put a punch-hole over the top of this screen and a
+	# gesture bar under the bottom of it.
+	UiKit.pad_for_safe_area($Root)
+	get_viewport().size_changed.connect(func() -> void:
+		UiKit.pad_for_safe_area($Root))
 	_begin_button.pressed.connect(_on_begin)
 	_back_button.pressed.connect(_on_back)
 	_populate_maps()

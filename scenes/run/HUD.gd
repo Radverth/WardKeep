@@ -7,6 +7,8 @@ signal pause_pressed()
 signal bank_pressed()
 signal speed_pressed()
 signal ability_pressed()
+## The chrome's height changed, so the Arena can re-fit the board between them.
+signal safe_area_changed(top: float, bottom: float)
 
 @onready var _wave_label: Label = %WaveLabel
 @onready var _gold_label: Label = %GoldLabel
@@ -15,6 +17,14 @@ signal ability_pressed()
 @onready var _tray: HBoxContainer = %Tray
 @onready var _banner: Label = %Banner
 @onready var _message: Label = %Message
+@onready var _top_bar: PanelContainer = $TopBar
+@onready var _top_margin: MarginContainer = %TopMargin
+@onready var _tray_panel: PanelContainer = $TrayPanel
+@onready var _tray_margin: MarginContainer = %TrayMargin
+@onready var _armed_info: PanelContainer = %ArmedInfo
+@onready var _armed_title: Label = %ArmedTitle
+@onready var _armed_stats: Label = %ArmedStats
+@onready var _armed_matchup: Label = %ArmedMatchup
 @onready var _ability_button: Button = %AbilityButton
 @onready var _speed_button: Button = %SpeedButton
 @onready var _pause_button: Button = %PauseButton
@@ -22,7 +32,20 @@ signal ability_pressed()
 
 var _buttons: Dictionary = {}    ## StringName -> Button
 
+## Height of the bars before any device inset is added.
+const TOP_BAR_HEIGHT: float = 104.0
+const TRAY_HEIGHT: float = 148.0
+## The card that says what an armed tower does. Sits above the tray so it
+## covers as little board as possible at the moment the player is choosing
+## where to put the thing.
+## Three short lines inside the frame's own padding. The §4 role strings are
+## far too long to sit next to a name — "Slow single-target + 20% slow debuff
+## (4s)" wrapped the title on its own — so the numbers say what the role said.
+const ARMED_INFO_HEIGHT: float = 124.0
+
 func _ready() -> void:
+	_apply_safe_area()
+	get_viewport().size_changed.connect(_apply_safe_area)
 	_ability_button.pressed.connect(func() -> void: ability_pressed.emit())
 	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
 	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
@@ -30,6 +53,27 @@ func _ready() -> void:
 	_banner.hide()
 	_message.hide()
 	_bank_button.hide()
+	_armed_info.hide()
+
+## Pushes the top bar below a punch-hole or notch and lifts the tray clear of
+## the gesture bar. Both bars grow rather than move, so their contents stay
+## centred in whatever room is left and nothing lands under the device's own
+## furniture.
+func _apply_safe_area() -> void:
+	var insets: Vector2 = UiKit.safe_insets(get_viewport())
+	# The panels grow to cover the inset so their backgrounds still run to the
+	# edge of the glass; the margins inside push the controls clear of it.
+	_top_bar.offset_bottom = TOP_BAR_HEIGHT + insets.x
+	_top_margin.add_theme_constant_override("margin_top", int(insets.x))
+	_tray_panel.offset_top = -(TRAY_HEIGHT + insets.y)
+	_tray_margin.add_theme_constant_override("margin_bottom", int(insets.y))
+	_armed_info.offset_bottom = -(TRAY_HEIGHT + insets.y)
+	_armed_info.offset_top = _armed_info.offset_bottom - ARMED_INFO_HEIGHT
+	safe_area_changed.emit(TOP_BAR_HEIGHT + insets.x, TRAY_HEIGHT + insets.y)
+
+func board_insets() -> Vector2:
+	var insets: Vector2 = UiKit.safe_insets(get_viewport())
+	return Vector2(TOP_BAR_HEIGHT + insets.x, TRAY_HEIGHT + insets.y)
 
 func bind() -> void:
 	RunManager.gold_changed.connect(_on_gold_changed)
@@ -63,6 +107,36 @@ func set_ability_state(remaining: float, armed: bool) -> void:
 		_ability_button.text = "Ward Flare\nPick a spot"
 	else:
 		_ability_button.text = "Ward Flare\nReady"
+
+## What the tower being placed actually does. Until now nothing said, anywhere:
+## the tray gave a name and a price, and the stats only appeared on the panel
+## for a tower already bought and standing on the board.
+func show_armed_info(def: TowerDef) -> void:
+	if def == null:
+		_armed_info.hide()
+		return
+	var tier: TowerTierData = def.tier(0)
+	_armed_title.text = "%s  ·  %dg" % [def.display_name, def.purchase_cost()]
+	var parts: Array[String] = []
+	if tier.is_aura:
+		parts.append("aura, %.1f tiles" % maxf(tier.range_tiles, tier.splash_radius))
+	else:
+		parts.append("%.0f damage" % tier.damage)
+		parts.append("%.1f/s" % tier.fire_rate)
+		parts.append("%.0f tiles" % tier.range_tiles)
+	if tier.slow_amount > 0.0:
+		parts.append("slows %d%%" % int(round(tier.slow_amount * 100.0)))
+	if tier.dot_damage > 0.0:
+		parts.append("%.0f blight/s" % tier.dot_damage)
+	if tier.splash_radius > 0.0:
+		parts.append("splash %.1f" % tier.splash_radius)
+	_armed_stats.text = " · ".join(parts)
+	_armed_matchup.text = "%s — %s" % [WK.element_name(def.rune_element),
+		Balance.element_matchup_line(def.rune_element)]
+	_armed_info.show()
+
+func hide_armed_info() -> void:
+	_armed_info.hide()
 
 func set_speed_label(multiplier: float) -> void:
 	_speed_button.text = "x%d" % int(round(multiplier))

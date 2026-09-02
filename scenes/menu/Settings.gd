@@ -24,6 +24,11 @@ Interface, effects, fonts and audio — Kenney ([url=https://kenney.nl]kenney.nl
 @onready var _credits_label: RichTextLabel = %CreditsLabel
 
 func _ready() -> void:
+	# The device may put a punch-hole over the top of this screen and a
+	# gesture bar under the bottom of it.
+	UiKit.pad_for_safe_area($Root)
+	get_viewport().size_changed.connect(func() -> void:
+		UiKit.pad_for_safe_area($Root))
 	_music_slider.value = float(SaveManager.get_setting("music_volume", 0.8))
 	_sfx_slider.value = float(SaveManager.get_setting("sfx_volume", 1.0))
 	_reduced_motion.button_pressed = bool(SaveManager.get_setting("reduced_motion", false))

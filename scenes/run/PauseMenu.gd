@@ -13,6 +13,11 @@ signal forfeit_pressed()
 @onready var _forfeit_note: Label = %ForfeitNote
 
 func _ready() -> void:
+	# The device may put a punch-hole over the top of this screen and a
+	# gesture bar under the bottom of it.
+	UiKit.pad_for_safe_area($Root)
+	get_viewport().size_changed.connect(func() -> void:
+		UiKit.pad_for_safe_area($Root))
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_resume_button.pressed.connect(func() -> void:
 		AudioBus.click()

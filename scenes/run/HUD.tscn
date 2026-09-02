@@ -17,21 +17,25 @@ anchor_right = 1.0
 offset_bottom = 104.0
 grow_horizontal = 2
 
-[node name="TopRow" type="HBoxContainer" parent="TopBar"]
+[node name="TopMargin" type="MarginContainer" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TopRow" type="HBoxContainer" parent="TopBar/TopMargin"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="WaveLabel" type="Label" parent="TopBar/TopRow"]
+[node name="WaveLabel" type="Label" parent="TopBar/TopMargin/TopRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Wave 1"
 
-[node name="WardBox" type="VBoxContainer" parent="TopBar/TopRow"]
+[node name="WardBox" type="VBoxContainer" parent="TopBar/TopMargin/TopRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="WardBar" type="ProgressBar" parent="TopBar/TopRow/WardBox"]
+[node name="WardBar" type="ProgressBar" parent="TopBar/TopMargin/TopRow/WardBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
@@ -39,26 +43,26 @@ max_value = 20.0
 value = 20.0
 show_percentage = false
 
-[node name="WardLabel" type="Label" parent="TopBar/TopRow/WardBox"]
+[node name="WardLabel" type="Label" parent="TopBar/TopMargin/TopRow/WardBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "20 / 20"
 horizontal_alignment = 1
 
-[node name="GoldLabel" type="Label" parent="TopBar/TopRow"]
+[node name="GoldLabel" type="Label" parent="TopBar/TopMargin/TopRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "40 g"
 
-[node name="SpeedButton" type="Button" parent="TopBar/TopRow"]
+[node name="SpeedButton" type="Button" parent="TopBar/TopMargin/TopRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(84, 72)
 layout_mode = 2
 text = "x1"
 
-[node name="PauseButton" type="Button" parent="TopBar/TopRow"]
+[node name="PauseButton" type="Button" parent="TopBar/TopMargin/TopRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(84, 72)
 layout_mode = 2
@@ -117,6 +121,49 @@ custom_minimum_size = Vector2(0, 78)
 theme_override_font_sizes/font_size = 24
 text = "Bank & Retreat"
 
+[node name="ArmedInfo" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -272.0
+offset_bottom = -148.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ArmedMargin" type="MarginContainer" parent="ArmedInfo"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+
+[node name="ArmedBox" type="VBoxContainer" parent="ArmedInfo/ArmedMargin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="ArmedTitle" type="Label" parent="ArmedInfo/ArmedMargin/ArmedBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 21
+text = ""
+autowrap_mode = 3
+
+[node name="ArmedStats" type="Label" parent="ArmedInfo/ArmedMargin/ArmedBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = ""
+autowrap_mode = 3
+
+[node name="ArmedMatchup" type="Label" parent="ArmedInfo/ArmedMargin/ArmedBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = ""
+autowrap_mode = 3
+
 [node name="TrayPanel" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
@@ -127,11 +174,15 @@ offset_top = -148.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TrayRow" type="HBoxContainer" parent="TrayPanel"]
+[node name="TrayMargin" type="MarginContainer" parent="TrayPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TrayRow" type="HBoxContainer" parent="TrayPanel/TrayMargin"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="AbilityButton" type="Button" parent="TrayPanel/TrayRow"]
+[node name="AbilityButton" type="Button" parent="TrayPanel/TrayMargin/TrayRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(132, 128)
 layout_mode = 2
@@ -139,13 +190,13 @@ theme_override_font_sizes/font_size = 18
 text = "Ward
 Flare"
 
-[node name="TrayScroll" type="ScrollContainer" parent="TrayPanel/TrayRow"]
+[node name="TrayScroll" type="ScrollContainer" parent="TrayPanel/TrayMargin/TrayRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_scroll_mode = 2
 vertical_scroll_mode = 0
 
-[node name="Tray" type="HBoxContainer" parent="TrayPanel/TrayRow/TrayScroll"]
+[node name="Tray" type="HBoxContainer" parent="TrayPanel/TrayMargin/TrayRow/TrayScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 10

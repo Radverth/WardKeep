@@ -30,6 +30,11 @@ const CHART_TRACK: Color = Color(0.22, 0.20, 0.20)
 @onready var _toast: Label = %Toast
 
 func _ready() -> void:
+	# The device may put a punch-hole over the top of this screen and a
+	# gesture bar under the bottom of it.
+	UiKit.pad_for_safe_area($Root)
+	get_viewport().size_changed.connect(func() -> void:
+		UiKit.pad_for_safe_area($Root))
 	_back_button.pressed.connect(_on_back)
 	SaveManager.runestones_changed.connect(func(_balance: int) -> void: _refresh())
 	_refresh()

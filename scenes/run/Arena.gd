@@ -23,11 +23,7 @@ const PACK_SPACING: float = float(WK.TILE_SIZE) * 0.7
 const WARD_STONE_HURT_TINT: Color = Color(1.0, 0.62, 0.55)
 
 const WAVE_INTRO_SECONDS: float = 1.5
-## The HUD's top bar and tower tray sit over the board. The board is exactly
-## 12x20 tiles, so without framing, the Ward Stone platform on rows 17-18 ends
-## up underneath the tray.
-const HUD_TOP_INSET: float = 104.0
-const HUD_BOTTOM_INSET: float = 148.0
+
 
 
 @onready var _ground: Node2D = $Ground
@@ -86,6 +82,7 @@ func _ready() -> void:
 	_place_ward_stone()
 	_cache_explosion_frames()
 	_frame_board()
+	get_viewport().size_changed.connect(_frame_board)
 
 	RunManager.ward_stone_damaged.connect(_on_ward_stone_damaged)
 	RunManager.run_ended.connect(_on_run_ended)
@@ -94,6 +91,7 @@ func _ready() -> void:
 	_hud.tower_armed.connect(_on_tower_armed)
 	_hud.ability_pressed.connect(_on_ability_pressed)
 	_hud.speed_pressed.connect(_on_speed_pressed)
+	_hud.safe_area_changed.connect(_on_safe_area_changed)
 	_hud.pause_pressed.connect(_open_pause)
 	_hud.bank_pressed.connect(_on_bank_pressed)
 	_pause_menu.resume_pressed.connect(_close_pause)
@@ -250,12 +248,17 @@ func _cache_explosion_frames() -> void:
 
 ## Fits the whole board into the strip of screen the HUD leaves free, so no
 ## part of the arena is ever hidden behind the chrome.
+## The top bar and tray both grow to clear whatever the device puts in the way —
+## a punch-hole above, a gesture bar below — so the free strip is asked of the
+## HUD each time rather than assumed. Fixed numbers here put the Ward Stone
+## under the tray on anything but the one screen they were measured on.
 func _frame_board() -> void:
 	var viewport_size: Vector2 = get_viewport_rect().size
 	var board: Vector2 = Vector2(map.columns, map.rows) * float(WK.TILE_SIZE)
-	var free_height: float = maxf(1.0, viewport_size.y - HUD_TOP_INSET - HUD_BOTTOM_INSET)
+	var insets: Vector2 = _hud.board_insets()
+	var free_height: float = maxf(1.0, viewport_size.y - insets.x - insets.y)
 	var fit: float = minf(viewport_size.x / board.x, free_height / board.y)
-	var free_centre_y: float = HUD_TOP_INSET + free_height * 0.5
+	var free_centre_y: float = insets.x + free_height * 0.5
 	_camera.zoom = Vector2.ONE * fit
 	_camera.position = Vector2(
 		board.x * 0.5,
@@ -476,6 +479,8 @@ func _on_tower_armed(def: TowerDef) -> void:
 	_cancel_ability()
 	_armed_def = def
 	_close_tower_panel()
+	_enemy_panel.close()
+	_hud.show_armed_info(def)
 	_ghost.texture = def.texture()
 	_ghost.scale = Vector2.ONE * WK.PIXEL_ZOOM
 	_ghost.modulate = WK.element_tint(def.rune_element)
@@ -492,6 +497,7 @@ func _clear_armed() -> void:
 	_ghost.visible = false
 	_range_indicator.hide_range()
 	_show_placement_hints(false)
+	_hud.hide_armed_info()
 	_hud.clear_armed()
 
 ## Every build tile reports its state while placing — a pad where the tower
@@ -659,6 +665,12 @@ func _on_ability_pressed() -> void:
 		Balance.config().ability_radius_tiles * float(WK.TILE_SIZE),
 		Color(1.0, 0.78, 0.35))
 	_hud.set_ability_state(0.0, true)
+
+## The bars resize when the viewport does — a rotation, or a device whose safe
+## area only resolves after the first frame — so the board is re-fitted rather
+## than framed once at startup.
+func _on_safe_area_changed(_top: float, _bottom: float) -> void:
+	_frame_board()
 
 func _cancel_ability() -> void:
 	if not _ability_armed:

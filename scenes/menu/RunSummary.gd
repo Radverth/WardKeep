@@ -19,6 +19,11 @@ var _result: Dictionary = {}
 var _doubled: bool = false
 
 func _ready() -> void:
+	# The device may put a punch-hole over the top of this screen and a
+	# gesture bar under the bottom of it.
+	UiKit.pad_for_safe_area($Root)
+	get_viewport().size_changed.connect(func() -> void:
+		UiKit.pad_for_safe_area($Root))
 	_result = GameState.last_run_result
 	_spend_button.pressed.connect(_on_spend)
 	_continue_button.pressed.connect(_on_continue)

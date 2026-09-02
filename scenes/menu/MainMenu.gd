@@ -1,6 +1,9 @@
 extends Control
 ## User Flow §3.1.
 
+const XP_BAR_FILL: Color = Color(0.55, 0.78, 0.44)
+const XP_BAR_TRACK: Color = Color(0.20, 0.19, 0.20)
+
 @onready var _rank_icon: TextureRect = %RankIcon
 @onready var _medal_icon: TextureRect = %MedalIcon
 @onready var _level_label: Label = %LevelLabel
@@ -14,6 +17,11 @@ extends Control
 @onready var _best_wave_label: Label = %BestWaveLabel
 
 func _ready() -> void:
+	# The device may put a punch-hole over the top of this screen and a
+	# gesture bar under the bottom of it.
+	UiKit.pad_for_safe_area($Root)
+	get_viewport().size_changed.connect(func() -> void:
+		UiKit.pad_for_safe_area($Root))
 	GameState.return_scene = GameState.SCENE_MAIN_MENU
 	_start_button.pressed.connect(_on_start)
 	_daily_button.pressed.connect(_on_daily)
@@ -22,13 +30,29 @@ func _ready() -> void:
 	_refresh()
 	AudioBus.play_stinger(AudioBus.STINGER_MENU)
 
+## The theme dresses every ProgressBar as the Ward Stone's health bar. A
+## full-width red one under the player's rank reads as an alarm rather than as
+## progress, and tinting the red art green only made it brown — so this bar
+## gets flat styleboxes of its own instead.
+func _style_xp_bar() -> void:
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = XP_BAR_FILL
+	fill.set_corner_radius_all(4)
+	var track := StyleBoxFlat.new()
+	track.bg_color = XP_BAR_TRACK
+	track.set_corner_radius_all(4)
+	_xp_bar.add_theme_stylebox_override("fill", fill)
+	_xp_bar.add_theme_stylebox_override("background", track)
+
 func _refresh() -> void:
 	var level: int = SaveManager.account_level()
 	_rank_icon.texture = UiKit.rank_texture(level)
+	_rank_icon.modulate = UiKit.rank_tint(level)
 	var medal: Texture2D = UiKit.medal_texture(level)
 	_medal_icon.texture = medal
 	_medal_icon.visible = medal != null
 	_level_label.text = "%s  ·  Level %d" % [UiKit.rank_name(level), level]
+	_style_xp_bar()
 	_xp_bar.value = Balance.level_progress(SaveManager.account_xp()) * 100.0
 	_runestone_label.text = "%d Runestones" % SaveManager.runestones()
 
