@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_v4cpv"]
+
+[resource]
+script = ExtResource("1_v4cpv")
+id = &"press_gang"
+title = "Press-Gang"
+description = "+3 gold from every kill, but wave-clear pays 35% less."
+rarity = 1
+effect_key = &"gold_per_kill_flat"
+magnitude = 3.0
+max_rank = 2
+element_filter = -1
+cost_effect_key = &"wave_clear_bonus_pct"
+cost_magnitude = -0.35
+cost_element_filter = -1
+icon_path = ""

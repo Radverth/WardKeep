@@ -208,6 +208,15 @@ func damage_against(target: Enemy) -> float:
 	var tier_data: TowerTierData = tier()
 	if tier_data.bonus_vs_slowed > 0.0 and target.is_slowed():
 		amount *= 1.0 + tier_data.bonus_vs_slowed
+	# "Frostbite" — every tower hits harder into a slowed target, which is what
+	# makes a Frost line worth building behind rather than instead of damage.
+	if _modifiers().slowed_damage_bonus > 0.0 and target.is_slowed():
+		amount *= 1.0 + _modifiers().slowed_damage_bonus
+	# "Executioner" — finishing blows land harder, so chip damage on a big
+	# target is worth something instead of being outrun by the health bar.
+	if _modifiers().execute_bonus > 0.0 and target.max_hp > 0.0 \
+			and target.hp / target.max_hp <= RunModifiers.EXECUTE_THRESHOLD:
+		amount *= 1.0 + _modifiers().execute_bonus
 	if tier_data.bonus_vs_ethereal > 0.0 and target.def.armor_type == WK.ArmorType.ETHEREAL:
 		amount *= 1.0 + tier_data.bonus_vs_ethereal
 	return amount
@@ -244,7 +253,9 @@ func _hit(enemy: Enemy, damage: float, tier_data: TowerTierData) -> void:
 	if damage > 0.0:
 		enemy.take_damage(damage, def.rune_element, tier_data.ignores_armor_matchup)
 	# Feature Spec §4.3 — Plague Caster spreads its DoT when a victim dies.
-	if tier_data.spreads_dot_on_death and not enemy.alive and effective_dot() > 0.0:
+	# "Contagion" extends that to every tower that has any blight to spread.
+	var spreads: bool = tier_data.spreads_dot_on_death or modifiers.dot_spreads_always
+	if spreads and not enemy.alive and effective_dot() > 0.0:
 		_spread_dot(enemy.global_position, tier_data)
 
 func _spread_dot(at_position: Vector2, tier_data: TowerTierData) -> void:

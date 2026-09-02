@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_oqla4"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_msma8"]
 
 [resource]
-script = ExtResource("1_oqla4")
+script = ExtResource("1_msma8")
 id = &"masonry"
 title = "Masonry"
 description = "Repair 2 Ward Stone health."
@@ -12,4 +12,7 @@ effect_key = &"ward_stone_repair"
 magnitude = 2.0
 max_rank = 3
 element_filter = -1
+cost_effect_key = &""
+cost_magnitude = 0.0
+cost_element_filter = -1
 icon_path = ""

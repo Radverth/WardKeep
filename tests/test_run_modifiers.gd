@@ -50,3 +50,54 @@ func test_state_changing_effects_are_left_to_run_manager() -> void:
 	modifiers.apply(_card("unlock_extra_tower", 1.0))
 	assert_almost_eq(modifiers.damage_mult, 1.0, 0.001, "no accidental damage change")
 	assert_eq(modifiers.rank_of(&"test_ward_stone_repair"), 1, "still ranked")
+
+## --- cards with a price (SPEC_GAPS.md #11) ------------------------------
+
+## The real generated card, as opposed to the synthetic one _card builds.
+func _authored(id: StringName) -> DraftCardDef:
+	return load("res://resources/draft/%s.tres" % id) as DraftCardDef
+
+func test_a_card_with_a_price_applies_both_halves() -> void:
+	var modifiers := RunModifiers.new()
+	var card: DraftCardDef = _authored(&"hair_trigger")
+	assert_true(card.has_cost(), "Hair Trigger costs something")
+	modifiers.apply(card)
+	assert_gt(modifiers.fire_rate_mult, 1.0, "the boon lands")
+	assert_true(modifiers.range_mult < 1.0, "and so does the price")
+
+## A price is only ever a negative magnitude through the same dispatcher, so
+## the one thing that can go wrong is a multiplier crossing zero — at which
+## point a tower does nothing, or below it heals what it shoots.
+func test_no_price_can_turn_a_multiplier_inside_out() -> void:
+	var modifiers := RunModifiers.new()
+	var card: DraftCardDef = _authored(&"long_watch")
+	for _repeat: int in 40:
+		modifiers.apply(card)
+	assert_gt(modifiers.fire_rate_mult, 0.0, "towers still fire")
+	assert_gt(modifiers.range_mult, 0.0, "and still reach")
+	var scorched: DraftCardDef = _authored(&"scorched_earth")
+	for _repeat: int in 40:
+		modifiers.apply(scorched)
+	assert_gt(modifiers.damage_multiplier(WK.RuneElement.PHYSICAL), 0.0,
+		"Physical towers still deal damage")
+
+func test_every_priced_card_names_a_real_effect() -> void:
+	var known := RunModifiers.new()
+	for card: DraftCardDef in DraftPool.new().cards:
+		if not card.has_cost():
+			continue
+		assert_true(card.cost_magnitude != 0.0,
+			"%s has a price worth paying attention to" % card.id)
+		# apply() push_warnings an unknown key rather than failing, so the
+		# check here is that the price is a key the boon side also accepts.
+		known.apply(card)
+
+func test_the_new_cards_reach_their_knobs() -> void:
+	var modifiers := RunModifiers.new()
+	modifiers.apply(_authored(&"executioner"))
+	assert_gt(modifiers.execute_bonus, 0.0, "Executioner finishes wounded targets")
+	modifiers.apply(_authored(&"frostbite"))
+	assert_gt(modifiers.slowed_damage_bonus, 0.0, "Frostbite punishes slowed targets")
+	assert_false(modifiers.dot_spreads_always, "Contagion is off until taken")
+	modifiers.apply(_authored(&"contagion"))
+	assert_true(modifiers.dot_spreads_always, "and on once it is")

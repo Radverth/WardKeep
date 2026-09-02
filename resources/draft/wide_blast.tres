@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_xwv3s"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_tkt2g"]
 
 [resource]
-script = ExtResource("1_xwv3s")
+script = ExtResource("1_tkt2g")
 id = &"wide_blast"
 title = "Wide Blast"
 description = "+1 tile splash radius on all AoE towers."
@@ -12,4 +12,7 @@ effect_key = &"splash_radius_flat"
 magnitude = 1.0
 max_rank = 2
 element_filter = -1
+cost_effect_key = &""
+cost_magnitude = 0.0
+cost_element_filter = -1
 icon_path = ""

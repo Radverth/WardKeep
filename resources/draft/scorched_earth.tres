@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_rtepr"]
+
+[resource]
+script = ExtResource("1_rtepr")
+id = &"scorched_earth"
+title = "Scorched Earth"
+description = "+45% damage-over-time damage, but Physical towers hit 18% softer."
+rarity = 1
+effect_key = &"dot_damage_pct"
+magnitude = 0.45
+max_rank = 2
+element_filter = -1
+cost_effect_key = &"damage_element_pct"
+cost_magnitude = -0.18
+cost_element_filter = 0
+icon_path = ""

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PerkDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_2kq4q"]
+[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_kb2ey"]
 
 [resource]
-script = ExtResource("1_2kq4q")
+script = ExtResource("1_kb2ey")
 id = &"field_repairs"
 display_name = "Field Repairs"
 description = "The Ward Stone is mended a little after every wave cleared."

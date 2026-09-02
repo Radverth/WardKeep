@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_vqfrx"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_j8pt4"]
 
 [resource]
-script = ExtResource("1_vqfrx")
+script = ExtResource("1_j8pt4")
 id = &"far_sight"
 title = "Far Sight"
 description = "+10% range for all towers."
@@ -12,4 +12,7 @@ effect_key = &"range_all_pct"
 magnitude = 0.1
 max_rank = 3
 element_filter = -1
+cost_effect_key = &""
+cost_magnitude = 0.0
+cost_element_filter = -1
 icon_path = ""

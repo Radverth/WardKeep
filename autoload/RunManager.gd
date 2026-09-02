@@ -114,9 +114,16 @@ func repair_ward_stone(amount: int) -> void:
 	ward_stone_hp = mini(ward_stone_max_hp, ward_stone_hp + amount)
 	ward_stone_damaged.emit(ward_stone_hp, ward_stone_max_hp)
 
+## Raising the ceiling also fully repairs, which is what the Reinforced Ward
+## card says on its face. Cards may now lower it too ("Blood Price"); that only
+## trims the ceiling, and never below 1 — a run that ends the instant a card is
+## taken is not a trade the player agreed to.
 func raise_ward_stone_max(amount: int) -> void:
-	ward_stone_max_hp += amount
-	ward_stone_hp = ward_stone_max_hp
+	ward_stone_max_hp = maxi(1, ward_stone_max_hp + amount)
+	if amount >= 0:
+		ward_stone_hp = ward_stone_max_hp
+	else:
+		ward_stone_hp = clampi(ward_stone_hp, 1, ward_stone_max_hp)
 	ward_stone_damaged.emit(ward_stone_hp, ward_stone_max_hp)
 
 ## Rewarded-ad revive (Pipeline §4) — once per run, restores the Ward Stone.
@@ -159,6 +166,10 @@ func elements_in_play() -> Array:
 
 func take_draft_card(card: DraftCardDef) -> void:
 	modifiers.apply(card)
+	# A card's price can be a Ward Stone cost, and that is run state rather than
+	# tower maths, so it is resolved here alongside the boon.
+	if card.has_cost() and String(card.cost_effect_key) == "ward_stone_max_flat":
+		raise_ward_stone_max(int(card.cost_magnitude))
 	match String(card.effect_key):
 		"ward_stone_repair":
 			repair_ward_stone(int(card.magnitude))

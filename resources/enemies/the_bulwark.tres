@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_7e48v"]
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_b07uo"]
+[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_q75ff"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_uq7en"]
 
 [resource]
-script = ExtResource("2_b07uo")
+script = ExtResource("2_uq7en")
 id = &"the_bulwark"
 display_name = "The Bulwark"
 base_hp = 450.0
@@ -27,6 +27,6 @@ aura_heal_per_second = 0.0
 phase_visible_seconds = 0.0
 phase_hidden_seconds = 0.0
 is_boss = true
-boss_pattern_script = ExtResource("1_7e48v")
+boss_pattern_script = ExtResource("1_q75ff")
 scene_path = "res://scenes/enemies/bosses/TheBulwark.tscn"
 provisional = true

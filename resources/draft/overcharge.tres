@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_etq3a"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_oap1h"]
 
 [resource]
-script = ExtResource("1_etq3a")
+script = ExtResource("1_oap1h")
 id = &"overcharge"
 title = "Overcharge"
 description = "+25% damage and +25% fire rate for all towers."
@@ -12,4 +12,7 @@ effect_key = &"overcharge"
 magnitude = 0.25
 max_rank = 1
 element_filter = -1
+cost_effect_key = &""
+cost_magnitude = 0.0
+cost_element_filter = -1
 icon_path = ""

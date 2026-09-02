@@ -101,7 +101,17 @@ func _on_draft_offered(cards: Array) -> void:
 	if cards.is_empty():
 		return
 	# Resolve on the next frame so the overlay's own show path runs first.
-	call_deferred("_take_card", cards[0])
+	call_deferred("_take_card", _pick_card(cards))
+
+## Prefers a card with no price. A card like Blood Price trades Ward Stone for
+## damage, which is a real decision for a player and pure self-harm for a bot
+## with no strategy to make the trade pay off — taking whatever came first made
+## this smoke test fail about one run in three at random.
+func _pick_card(cards: Array) -> DraftCardDef:
+	for card: DraftCardDef in cards:
+		if not card.has_cost():
+			return card
+	return cards[0]
 
 func _take_card(card: DraftCardDef) -> void:
 	if _finished:

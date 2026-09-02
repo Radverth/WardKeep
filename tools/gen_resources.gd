@@ -660,12 +660,50 @@ func _build_draft() -> void:
 			"rarity": WK.Rarity.EPIC, "effect": "unlock_extra_tower", "mag": 1.0, "rank": 1},
 		{"id": "overcharge", "title": "Overcharge", "desc": "+25% damage and +25% fire rate for all towers.",
 			"rarity": WK.Rarity.EPIC, "effect": "overcharge", "mag": 0.25, "rank": 1},
+		# --- cards that change how a run is played, not what its numbers are.
+		# Feature Spec §5.2 lists nineteen cards and fourteen of them are flat
+		# multipliers, so a draft was rarely a decision. These are PROVISIONAL
+		# additions (SPEC_GAPS.md #11): four that reshape a build, and four
+		# that carry a real price so taking one costs something.
+		{"id": "executioner", "title": "Executioner",
+			"desc": "+60% damage to enemies below 30% health.",
+			"rarity": WK.Rarity.EPIC, "effect": "execute_bonus_pct", "mag": 0.60, "rank": 2},
+		{"id": "frostbite", "title": "Frostbite",
+			"desc": "Every tower deals +30% damage to slowed enemies.",
+			"rarity": WK.Rarity.EPIC, "effect": "slowed_damage_bonus_pct", "mag": 0.30, "rank": 2},
+		{"id": "contagion", "title": "Contagion",
+			"desc": "Every tower spreads its Blight when a victim dies.",
+			"rarity": WK.Rarity.EPIC, "effect": "dot_spreads_always", "mag": 1.0, "rank": 1},
+		{"id": "blood_price", "title": "Blood Price",
+			"desc": "+35% damage for all towers. The Ward Stone loses 8 maximum health.",
+			"rarity": WK.Rarity.EPIC, "effect": "damage_all_pct", "mag": 0.35, "rank": 2,
+			"cost_key": "ward_stone_max_flat", "cost_mag": -8.0},
+		{"id": "hair_trigger", "title": "Hair Trigger",
+			"desc": "+40% fire rate for all towers, but they reach 20% less far.",
+			"rarity": WK.Rarity.RARE, "effect": "fire_rate_all_pct", "mag": 0.40, "rank": 2,
+			"cost_key": "range_all_pct", "cost_mag": -0.20},
+		{"id": "long_watch", "title": "Long Watch",
+			"desc": "+45% range for all towers, but they fire 18% slower.",
+			"rarity": WK.Rarity.RARE, "effect": "range_all_pct", "mag": 0.45, "rank": 2,
+			"cost_key": "fire_rate_all_pct", "cost_mag": -0.18},
+		{"id": "scorched_earth", "title": "Scorched Earth",
+			"desc": "+45% damage-over-time damage, but Physical towers hit 18% softer.",
+			"rarity": WK.Rarity.RARE, "effect": "dot_damage_pct", "mag": 0.45, "rank": 2,
+			"cost_key": "damage_element_pct", "cost_mag": -0.18,
+			"cost_element": WK.RuneElement.PHYSICAL},
+		{"id": "press_gang", "title": "Press-Gang",
+			"desc": "+3 gold from every kill, but wave-clear pays 35% less.",
+			"rarity": WK.Rarity.RARE, "effect": "gold_per_kill_flat", "mag": 3.0, "rank": 2,
+			"cost_key": "wave_clear_bonus_pct", "cost_mag": -0.35},
 		{"id": "creeping_rot", "title": "Creeping Rot", "desc": "Every tower applies 1 damage per second of Blight.",
 			"rarity": WK.Rarity.EPIC, "effect": "universal_dot", "mag": 1.0, "rank": 1},
 	]
 	for entry: Dictionary in cards:
 		var card := DraftCardDef.new()
 		card.id = StringName(entry["id"])
+		card.cost_effect_key = StringName(entry.get("cost_key", ""))
+		card.cost_magnitude = float(entry.get("cost_mag", 0.0))
+		card.cost_element_filter = int(entry.get("cost_element", -1))
 		card.title = entry["title"]
 		card.description = entry["desc"]
 		card.rarity = entry["rarity"]

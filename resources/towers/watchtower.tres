@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_aun0s"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_i1xqd"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_g8xy2"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_nprct"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_nge3p"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_hiloq"]
 
-[sub_resource type="Resource" id="Resource_5fmfa"]
-script = ExtResource("3_g8xy2")
+[sub_resource type="Resource" id="Resource_21ccp"]
+script = ExtResource("3_hiloq")
 cost = 20
 damage = 4.0
 range_tiles = 3.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_rv0hu"]
-script = ExtResource("3_g8xy2")
+[sub_resource type="Resource" id="Resource_xujay"]
+script = ExtResource("3_hiloq")
 cost = 35
 damage = 10.0
 range_tiles = 3.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_jadgy"]
-script = ExtResource("3_g8xy2")
+[sub_resource type="Resource" id="Resource_r46hy"]
+script = ExtResource("3_hiloq")
 cost = 60
 damage = 24.0
 range_tiles = 4.0
@@ -56,17 +56,17 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_i1xqd")
+script = ExtResource("2_nge3p")
 id = &"watchtower"
 display_name = "Watchtower"
 role = "Single-target, high rate"
 rune_element = 0
-tiers = Array[ExtResource("3_g8xy2")]([SubResource("Resource_5fmfa"), SubResource("Resource_rv0hu"), SubResource("Resource_jadgy")])
+tiers = Array[ExtResource("3_hiloq")]([SubResource("Resource_21ccp"), SubResource("Resource_xujay"), SubResource("Resource_r46hy")])
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(1, 3)
 sprite_cell_size = 16
 sprite_cell_margin = 0
-projectile_scene = ExtResource("1_aun0s")
+projectile_scene = ExtResource("1_nprct")
 scene_path = "res://scenes/towers/Watchtower.tscn"
 unlock_cost = 0
 required_account_level = 1

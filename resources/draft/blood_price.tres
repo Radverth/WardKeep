@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_ndou8"]
+
+[resource]
+script = ExtResource("1_ndou8")
+id = &"blood_price"
+title = "Blood Price"
+description = "+35% damage for all towers. The Ward Stone loses 8 maximum health."
+rarity = 2
+effect_key = &"damage_all_pct"
+magnitude = 0.35
+max_rank = 2
+element_filter = -1
+cost_effect_key = &"ward_stone_max_flat"
+cost_magnitude = -8.0
+cost_element_filter = -1
+icon_path = ""

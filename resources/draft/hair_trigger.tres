@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_um16m"]
+
+[resource]
+script = ExtResource("1_um16m")
+id = &"hair_trigger"
+title = "Hair Trigger"
+description = "+40% fire rate for all towers, but they reach 20% less far."
+rarity = 1
+effect_key = &"fire_rate_all_pct"
+magnitude = 0.4
+max_rank = 2
+element_filter = -1
+cost_effect_key = &"range_all_pct"
+cost_magnitude = -0.2
+cost_element_filter = -1
+icon_path = ""
