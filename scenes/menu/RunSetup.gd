@@ -29,7 +29,7 @@ func _make_card(def: TowerDef) -> Control:
 	panel.add_child(box)
 
 	var icon := TextureRect.new()
-	icon.texture = SpriteAtlas.frame("medievalRTS", def.sprite_frame)
+	icon.texture = def.texture()
 	icon.custom_minimum_size = Vector2(0, 64)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

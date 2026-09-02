@@ -45,7 +45,7 @@ func _build_towers() -> void:
 		row.add_child(box)
 
 		var icon := TextureRect.new()
-		icon.texture = SpriteAtlas.frame("medievalRTS", def.sprite_frame)
+		icon.texture = def.texture()
 		icon.custom_minimum_size = Vector2(72, 72)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

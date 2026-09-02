@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_3gfab"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_kvv4d"]
 
 [resource]
-script = ExtResource("1_3gfab")
+script = ExtResource("1_kvv4d")
 id = &"shade"
 display_name = "Shade"
 base_hp = 30.0
@@ -12,10 +12,12 @@ base_damage = 2.0
 armor_type = 2
 budget_cost = 18
 unlock_wave = 19
-sprite_atlas_path = "res://assets/sprites/enemies/creatures/bat.png"
-sprite_cell = Vector2i(-1, -1)
-tint = Color(0.75, 0.75, 0.95, 0.85)
-scale_factor = 0.7
+sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
+sprite_cell = Vector2i(0, 16)
+sprite_cell_size = 16
+sprite_cell_margin = 0
+tint = Color(0.8, 0.84, 1, 0.66)
+scale_factor = 4.0
 is_boss = false
 scene_path = "res://scenes/enemies/Shade.tscn"
 provisional = true

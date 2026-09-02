@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_giauk"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_chq0j"]
 
 [resource]
-script = ExtResource("1_giauk")
+script = ExtResource("1_chq0j")
 id = &"ironclad"
 display_name = "Ironclad"
 base_hp = 90.0
@@ -12,10 +12,12 @@ base_damage = 3.0
 armor_type = 1
 budget_cost = 24
 unlock_wave = 16
-sprite_atlas_path = "res://assets/sprites/enemies/creatures/barnacle.png"
-sprite_cell = Vector2i(-1, -1)
+sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
+sprite_cell = Vector2i(5, 17)
+sprite_cell_size = 16
+sprite_cell_margin = 0
 tint = Color(1, 1, 1, 1)
-scale_factor = 0.9
+scale_factor = 4.6
 is_boss = false
 scene_path = "res://scenes/enemies/Ironclad.tscn"
 provisional = true

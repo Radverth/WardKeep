@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_8aky6"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_e4vlu"]
 
 [resource]
-script = ExtResource("1_8aky6")
+script = ExtResource("1_e4vlu")
 id = &"revenant"
 display_name = "Revenant"
 base_hp = 44.0
@@ -12,10 +12,12 @@ base_damage = 3.0
 armor_type = 2
 budget_cost = 16
 unlock_wave = 13
-sprite_atlas_path = "res://assets/sprites/enemies/creatures/ghost.png"
-sprite_cell = Vector2i(-1, -1)
-tint = Color(0.62, 0.85, 1, 0.8)
-scale_factor = 0.95
+sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
+sprite_cell = Vector2i(2, 18)
+sprite_cell_size = 16
+sprite_cell_margin = 0
+tint = Color(0.66, 0.86, 1, 0.74)
+scale_factor = 4.6
 is_boss = false
 scene_path = "res://scenes/enemies/Revenant.tscn"
 provisional = true

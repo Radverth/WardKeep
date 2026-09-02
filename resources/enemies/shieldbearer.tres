@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_k4yff"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_ta3d2"]
 
 [resource]
-script = ExtResource("1_k4yff")
+script = ExtResource("1_ta3d2")
 id = &"shieldbearer"
 display_name = "Shieldbearer"
 base_hp = 34.0
@@ -12,10 +12,12 @@ base_damage = 2.0
 armor_type = 1
 budget_cost = 10
 unlock_wave = 5
-sprite_atlas_path = "res://assets/sprites/enemies/creatures/snail.png"
-sprite_cell = Vector2i(-1, -1)
+sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
+sprite_cell = Vector2i(2, 17)
+sprite_cell_size = 16
+sprite_cell_margin = 0
 tint = Color(1, 1, 1, 1)
-scale_factor = 0.8
+scale_factor = 4.4
 is_boss = false
 scene_path = "res://scenes/enemies/Shieldbearer.tscn"
 provisional = true

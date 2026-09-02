@@ -11,6 +11,5 @@ position = Vector2(0, -8)
 
 [node name="Rune" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(0, 16)
-scale = Vector2(0.45, 0.45)
+position = Vector2(13, 17)
 modulate = Color(1, 1, 1, 0.6)

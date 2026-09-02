@@ -13,6 +13,11 @@ enum Rarity { COMMON, RARE, EPIC }
 
 ## Feature Spec §1 — arena grid.
 const TILE_SIZE: int = 64
+## Every sprite on the board is 16px pixel art from Toen's Medieval Strategy
+## pack, so a whole-tile sprite is drawn at this magnification. Sizing from a
+## constant keeps the board, the towers and the enemies at one pixel density.
+const ART_TILE: int = 16
+const PIXEL_ZOOM: float = float(TILE_SIZE) / float(ART_TILE)
 const GRID_COLUMNS: int = 12
 const GRID_ROWS: int = 20
 

@@ -10,32 +10,10 @@ static var current: Arena = null
 
 enum Phase { INTRO, ACTIVE, CLEARED, DRAFT, ENDED }
 
-## Tower Defense tilesheet (Kenney, CC0) — 64px tiles, 23 per row, no spacing.
-## Indices are row * 23 + column. The terrain set was found by classifying
-## every tile against the pack's four material colours (tools/, classify pass)
-## rather than by eye, which is how the real transition tiles turned up.
-const TILE_SHEET: String = "res://assets/sprites/environment/tower_defense_tilesheet/towerDefense_tilesheet.png"
-const SHEET_COLUMNS: int = 23
-
-const TILE_GRASS: int = 24
-## The dirt-on-grass 3x3: row picks the vertical edge, column the horizontal
-## one, so a path cell carries grass borders on every side that is not path.
-const PATH_BLOCK: Array[int] = [
-	3, 47, 4,
-	25, 50, 23,
-	26, 1, 27,
-]
-const PATH_FILL: int = 50
-## A stone foundation. The pack's cream pad reads as a bright hole in the
-## grass when 34 of them are on screen at once; the stone one sits back.
-const TILE_BUILD_PAD: int = 84
-const TILE_STONE: int = 34
-## Bushes, a spiked tree and rocks — these sit on transparent backgrounds, so
-## they layer over the grass rather than replacing it. The pack's round tree
-## is left out: on grass it reads as a faint ring rather than foliage.
-const PROP_TILES: Array[int] = [130, 131, 134, 135, 136, 137]
-const PROP_CHANCE: float = 0.14
-const WARD_STONE_FRAME: String = "medievalStructure_21.png"
+## The board is drawn from Toen's Medieval Strategy Sprite Pack; the tile
+## indices, the lane compositing and the prop bag all live in Terrain.
+## Everything on the board is 16px art shown on a 64px grid, so ground sprites
+## are drawn at WK.PIXEL_ZOOM and the project filters textures nearest.
 
 const WAVE_INTRO_SECONDS: float = 1.5
 ## The HUD's top bar and tower tray sit over the board. The board is exactly
@@ -114,45 +92,33 @@ func _exit_tree() -> void:
 
 ## --- board construction -------------------------------------------------
 
-func _tile(index: int) -> AtlasTexture:
-	return SpriteAtlas.cell(TILE_SHEET, index % SHEET_COLUMNS, index / SHEET_COLUMNS,
-		WK.TILE_SIZE, 0)
-
 ## No z_index here: it applies across the whole canvas layer, so a ground
 ## sprite raised above 0 would draw over the towers and enemies. Everything in
 ## this node stacks by insertion order instead, and the node itself sits below
 ## the tower layer in the scene.
-func _ground_sprite(index: int, at: Vector2, tint: Color = Color.WHITE) -> Sprite2D:
+func _ground_sprite(texture: Texture2D, at: Vector2) -> Sprite2D:
 	var sprite := Sprite2D.new()
-	sprite.texture = _tile(index)
+	sprite.texture = texture
 	sprite.position = at
-	sprite.modulate = tint
+	sprite.scale = Vector2.ONE * WK.PIXEL_ZOOM
 	_ground.add_child(sprite)
 	return sprite
 
-## The pack has no inner-corner tiles, but the arena path is one tile wide, so
-## every cell is a straight run or a turn — both of which the 3x3 block covers.
-func _path_tile_for(column: int, row: int) -> int:
-	var open_north: bool = _is_lane(column, row - 1)
-	var open_south: bool = _is_lane(column, row + 1)
-	var open_west: bool = _is_lane(column - 1, row)
-	var open_east: bool = _is_lane(column + 1, row)
-	if open_north and open_south and open_west and open_east:
-		return PATH_FILL
-	var block_column: int = 1
-	if not open_west:
-		block_column = 0
-	elif not open_east:
-		block_column = 2
-	var block_row: int = 1
-	if not open_north:
-		block_row = 0
-	elif not open_south:
-		block_row = 2
-	return PATH_BLOCK[block_row * 3 + block_column]
+## The lane's open sides, as the bitmask Terrain.road() takes.
+func _lane_mask(column: int, row: int) -> int:
+	var mask: int = 0
+	if _is_lane(column, row - 1):
+		mask |= Terrain.OPEN_NORTH
+	if _is_lane(column + 1, row):
+		mask |= Terrain.OPEN_EAST
+	if _is_lane(column, row + 1):
+		mask |= Terrain.OPEN_SOUTH
+	if _is_lane(column - 1, row):
+		mask |= Terrain.OPEN_WEST
+	return mask
 
 ## The Ward Stone platform is walked onto, so it counts as lane for edging —
-## otherwise the path would draw a grass border against the keep.
+## otherwise the road would draw a grass border against the keep.
 func _is_lane(column: int, row: int) -> bool:
 	return map.is_path_tile(column, row) or map.is_ward_stone(column, row)
 
@@ -167,30 +133,50 @@ func _build_ground() -> void:
 	# shimmering between loads.
 	var ground_rng := RandomNumberGenerator.new()
 	ground_rng.seed = 0x57A11
+	for row: int in range(-Terrain.BLEED_TILES, map.rows + Terrain.BLEED_TILES):
+		for column: int in range(-Terrain.BLEED_TILES, map.columns + Terrain.BLEED_TILES):
+			var grass: int = Terrain.GRASS_TUFT if ground_rng.randf() < Terrain.GRASS_TUFT_CHANCE \
+				else Terrain.GRASS_BASE
+			_ground_sprite(Terrain.tile(grass), cell_to_world(Vector2i(column, row)))
+	_scatter_ground_detail(ground_rng)
 	for row: int in map.rows:
 		for column: int in map.columns:
-			var at: Vector2 = cell_to_world(Vector2i(column, row))
-			# Grass goes down everywhere first, so the path's transparent
-			# grass borders have something to sit against.
-			_ground_sprite(TILE_GRASS, at)
-			match map.cell(column, row):
-				"#":
-					_ground_sprite(_path_tile_for(column, row), at)
-				"W":
-					_ground_sprite(TILE_STONE, at)
-				"B":
-					_ground_sprite(TILE_BUILD_PAD, at)
+			if not _is_lane(column, row):
+				continue
+			_ground_sprite(Terrain.road(_lane_mask(column, row)),
+				cell_to_world(Vector2i(column, row)))
 	_scatter_props(ground_rng)
 
-## Trees and shrubs on the open field only — never on the path or a build tile,
-## so scenery can never be mistaken for something placeable.
-func _scatter_props(prop_rng: RandomNumberGenerator) -> void:
-	for row: int in map.rows:
-		for column: int in map.columns:
-			if map.cell(column, row) != "." or prop_rng.randf() > PROP_CHANCE:
+## Moss and long grass under the lane and the props, nudged off the grid so the
+## field reads as ground cover rather than as a second set of tiles.
+func _scatter_ground_detail(detail_rng: RandomNumberGenerator) -> void:
+	var jitter: float = float(Terrain.GROUND_DETAIL_JITTER) * WK.PIXEL_ZOOM
+	for row: int in range(-Terrain.BLEED_TILES, map.rows + Terrain.BLEED_TILES):
+		for column: int in range(-Terrain.BLEED_TILES, map.columns + Terrain.BLEED_TILES):
+			if _is_lane(column, row) or detail_rng.randf() > Terrain.GROUND_DETAIL_CHANCE:
 				continue
-			_ground_sprite(PROP_TILES[prop_rng.randi_range(0, PROP_TILES.size() - 1)],
-				cell_to_world(Vector2i(column, row)))
+			var offset := Vector2(detail_rng.randf_range(-jitter, jitter),
+				detail_rng.randf_range(-jitter, jitter))
+			var index: int = Terrain.GROUND_DETAIL[
+				detail_rng.randi_range(0, Terrain.GROUND_DETAIL.size() - 1)]
+			_ground_sprite(Terrain.tile(index), cell_to_world(Vector2i(column, row)) + offset)
+
+## Trees, boulders and camps on the open field only — never on the lane or a
+## build tile, so scenery can never be mistaken for something placeable.
+func _scatter_props(prop_rng: RandomNumberGenerator) -> void:
+	var bag: Array[int] = []
+	for entry: Vector2i in Terrain.PROPS:
+		for _repeat: int in entry.y:
+			bag.append(entry.x)
+	var jitter: float = float(Terrain.PROP_JITTER) * WK.PIXEL_ZOOM
+	for row: int in range(-Terrain.BLEED_TILES, map.rows + Terrain.BLEED_TILES):
+		for column: int in range(-Terrain.BLEED_TILES, map.columns + Terrain.BLEED_TILES):
+			if map.cell(column, row) != "." or prop_rng.randf() > Terrain.PROP_CHANCE:
+				continue
+			var offset := Vector2(prop_rng.randf_range(-jitter, jitter),
+				prop_rng.randf_range(-jitter, jitter))
+			_ground_sprite(Terrain.tile(bag[prop_rng.randi_range(0, bag.size() - 1)]),
+				cell_to_world(Vector2i(column, row)) + offset)
 
 func _build_path_points() -> void:
 	_path_points = PackedVector2Array()
@@ -208,7 +194,8 @@ func _build_slots() -> void:
 
 func _place_ward_stone() -> void:
 	var centre: Vector2 = map.ward_stone_center()
-	_ward_stone.texture = SpriteAtlas.frame("medievalRTS", WARD_STONE_FRAME)
+	_ward_stone.texture = Terrain.keep()
+	_ward_stone.scale = Vector2.ONE * WK.PIXEL_ZOOM
 	_ward_stone.visible = true
 	_ward_stone.position = (centre + Vector2(0.5, 0.5)) * float(WK.TILE_SIZE)
 
@@ -444,7 +431,8 @@ func towers_in_radius(at: Vector2, radius: float) -> Array[Tower]:
 func _on_tower_armed(def: TowerDef) -> void:
 	_armed_def = def
 	_close_tower_panel()
-	_ghost.texture = SpriteAtlas.frame("medievalRTS", def.sprite_frame)
+	_ghost.texture = def.texture()
+	_ghost.scale = Vector2.ONE * WK.PIXEL_ZOOM
 	_ghost.modulate = WK.element_tint(def.rune_element)
 	_ghost.modulate.a = 0.7
 	_ghost.visible = true

@@ -103,10 +103,34 @@ package fields in sync across both.
 
 ### Art direction
 
-**Flat vector throughout** — Kenney's anti-aliased 2D art, not pixel art. The
-floor, towers, enemies, effects and UI are all drawn in the same style, so
-nothing on screen is at odds with anything else. `MAPPING.md` lists which pack
-each element comes from, and which supplied packs are deliberately unused.
+**The board is 16px pixel art, the chrome around it is flat vector.**
+
+Grass, road, scenery, the Ward Stone, all nine towers and all twelve enemy
+archetypes are stamped from a single sheet — Toen's Medieval Strategy Sprite
+Pack — so the arena reads as one artist's work rather than as four packs
+stacked on each other. The three bosses come from JosephSeraph's Battlers,
+drawn at higher resolution and shown at a smaller magnification so they read
+as finer creatures rather than as art from another game. The HUD, menus, VFX
+and audio stay Kenney flat vector: that art is drawn near its native size and
+does not fight the board.
+
+Board art is 16px on a 64px grid, so `WK.PIXEL_ZOOM` sizes every sprite on it
+and `rendering/textures/canvas_textures/default_texture_filter` is Nearest.
+`MAPPING.md` lists which tile every element comes from, how the one-tile-wide
+lane is composited out of the pack's nine-slice ring, and which supplied packs
+are deliberately unused and why.
+
+### Credits
+
+- **Toen's Medieval Strategy Sprite Pack** — Andre Mari Coppola,
+  [CC-BY 4.0](http://creativecommons.org/licenses/by/4.0/). Attribution is
+  required. Changes were made: lane tiles and the Ward Stone keep are
+  composited from the pack's tiles at load time.
+- **Battlers** — JosephSeraph, free to use and adapt with credit. Changes were
+  made: Frostmaw is the pack's fire salamander recoloured to glacier blue.
+- **Kenney** (kenney.nl) — UI, VFX, fonts and audio, CC0.
+
+Each pack's own licence file is kept beside its art under `assets/`.
 
 Android requires ETC2/ASTC-compressed textures, so `project.godot` sets
 `rendering/textures/vram_compression/import_etc2_astc=true`. Do not remove it:

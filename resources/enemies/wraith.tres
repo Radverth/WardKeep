@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_v7yq2"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_qb6xm"]
 
 [resource]
-script = ExtResource("1_v7yq2")
+script = ExtResource("1_qb6xm")
 id = &"wraith"
 display_name = "Wraith"
 base_hp = 20.0
@@ -12,10 +12,12 @@ base_damage = 2.0
 armor_type = 2
 budget_cost = 9
 unlock_wave = 7
-sprite_atlas_path = "res://assets/sprites/enemies/creatures/ghost.png"
-sprite_cell = Vector2i(-1, -1)
-tint = Color(1, 1, 1, 0.8)
-scale_factor = 0.75
+sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
+sprite_cell = Vector2i(1, 17)
+sprite_cell_size = 16
+sprite_cell_margin = 0
+tint = Color(0.72, 0.9, 1, 0.72)
+scale_factor = 4.2
 is_boss = false
 scene_path = "res://scenes/enemies/Wraith.tscn"
 provisional = true

@@ -3,6 +3,17 @@ extends Control
 
 const PRIVACY_URL: String = "https://wardkeep.example/privacy"
 
+## Toen's pack is CC-BY, which requires attribution wherever the work is used
+## — a line in the repo's README is not enough for a shipped build, so the
+## credits live on a screen the player can actually reach. MAPPING.md carries
+## the full per-tile detail. No [b] here: the theme's bold face is a size up,
+## which turns every pack name into a heading.
+const CREDITS: String = """Board art — Toen's Medieval Strategy Sprite Pack by Andre Mari Coppola, licensed [url=http://creativecommons.org/licenses/by/4.0/]CC BY 4.0[/url]. Modified: lane tiles and the keep are composited from the pack's tiles.
+
+Bosses — Battlers by JosephSeraph. Modified: Frostmaw is recoloured from the pack's salamander.
+
+Interface, effects, fonts and audio — Kenney ([url=https://kenney.nl]kenney.nl[/url]), CC0."""
+
 @onready var _music_slider: HSlider = %MusicSlider
 @onready var _sfx_slider: HSlider = %SfxSlider
 @onready var _reduced_motion: CheckButton = %ReducedMotion
@@ -10,6 +21,7 @@ const PRIVACY_URL: String = "https://wardkeep.example/privacy"
 @onready var _privacy_button: Button = %PrivacyButton
 @onready var _back_button: Button = %BackButton
 @onready var _ads_label: Label = %AdsLabel
+@onready var _credits_label: RichTextLabel = %CreditsLabel
 
 func _ready() -> void:
 	_music_slider.value = float(SaveManager.get_setting("music_volume", 0.8))
@@ -21,6 +33,8 @@ func _ready() -> void:
 	_restore_button.pressed.connect(_on_restore)
 	_privacy_button.pressed.connect(func() -> void: OS.shell_open(PRIVACY_URL))
 	_back_button.pressed.connect(_on_back)
+	_credits_label.text = CREDITS
+	_credits_label.meta_clicked.connect(func(meta: Variant) -> void: OS.shell_open(str(meta)))
 	_refresh_ads_label()
 
 func _on_music_changed(value: float) -> void:
@@ -41,6 +55,8 @@ func _on_restore() -> void:
 	AudioBus.click()
 	_ads_label.text = "Nothing to restore on this build." if not AdsManager.has_removed_ads() \
 		else "Remove Ads is active on this device."
+	_credits_label.text = CREDITS
+	_credits_label.meta_clicked.connect(func(meta: Variant) -> void: OS.shell_open(str(meta)))
 	_refresh_ads_label()
 
 func _refresh_ads_label() -> void:

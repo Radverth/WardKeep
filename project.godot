@@ -37,7 +37,10 @@ renderer/rendering_method="mobile"
 ; grey, so the letterboxing reads as intentional.
 environment/defaults/default_clear_color=Color(0.11, 0.094, 0.098, 1)
 renderer/rendering_method.mobile="mobile"
-textures/canvas_textures/default_texture_filter=1
+; The board art is 16px pixel art shown on a 64px grid. Linear filtering
+; smears it into mush at that magnification, so everything is sampled
+; nearest-neighbour; the UI is drawn near its native size and is unharmed.
+textures/canvas_textures/default_texture_filter=0
 ; Android requires ETC2/ASTC-compressed textures. Without this the importer
 ; only produces them when the *host* prefers that format, so exporting from a
 ; Linux or Windows machine fails validation - and Godot 4.3 reports that

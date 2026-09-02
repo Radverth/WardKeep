@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_kpe3h"]
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_scplc"]
 
 [resource]
-script = ExtResource("1_kpe3h")
+script = ExtResource("1_scplc")
 columns = 12
 rows = 20
 legend = PackedStringArray("....B#B.....", "....B#......", "....B#......", ".....#####B.", ".....B.BB#B.", "........B#..", "........B#..", ".B########..", ".B#BBBBB.B..", ".B#.........", ".B#.........", "..#######B..", "..B.BBBB#B..", ".......B#...", ".......B#...", "....B####...", "....B#B.B...", ".....WW.....", ".....WW.....", "............")

@@ -63,10 +63,7 @@ func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector
 	_refresh_health_bar()
 
 func _apply_sprite() -> void:
-	if def.sprite_cell.x < 0:
-		_sprite.texture = SpriteAtlas.whole(def.sprite_atlas_path)
-	else:
-		_sprite.texture = SpriteAtlas.cell(def.sprite_atlas_path, def.sprite_cell.x, def.sprite_cell.y)
+	_sprite.texture = def.texture()
 	_sprite.scale = Vector2.ONE * def.scale_factor
 	# §2.3 — an Elite is the same archetype with a glow tint over it.
 	_sprite.modulate = def.tint * (Color(1.35, 1.15, 0.75) if is_elite else Color.WHITE)

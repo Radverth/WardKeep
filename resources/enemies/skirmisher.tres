@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_0xkcu"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_urup3"]
 
 [resource]
-script = ExtResource("1_0xkcu")
+script = ExtResource("1_urup3")
 id = &"skirmisher"
 display_name = "Skirmisher"
 base_hp = 18.0
@@ -12,10 +12,12 @@ base_damage = 1.0
 armor_type = 0
 budget_cost = 6
 unlock_wave = 3
-sprite_atlas_path = "res://assets/sprites/enemies/creatures/spider.png"
-sprite_cell = Vector2i(-1, -1)
+sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
+sprite_cell = Vector2i(0, 17)
+sprite_cell_size = 16
+sprite_cell_margin = 0
 tint = Color(1, 1, 1, 1)
-scale_factor = 0.75
+scale_factor = 4.2
 is_boss = false
 scene_path = "res://scenes/enemies/Skirmisher.tscn"
 provisional = true

@@ -15,6 +15,14 @@ const TOWER_DIR := "res://resources/towers/"
 const ENEMY_DIR := "res://resources/enemies/"
 const DRAFT_DIR := "res://resources/draft/"
 
+## Toen's Medieval Strategy sheet: 7 columns of 16px tiles, no margin, so a
+## tile is addressed by one index. Everything standing on the board — terrain,
+## towers, enemies — is stamped from it, which is what keeps the board looking
+## like one artist's work rather than four packs stacked on each other.
+const TOEN_SHEET := "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
+const TOEN_COLUMNS: int = 7
+const BATTLER_DIR := "res://assets/sprites/enemies/battlers/"
+
 const AUTHORED_WAVES: int = 60   ## Technical Architecture §4.2
 const PROJECTILE_SCENE := "res://scenes/run/Projectile.tscn"
 
@@ -126,58 +134,59 @@ const TIER_SLOW_DURATION_BONUS := [0.0, 1.0, 2.0]
 
 func _build_towers() -> void:
 	var towers: Array = [
-		# id, name, role, element, [t1 cost, dmg, range, rate], t2 cost, t3 cost, sprite, extras
+		# id, name, role, element, [t1 cost, dmg, range, rate], t2 cost, t3 cost,
+		# sprite (index into Toen's sheet), extras
 		{
 			"id": "watchtower", "name": "Watchtower", "role": "Single-target, high rate",
 			"element": WK.RuneElement.PHYSICAL, "t1": [20, 4.0, 3.0, 1.4], "t2": 35, "t3": 60,
-			"sprite": "medievalStructure_16.png", "unlock": 0, "level": 1, "extras": {},
+			"sprite": 22, "unlock": 0, "level": 1, "extras": {},
 		},
 		{
 			"id": "ballista", "name": "Ballista", "role": "Single-target, armour-piercing",
 			"element": WK.RuneElement.PHYSICAL, "t1": [30, 10.0, 4.0, 0.6], "t2": 50, "t3": 90,
-			"sprite": "medievalStructure_17.png", "unlock": 150, "level": 3,
+			"sprite": 117, "unlock": 150, "level": 3,
 			"extras": {"ignores_armor_matchup": true},
 		},
 		{
 			"id": "palisade_ram", "name": "Palisade Ram", "role": "Melee AoE, short range",
 			"element": WK.RuneElement.PHYSICAL, "t1": [25, 3.0, 1.0, 1.0], "t2": 40, "t3": 70,
-			"sprite": "medievalStructure_23.png", "unlock": 300, "level": 6,
+			"sprite": 116, "unlock": 300, "level": 6,
 			"extras": {"splash_radius": 1.0},
 		},
 		{
 			"id": "rime_spire", "name": "Rime Spire", "role": "Slow single-target + 20% slow debuff (4s)",
 			"element": WK.RuneElement.FROST, "t1": [25, 3.0, 3.0, 1.0], "t2": 40, "t3": 75,
-			"sprite": "medievalStructure_19.png", "unlock": 0, "level": 1,
+			"sprite": 25, "unlock": 0, "level": 1,
 			"extras": {"slow_amount": 0.20, "slow_duration": 4.0},
 		},
 		{
 			"id": "glacier_well", "name": "Glacier Well", "role": "AoE slow field, no damage",
 			"element": WK.RuneElement.FROST, "t1": [30, 0.0, 2.0, 0.0], "t2": 50, "t3": 85,
-			"sprite": "medievalStructure_13.png", "unlock": 150, "level": 3,
+			"sprite": 243, "unlock": 150, "level": 3,
 			"extras": {"slow_amount": 0.35, "is_aura": true, "splash_radius": 2.0},
 		},
 		{
 			"id": "icicle_battery", "name": "Icicle Battery", "role": "Burst single-target, bonus vs slowed",
 			"element": WK.RuneElement.FROST, "t1": [35, 6.0, 3.0, 0.9], "t2": 55, "t3": 95,
-			"sprite": "medievalStructure_18.png", "unlock": 300, "level": 6,
+			"sprite": 124, "unlock": 300, "level": 6,
 			"extras": {"bonus_vs_slowed": 0.5},
 		},
 		{
 			"id": "rot_censer", "name": "Rot Censer", "role": "Damage-over-time AoE",
 			"element": WK.RuneElement.BLIGHT, "t1": [25, 0.0, 2.0, 1.0], "t2": 40, "t3": 70,
-			"sprite": "medievalStructure_08.png", "unlock": 0, "level": 1,
+			"sprite": 40, "unlock": 0, "level": 1,
 			"extras": {"is_aura": true, "splash_radius": 1.5, "dot_damage": 2.0, "dot_duration": 3.0},
 		},
 		{
 			"id": "plague_caster", "name": "Plague Caster", "role": "Single-target, spreads DoT on splash death",
 			"element": WK.RuneElement.BLIGHT, "t1": [30, 4.0, 3.0, 1.1], "t2": 50, "t3": 85,
-			"sprite": "medievalStructure_12.png", "unlock": 150, "level": 3,
+			"sprite": 24, "unlock": 150, "level": 3,
 			"extras": {"dot_damage": 2.0, "dot_duration": 3.0, "spreads_dot_on_death": true, "splash_radius": 1.0},
 		},
 		{
 			"id": "bone_turret", "name": "Bone Turret", "role": "Anti-ethereal specialist",
 			"element": WK.RuneElement.BLIGHT, "t1": [30, 5.0, 3.0, 1.0], "t2": 50, "t3": 90,
-			"sprite": "medievalStructure_22.png", "unlock": 300, "level": 6,
+			"sprite": 35, "unlock": 300, "level": 6,
 			"extras": {"bonus_vs_ethereal": 1.0},
 		},
 	]
@@ -187,7 +196,9 @@ func _build_towers() -> void:
 		def.display_name = entry["name"]
 		def.role = entry["role"]
 		def.rune_element = entry["element"]
-		def.sprite_frame = entry["sprite"]
+		def.sprite_atlas_path = TOEN_SHEET
+		def.sprite_cell = Vector2i(int(entry["sprite"]) % TOEN_COLUMNS,
+			int(entry["sprite"]) / TOEN_COLUMNS)
 		def.unlock_cost = entry["unlock"]
 		def.required_account_level = entry["level"]
 		def.scene_path = "res://scenes/towers/%s.tscn" % _pascal(entry["id"])
@@ -232,37 +243,41 @@ func _tier(index: int, cost: int, t1: Array, extras: Dictionary) -> TowerTierDat
 ## See SPEC_GAPS.md #3. Shapes chosen to exercise the three armour types the
 ## §4 matchup rules and the §2.5 boss roster depend on.
 func _build_enemies() -> void:
-	# Sprite, armour and role are matched deliberately: shelled creatures carry
-	# HEAVY, spectral ones ETHEREAL, so a player can read an enemy's matchup
-	# off its silhouette instead of memorising a table.
+	# Sprite, armour and role are matched deliberately, so a player can read an
+	# enemy's matchup off its silhouette instead of memorising a table: plate
+	# and siege engines carry HEAVY, and the three ETHEREAL types are the same
+	# soldiers drawn cold and half-transparent.
+	#
+	# `art` indexes Toen's sheet. The besieging host is its red faction, with
+	# the gold and blue ranks kept for the spectral dead.
 	var enemies: Array = [
 		{"id": "grunt", "name": "Grunt", "hp": 12.0, "speed": 1.6, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 4, "wave": 1, "art": "slimeGreen", "scale": 0.75},
+			"armor": WK.ArmorType.NONE, "cost": 4, "wave": 1, "art": 252, "scale": 4.2},
 		{"id": "swarmling", "name": "Swarmling", "hp": 6.0, "speed": 2.4, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 3, "wave": 1, "art": "fly", "scale": 0.6},
+			"armor": WK.ArmorType.NONE, "cost": 3, "wave": 1, "art": 103, "scale": 3.6},
 		{"id": "skirmisher", "name": "Skirmisher", "hp": 18.0, "speed": 1.9, "dmg": 1.0,
-			"armor": WK.ArmorType.NONE, "cost": 6, "wave": 3, "art": "spider", "scale": 0.75},
+			"armor": WK.ArmorType.NONE, "cost": 6, "wave": 3, "art": 119, "scale": 4.2},
 		{"id": "shieldbearer", "name": "Shieldbearer", "hp": 34.0, "speed": 1.1, "dmg": 2.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 10, "wave": 5, "art": "snail", "scale": 0.8},
+			"armor": WK.ArmorType.HEAVY, "cost": 10, "wave": 5, "art": 121, "scale": 4.4},
 		{"id": "wraith", "name": "Wraith", "hp": 20.0, "speed": 1.8, "dmg": 2.0,
-			"armor": WK.ArmorType.ETHEREAL, "cost": 9, "wave": 7, "art": "ghost",
-			"tint": Color(1, 1, 1, 0.8), "scale": 0.75},
+			"armor": WK.ArmorType.ETHEREAL, "cost": 9, "wave": 7, "art": 120,
+			"tint": Color(0.72, 0.90, 1.0, 0.72), "scale": 4.2},
 		{"id": "brute", "name": "Brute", "hp": 55.0, "speed": 0.9, "dmg": 2.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "art": "frog", "scale": 0.95},
+			"armor": WK.ArmorType.HEAVY, "cost": 15, "wave": 9, "art": 122, "scale": 4.8},
 		{"id": "hexer", "name": "Hexer", "hp": 26.0, "speed": 1.5, "dmg": 2.0,
-			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "art": "bee", "scale": 0.75},
+			"armor": WK.ArmorType.NONE, "cost": 11, "wave": 11, "art": 104, "scale": 4.2},
 		{"id": "revenant", "name": "Revenant", "hp": 44.0, "speed": 1.4, "dmg": 3.0,
-			"armor": WK.ArmorType.ETHEREAL, "cost": 16, "wave": 13, "art": "ghost",
-			"tint": Color(0.62, 0.85, 1.0, 0.8), "scale": 0.95},
+			"armor": WK.ArmorType.ETHEREAL, "cost": 16, "wave": 13, "art": 128,
+			"tint": Color(0.66, 0.86, 1.0, 0.74), "scale": 4.6},
 		{"id": "ironclad", "name": "Ironclad", "hp": 90.0, "speed": 0.8, "dmg": 3.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 24, "wave": 16, "art": "barnacle", "scale": 0.9},
+			"armor": WK.ArmorType.HEAVY, "cost": 24, "wave": 16, "art": 124, "scale": 4.6},
 		{"id": "shade", "name": "Shade", "hp": 30.0, "speed": 2.6, "dmg": 2.0,
-			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "art": "bat",
-			"tint": Color(0.75, 0.75, 0.95, 0.85), "scale": 0.7},
+			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "art": 112,
+			"tint": Color(0.80, 0.84, 1.0, 0.66), "scale": 4.0},
 		{"id": "ogre", "name": "Ogre", "hp": 140.0, "speed": 0.7, "dmg": 4.0,
-			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "art": "slimeBlock", "scale": 1.05},
+			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "art": 123, "scale": 5.4},
 		{"id": "warlord", "name": "Warlord", "hp": 110.0, "speed": 1.3, "dmg": 3.0,
-			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "art": "snakeLava", "scale": 0.95},
+			"armor": WK.ArmorType.NONE, "cost": 30, "wave": 25, "art": 167, "scale": 5.0},
 	]
 	for entry: Dictionary in enemies:
 		var def := EnemyDef.new()
@@ -274,10 +289,9 @@ func _build_enemies() -> void:
 		def.armor_type = entry["armor"]
 		def.budget_cost = entry["cost"]
 		def.unlock_wave = entry["wave"]
-		# One PNG per creature rather than a cell in a sheet, so sprite_cell
-		# is the whole-image marker the boss composites already use.
-		def.sprite_atlas_path = "res://assets/sprites/enemies/creatures/%s.png" % entry["art"]
-		def.sprite_cell = Vector2i(-1, -1)
+		def.sprite_atlas_path = TOEN_SHEET
+		def.sprite_cell = Vector2i(int(entry["art"]) % TOEN_COLUMNS,
+			int(entry["art"]) / TOEN_COLUMNS)
 		def.tint = entry.get("tint", Color.WHITE)
 		def.scale_factor = float(entry.get("scale", 0.8))
 		def.provisional = true
@@ -290,24 +304,29 @@ func _build_enemies() -> void:
 	# Stone stands there and keeps hitting it (§2.5), so these are far lower
 	# than the old one-off leak values. Sized so a boss at its own wave needs
 	# several swings to fell a full Ward Stone, leaving a window to kill it.
-	# Bosses are oversized, darker kin of the creatures already on the board,
-	# not a separate art style. The previous composites were assembled from a
-	# modular monster-maker kit and read as a cartoon toy rather than anything
-	# threatening a medieval keep — and at 270px on a 64px grid they covered
-	# four tiles square, roughly seven times a regular enemy.
+	# The bosses are the one place the board leaves Toen's 16px sheet. A boss
+	# built out of the same soldier tiles as the wave it heads is just a bigger
+	# soldier, so these are JosephSeraph's Battlers — hand-drawn at 64 to 128px
+	# and shown at a smaller magnification, which reads as a finer, more
+	# detailed creature rather than as art from another game. The earlier
+	# composites were assembled from a modular monster-maker kit and looked
+	# like a cartoon toy next to a medieval keep.
+	#
+	# Frostmaw is the pack's fire salamander with its warm hues rotated to
+	# glacier blue (an adaptation the Battlers licence allows); the recolour
+	# script is recorded in MAPPING.md.
 	var bosses: Array = [
 		{"id": "the_bulwark", "name": "The Bulwark", "hp": 450.0, "speed": 0.5, "dmg": 5.0,
-			"armor": WK.ArmorType.HEAVY, "art": "snail", "scale": 2.2,
-			"tint": Color(0.72, 0.74, 0.80),
+			"armor": WK.ArmorType.HEAVY, "art": "World01_005_Shello", "scale": 2.0,
+			"tint": Color.WHITE,
 			"script": "res://scenes/enemies/bosses/BulwarkPattern.gd"},
 		{"id": "frostmaw", "name": "Frostmaw", "hp": 700.0, "speed": 0.7, "dmg": 6.0,
-			"armor": WK.ArmorType.ETHEREAL, "art": "ghost", "scale": 2.0,
-			"tint": Color(0.60, 0.86, 1.0, 0.9),
+			"armor": WK.ArmorType.ETHEREAL, "art": "Frostmaw_from_Salamander", "scale": 2.0,
+			"tint": Color.WHITE,
 			"script": "res://scenes/enemies/bosses/FrostmawPattern.gd"},
-		# A slime is the one creature whose splitting reads as intended.
 		{"id": "the_hollow_king", "name": "The Hollow King", "hp": 1000.0, "speed": 0.9, "dmg": 6.0,
-			"armor": WK.ArmorType.NONE, "art": "slime", "scale": 2.2,
-			"tint": Color(0.86, 0.84, 0.72),
+			"armor": WK.ArmorType.NONE, "art": "World01_004_WailingPrince", "scale": 1.5,
+			"tint": Color.WHITE,
 			"script": "res://scenes/enemies/bosses/HollowKingPattern.gd"},
 	]
 	for entry: Dictionary in bosses:
@@ -322,7 +341,7 @@ func _build_enemies() -> void:
 		def.unlock_wave = 10
 		def.is_boss = true
 		def.provisional = true
-		def.sprite_atlas_path = "res://assets/sprites/enemies/creatures/%s.png" % entry["art"]
+		def.sprite_atlas_path = BATTLER_DIR + str(entry["art"]) + ".png"
 		def.sprite_cell = Vector2i(-1, -1)   # whole-image sprite, not a sheet cell
 		def.tint = entry["tint"]
 		def.scale_factor = float(entry["scale"])
@@ -417,7 +436,6 @@ func _build_draft() -> void:
 func _build_atlases() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://resources/atlas"))
 	var sheets: Dictionary = {
-		"medievalRTS": "res://assets/sprites/towers/rts_medieval_base/medievalRTS_spritesheet",
 		"explosion_pixel": "res://assets/sprites/vfx/explosion_pixel/spritesheet_pixelExplosion",
 		"explosion_simple": "res://assets/sprites/vfx/explosion_simple/spritesheet_simpleExplosion",
 		"explosion_ground": "res://assets/sprites/vfx/explosion_ground/spritesheet_groundExplosion",

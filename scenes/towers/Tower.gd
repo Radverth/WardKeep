@@ -15,6 +15,15 @@ const PROJECTILE_TEXTURES: Dictionary = {
 ## An aura re-applies on this cadence rather than every frame.
 const AURA_TICK: float = 0.5
 
+## The element marker is a planted banner from the terrain pack, so the tower,
+## the field it stands on and its rune all come from one artist.
+const ELEMENT_BANNER: Dictionary = {
+	WK.RuneElement.PHYSICAL: 44,
+	WK.RuneElement.FROST: 46,
+	WK.RuneElement.BLIGHT: 45,
+}
+
+
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _rune: Sprite2D = $Rune
 
@@ -42,25 +51,20 @@ func setup(tower_def: TowerDef, cell: Vector2i) -> void:
 	set_process(true)
 
 func _apply_sprite() -> void:
-	_sprite.texture = SpriteAtlas.frame("medievalRTS", def.sprite_frame)
+	_sprite.texture = def.texture()
 	var skin: String = SaveManager.equipped_skin(String(def.id))
-	_sprite.modulate = WK.element_tint(def.rune_element) * UiKit.skin_modulate(skin)
+	# Pixel art carries its own palette; a full element tint flattens it, so
+	# the element is read off the banner below and the body is left alone.
+	_sprite.modulate = WK.element_tint(def.rune_element).lerp(Color.WHITE, 0.72) \
+		* UiKit.skin_modulate(skin)
 	# Tier is read at a glance from the tower's footprint.
-	_sprite.scale = Vector2.ONE * (1.0 + 0.12 * float(tier_index))
+	_sprite.scale = Vector2.ONE * WK.PIXEL_ZOOM * (1.0 + 0.08 * float(tier_index))
 	_rune.texture = _rune_texture()
-	_rune.modulate.a = 0.55 + 0.15 * float(tier_index)
+	_rune.scale = Vector2.ONE * WK.PIXEL_ZOOM * 0.75
+	_rune.modulate.a = 0.85 + 0.05 * float(tier_index)
 
-## MAPPING.md — Rune Pack overlays layer on the shared RTS Medieval base
-## sprite, one colour folder per element.
 func _rune_texture() -> Texture2D:
-	var folder: String = "grey"
-	match def.rune_element:
-		WK.RuneElement.FROST: folder = "blue"
-		WK.RuneElement.BLIGHT: folder = "black"
-	var prefix: String = "rune%s" % folder.capitalize()
-	var path: String = "res://assets/sprites/towers/rune_overlays/%s/Tile/%s_tile_%03d.png" % [
-		folder, prefix, 1 + tier_index]
-	return load(path) as Texture2D if ResourceLoader.exists(path) else null
+	return Terrain.tile(ELEMENT_BANNER.get(def.rune_element, 44))
 
 func element() -> int:
 	return int(def.rune_element)

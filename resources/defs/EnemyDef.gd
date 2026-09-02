@@ -15,14 +15,23 @@ class_name EnemyDef
 @export var budget_cost: int = 4
 @export var unlock_wave: int = 1
 
-@export var sprite_atlas_path: String = "res://assets/sprites/enemies/roguelike_characters/roguelikeChar_transparent.png"
-@export var sprite_cell: Vector2i = Vector2i.ZERO   ## column,row in the 16px/1px-margin sheet
+@export var sprite_atlas_path: String = ""
+## Column,row in that sheet, or (-1, -1) when the whole file is one sprite.
+@export var sprite_cell: Vector2i = Vector2i(-1, -1)
+@export var sprite_cell_size: int = 16
+@export var sprite_cell_margin: int = 0
 @export var tint: Color = Color.WHITE
-@export var scale_factor: float = 2.5
+@export var scale_factor: float = 4.0
 
 @export var is_boss: bool = false
 @export var boss_pattern_script: Script = null
 @export var scene_path: String = ""
+
+func texture() -> Texture2D:
+	if sprite_cell.x < 0:
+		return SpriteAtlas.whole(sprite_atlas_path)
+	return SpriteAtlas.cell(sprite_atlas_path, sprite_cell.x, sprite_cell.y,
+		sprite_cell_size, sprite_cell_margin)
 
 ## True where a value in this resource is provisional rather than transcribed
 ## from a Feature Spec table. See SPEC_GAPS.md.

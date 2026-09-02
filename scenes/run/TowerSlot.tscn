@@ -4,7 +4,3 @@
 
 [node name="TowerSlot" type="Node2D"]
 script = ExtResource("1_slot")
-
-[node name="Marker" type="Sprite2D" parent="."]
-visible = false
-texture_filter = 1

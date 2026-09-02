@@ -88,6 +88,20 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 text = "Privacy Policy"
 
+[node name="CreditsHeading" type="Label" parent="Root"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Credits"
+
+[node name="CreditsLabel" type="RichTextLabel" parent="Root"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+theme_override_font_sizes/normal_font_size = 17
+
 [node name="Filler" type="Control" parent="Root"]
 layout_mode = 2
 size_flags_vertical = 3

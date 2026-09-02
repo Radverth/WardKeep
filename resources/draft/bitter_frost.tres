@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_thf0r"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_4saun"]
 
 [resource]
-script = ExtResource("1_thf0r")
+script = ExtResource("1_4saun")
 id = &"bitter_frost"
 title = "Bitter Frost"
 description = "Frost slows also deal 1 damage per second."
