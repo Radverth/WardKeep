@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_prvo5"]
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_05kot"]
 
 [resource]
-script = ExtResource("1_prvo5")
+script = ExtResource("1_05kot")
 id = &"switchback"
 display_name = "Hairpins"
 blurb = "Six hairpins in a short run. Everything is in range of something."

@@ -127,12 +127,25 @@ offset_top = -148.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TrayScroll" type="ScrollContainer" parent="TrayPanel"]
+[node name="TrayRow" type="HBoxContainer" parent="TrayPanel"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AbilityButton" type="Button" parent="TrayPanel/TrayRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(132, 128)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Ward
+Flare"
+
+[node name="TrayScroll" type="ScrollContainer" parent="TrayPanel/TrayRow"]
+layout_mode = 2
+size_flags_horizontal = 3
 horizontal_scroll_mode = 2
 vertical_scroll_mode = 0
 
-[node name="Tray" type="HBoxContainer" parent="TrayPanel/TrayScroll"]
+[node name="Tray" type="HBoxContainer" parent="TrayPanel/TrayRow/TrayScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 10

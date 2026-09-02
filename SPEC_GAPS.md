@@ -250,6 +250,72 @@ makes waves 10/20/30 dramatically easier.
 
 ---
 
+## 10. The Keep Hub has nothing to sell a returning player
+
+**Where it bites:** Feature Spec §6 sells tower unlocks (§6.2) and cosmetic
+skins (§6.4) and nothing else. Nine towers cost 150-300 Runestones each, so a
+player who keeps going runs out of unlocks and is left with skins — a meta
+currency that stops mattering exactly when someone has proved they intend to
+keep playing, in a game §2.4 says has "no designed ceiling".
+
+**Implemented:** six permanent ranked perks, in a fourth Keep Hub tab
+(`resources/perks/`, `PerkDef`, `Perks`). Starting gold, Ward Stone capacity,
+gold per kill, upgrade discount, a repair after each wave cleared, and a
+better tithe. Costs are sized against §6's own scale — a full board is a little
+over 2000 against 800 for the Legendary skin.
+
+Deliberately small: a meta upgrade that visibly wins a run turns the early
+waves into a formality for a returning player and a wall for a new one, and
+the game has no difficulty setting to absorb that. `tests/test_perks.gd` holds
+the whole board to three quarters of starting gold and half the Ward Stone.
+
+## 11. Fourteen of the nineteen draft cards are flat multipliers
+
+**Where it bites:** §5.2's pool is mostly "+10% damage" and its kin, so a draft
+is a pickup — take the biggest number — rather than the decision §5 describes.
+
+**Implemented:** eight more cards. Four change how a run plays (Executioner,
+Frostbite, Contagion, Blood Price) and four carry a price (Hair Trigger, Long
+Watch, Scorched Earth, Press-Gang). `DraftCardDef` gained an optional cost
+effect, dispatched through the same path as the boon, so a price is only ever
+an effect with a negative magnitude.
+
+## 12. The player has nothing to do during a wave
+
+**Where it bites:** no document gives the player an in-wave action. Once towers
+are placed a wave resolves itself, which on a phone is several minutes of
+watching per run, and there is no skill expression between drafts.
+
+**Implemented:** Ward Flare — a tapped burst of damage on a 24s cooldown
+(`BalanceConfig.ability_*`). Its damage is multiplied by the §2.2 wave
+multiplier, exactly as enemy health is, so it is worth the same at wave 40 as
+at wave 4. Sized to clear the fodder it lands on without deleting an Ogre.
+
+## 13. Five enemy archetypes had no behaviour
+
+**Where it bites:** an extension of #3. With no enemy table, the twelve
+archetypes differed only in armour type, health and speed, so the roster read
+as one enemy at twelve sizes.
+
+**Implemented:** Swarmling arrives as a pack, Shieldbearer wards, Hexer mends,
+Shade phases out of reach, Warlord hastes. Every value is on `EnemyDef` and
+inert at its default. Frostmaw keeps sole ownership of tower fire-rate
+suppression (§2.5), so none of them touch towers.
+
+## 14. One map for an endless game
+
+**Where it bites:** §1 fixes a single map for v1.0 and says so deliberately.
+That is a scope decision rather than an omission, but it leaves an endless
+roguelite with one source of run-to-run variation.
+
+**Implemented:** four alternate boards beside §1's own, cut to the same rules —
+12x20, one-tile lane, 34 build tiles, comparable lane length — and picked at
+Run Setup. The Daily derives its board from the date's seed, since §7 wants
+every player on the same run. The Old Road remains the default and the board
+the balance was measured against.
+
+---
+
 ## Deviations from the documents that are not gaps
 
 - **GUT** (Technical Architecture §7) is not vendored — it is a third-party

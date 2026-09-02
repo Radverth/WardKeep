@@ -40,6 +40,20 @@ func _process(delta: float) -> void:
 	if _buy_timer <= 0.0:
 		_buy_timer = 0.4
 		_buy_or_upgrade()
+	_use_flare()
+
+## Drops the Ward Flare on whichever cluster of enemies is furthest along, so
+## the smoke test exercises the ability rather than leaving it on cooldown
+## forever. A player would place it better; this only has to prove it fires.
+func _use_flare() -> void:
+	if arena.get("_ability_cooldown") > 0.0 or arena.active_enemies.is_empty():
+		return
+	var leader: Enemy = null
+	for enemy: Enemy in arena.active_enemies:
+		if enemy.alive and (leader == null or enemy.path_progress > leader.path_progress):
+			leader = enemy
+	if leader != null:
+		arena.call("_fire_ability", leader.global_position)
 
 ## A stand-in for a competent player rather than a hoarder: build a working
 ## line first, then put gold into upgrades, which are more gold-efficient than

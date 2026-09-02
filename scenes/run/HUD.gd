@@ -6,6 +6,7 @@ signal tower_armed(def: TowerDef)
 signal pause_pressed()
 signal bank_pressed()
 signal speed_pressed()
+signal ability_pressed()
 
 @onready var _wave_label: Label = %WaveLabel
 @onready var _gold_label: Label = %GoldLabel
@@ -14,6 +15,7 @@ signal speed_pressed()
 @onready var _tray: HBoxContainer = %Tray
 @onready var _banner: Label = %Banner
 @onready var _message: Label = %Message
+@onready var _ability_button: Button = %AbilityButton
 @onready var _speed_button: Button = %SpeedButton
 @onready var _pause_button: Button = %PauseButton
 @onready var _bank_button: Button = %BankButton
@@ -21,6 +23,7 @@ signal speed_pressed()
 var _buttons: Dictionary = {}    ## StringName -> Button
 
 func _ready() -> void:
+	_ability_button.pressed.connect(func() -> void: ability_pressed.emit())
 	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
 	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
 	_bank_button.pressed.connect(func() -> void: bank_pressed.emit())
@@ -49,6 +52,18 @@ func _on_ward_changed(hp: int, max_hp: int) -> void:
 func _on_wave_started(wave: int) -> void:
 	_wave_label.text = "Wave %d" % wave
 
+## `remaining` is seconds left on the cooldown; 0 means ready. `armed` is true
+## between arming the flare and choosing where it lands.
+func set_ability_state(remaining: float, armed: bool) -> void:
+	var ready_now: bool = remaining <= 0.0
+	_ability_button.disabled = not ready_now
+	if not ready_now:
+		_ability_button.text = "Ward Flare\n%ds" % int(ceil(remaining))
+	elif armed:
+		_ability_button.text = "Ward Flare\nPick a spot"
+	else:
+		_ability_button.text = "Ward Flare\nReady"
+
 func set_speed_label(multiplier: float) -> void:
 	_speed_button.text = "x%d" % int(round(multiplier))
 
@@ -60,10 +75,12 @@ func refresh_tray() -> void:
 	_buttons.clear()
 	for def: TowerDef in RunManager.available_towers():
 		var button := Button.new()
-		button.custom_minimum_size = Vector2(150, 128)
+		# Wide enough for the longest tower name plus its element on one line
+		# each — the tray scrolls, so width costs nothing but a swipe.
+		button.custom_minimum_size = Vector2(212, 128)
 		button.text = "%s\n%s · %dg" % [def.display_name,
 			WK.element_name(def.rune_element), def.purchase_cost()]
-		button.add_theme_font_size_override("font_size", 18)
+		button.add_theme_font_size_override("font_size", 17)
 		button.clip_text = true
 		button.pressed.connect(func() -> void:
 			AudioBus.click()

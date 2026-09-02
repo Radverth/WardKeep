@@ -87,3 +87,29 @@ func test_element_matchups() -> void:
 	assert_almost_eq(Balance.element_multiplier(WK.RuneElement.BLIGHT, WK.ArmorType.ETHEREAL),
 		cfg.element_strong_multiplier, 0.001, "blight strong vs ethereal")
 	assert_almost_eq(Balance.element_multiplier(WK.RuneElement.BLIGHT, WK.ArmorType.HEAVY), 1.0, 0.001, "blight neutral vs heavy")
+
+## --- Ward Flare (PROVISIONAL, SPEC_GAPS.md #12) -------------------------
+
+## Scaled by the same §2.2 multiplier that scales enemy health, so the flare is
+## worth the same at wave 40 as at wave 4 rather than fading to a rounding
+## error — which is what a flat number would do against 1 + 0.09 x (wave - 1).
+func test_ward_flare_keeps_pace_with_enemy_health() -> void:
+	var early: float = Balance.ability_damage(1)
+	var late: float = Balance.ability_damage(40)
+	assert_gt(early, 0.0, "the flare does something at wave 1")
+	assert_almost_eq(late / early, Balance.stat_multiplier(40), 0.001,
+		"the flare scales exactly as enemy health does")
+
+func test_ward_flare_is_a_burst_not_a_tower() -> void:
+	var cfg: BalanceConfig = Balance.config()
+	assert_gt(cfg.ability_cooldown, 10.0,
+		"a long enough cooldown that it is a decision, not a rotation")
+	assert_gt(cfg.ability_radius_tiles, 0.0, "it covers ground")
+	# A flare that one-shots the wave it lands on removes the towers' job.
+	var grunt: EnemyDef = Registry.enemy(&"grunt")
+	var wave: int = 20
+	var flare: float = Balance.ability_damage(wave)
+	var brute_hp: float = Registry.enemy(&"ogre").base_hp * Balance.stat_multiplier(wave)
+	assert_true(flare < brute_hp, "the flare does not delete an Ogre outright")
+	assert_gt(flare, grunt.base_hp * Balance.stat_multiplier(wave),
+		"but it clears the fodder it lands on")

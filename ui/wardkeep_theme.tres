@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/adventure_pack/Default/progress_red.png" id="6_67oyb"]
 [ext_resource type="FontFile" path="res://assets/fonts/Kenney Bold.ttf" id="7_qlyq4"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bfvx8"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h0mtv"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -20,9 +20,9 @@ texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 modulate_color = Color(0.7, 0.7, 0.7, 0.7)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t4wvc"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q25ol"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g3eya"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1nsob"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -34,7 +34,7 @@ texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 modulate_color = Color(1.12, 1.12, 1.12, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c12lg"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g47m4"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -45,7 +45,7 @@ texture_margin_top = 8.0
 texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bcmnc"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a5366"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -57,7 +57,7 @@ texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 modulate_color = Color(0.85, 0.85, 0.85, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u2ult"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_14jck"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -68,7 +68,7 @@ texture_margin_top = 16.0
 texture_margin_right = 16.0
 texture_margin_bottom = 16.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rfsw2"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vcdso"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -79,7 +79,7 @@ texture_margin_top = 16.0
 texture_margin_right = 16.0
 texture_margin_bottom = 16.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lvxrk"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wvxrh"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -90,7 +90,7 @@ texture_margin_top = 5.0
 texture_margin_right = 5.0
 texture_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_67fll"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_81k1y"]
 content_margin_left = 20.0
 content_margin_top = 12.0
 content_margin_right = 20.0
@@ -108,15 +108,15 @@ Button/colors/font_color = Color(1, 0.97, 0.9, 1)
 Button/colors/font_disabled_color = Color(0.75, 0.75, 0.75, 1)
 Button/colors/font_outline_color = Color(0.16, 0.11, 0.08, 1)
 Button/constants/outline_size = 4
-Button/styles/disabled = SubResource("StyleBoxTexture_bfvx8")
-Button/styles/focus = SubResource("StyleBoxEmpty_t4wvc")
-Button/styles/hover = SubResource("StyleBoxTexture_g3eya")
-Button/styles/normal = SubResource("StyleBoxTexture_c12lg")
-Button/styles/pressed = SubResource("StyleBoxTexture_bcmnc")
+Button/styles/disabled = SubResource("StyleBoxTexture_h0mtv")
+Button/styles/focus = SubResource("StyleBoxEmpty_q25ol")
+Button/styles/hover = SubResource("StyleBoxTexture_1nsob")
+Button/styles/normal = SubResource("StyleBoxTexture_g47m4")
+Button/styles/pressed = SubResource("StyleBoxTexture_a5366")
 Label/colors/font_color = Color(1, 0.97, 0.9, 1)
 Label/colors/font_outline_color = Color(0.16, 0.11, 0.08, 1)
 Label/constants/outline_size = 4
-Panel/styles/panel = SubResource("StyleBoxTexture_u2ult")
-PanelContainer/styles/panel = SubResource("StyleBoxTexture_rfsw2")
-ProgressBar/styles/background = SubResource("StyleBoxTexture_lvxrk")
-ProgressBar/styles/fill = SubResource("StyleBoxTexture_67fll")
+Panel/styles/panel = SubResource("StyleBoxTexture_14jck")
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_vcdso")
+ProgressBar/styles/background = SubResource("StyleBoxTexture_wvxrh")
+ProgressBar/styles/fill = SubResource("StyleBoxTexture_81k1y")

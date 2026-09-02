@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PerkDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_jf1au"]
+[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_i33j2"]
 
 [resource]
-script = ExtResource("1_jf1au")
+script = ExtResource("1_i33j2")
 id = &"quarry_rights"
 display_name = "Quarry Rights"
 description = "Every kill is worth a little more gold."

@@ -33,6 +33,15 @@ class_name BalanceConfig
 @export var gold_wave_clear_per_wave: int = 1
 @export var sell_refund_ratio: float = 0.6
 
+## --- Ward Flare (PROVISIONAL, SPEC_GAPS.md #12) -------------------------
+## The spec has no player ability: once towers are placed a wave plays itself
+## out, and on a phone that is a lot of watching. Damage is multiplied by the
+## §2.2 wave multiplier, exactly as enemy health is, so the flare stays worth
+## the same at wave 40 as at wave 4 rather than fading into irrelevance.
+@export var ability_cooldown: float = 24.0
+@export var ability_radius_tiles: float = 1.6
+@export var ability_base_damage: float = 30.0
+
 ## Feature Spec §6.1 / §6.3 — meta-progression.
 @export var runestones_per_wave: int = 3
 @export var bank_rate_retreat: float = 1.0

@@ -60,6 +60,10 @@ var _shake_time: float = 0.0
 ## assigning over it, and _exit_tree puts it back.
 var _base_time_scale: float = 1.0
 var _speed_step: int = 0
+## Ward Flare: seconds until it can be used again, and whether the player has
+## armed it and is choosing where it lands.
+var _ability_cooldown: float = 0.0
+var _ability_armed: bool = false
 
 var _enemy_pools: Dictionary = {}          ## StringName -> Array[Enemy]
 var _projectile_pool: Array[Projectile] = []
@@ -82,6 +86,7 @@ func _ready() -> void:
 	RunManager.draft_offered.connect(_on_draft_offered)
 	_draft_overlay.card_chosen.connect(_on_draft_card_chosen)
 	_hud.tower_armed.connect(_on_tower_armed)
+	_hud.ability_pressed.connect(_on_ability_pressed)
 	_hud.speed_pressed.connect(_on_speed_pressed)
 	_hud.pause_pressed.connect(_open_pause)
 	_hud.bank_pressed.connect(_on_bank_pressed)
@@ -91,8 +96,11 @@ func _ready() -> void:
 	_tower_panel.sell_pressed.connect(_on_sell_tower)
 
 	RunManager.start_run(GameState.pending_run_mode)
+	_ability_cooldown = 0.0
+	_ability_armed = false
 	_hud.bind()
 	_apply_speed(int(SaveManager.get_setting("game_speed_step", 0)))
+	_hud.set_ability_state(0.0, false)
 	AudioBus.play_music(AudioBus.MUSIC_GAMEPLAY)
 	_maybe_run_onboarding()
 	_start_next_wave()
@@ -271,6 +279,9 @@ func _start_next_wave() -> void:
 
 func _process(delta: float) -> void:
 	_tick_shake(delta)
+	# Outside the ACTIVE phase too: the flare should come back while the player
+	# is reading a draft, not only while a wave is running.
+	_tick_ability(delta)
 	if phase != Phase.ACTIVE:
 		return
 	if not _spawn_queue.is_empty():
@@ -450,6 +461,9 @@ func towers_in_radius(at: Vector2, radius: float) -> Array[Tower]:
 ## --- placement (User Flow §3.3) -----------------------------------------
 
 func _on_tower_armed(def: TowerDef) -> void:
+	# Arming a tower takes the flare off the cursor, or the next tap would fire
+	# it where the player meant to place a tower.
+	_cancel_ability()
 	_armed_def = def
 	_close_tower_panel()
 	_ghost.texture = def.texture()
@@ -486,6 +500,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_move_ghost(_to_world((event as InputEventMouseMotion).position))
 	elif event is InputEventScreenDrag and _armed_def != null:
 		_move_ghost(_to_world((event as InputEventScreenDrag).position))
+	elif event is InputEventMouseMotion and _ability_armed:
+		_range_indicator.move_to(_to_world((event as InputEventMouseMotion).position))
+	elif event is InputEventScreenDrag and _ability_armed:
+		_range_indicator.move_to(_to_world((event as InputEventScreenDrag).position))
 	elif event is InputEventMouseButton and not (event as InputEventMouseButton).pressed:
 		_resolve_tap(_to_world((event as InputEventMouseButton).position))
 	elif event is InputEventScreenTouch and not (event as InputEventScreenTouch).pressed:
@@ -502,6 +520,9 @@ func _move_ghost(at: Vector2) -> void:
 
 func _resolve_tap(at: Vector2) -> void:
 	var cell: Vector2i = world_to_cell(at)
+	if _ability_armed:
+		_fire_ability(at)
+		return
 	if _armed_def != null:
 		_try_place(cell)
 		return
@@ -610,6 +631,51 @@ func _on_draft_card_chosen(card: DraftCardDef) -> void:
 	_hud.set_bank_available(false)
 	_hud.refresh_tray()
 	_start_next_wave()
+
+## --- Ward Flare ---------------------------------------------------------
+##
+## The one thing the player does with their hands once the towers are down.
+## Arming it does not spend the cooldown — that only happens where it lands, so
+## a mis-tap costs nothing and the button can be used to check the radius.
+func _on_ability_pressed() -> void:
+	if _ability_cooldown > 0.0:
+		return
+	AudioBus.click()
+	_clear_armed()
+	_close_tower_panel()
+	_enemy_panel.close()
+	_ability_armed = true
+	_range_indicator.show_range(_ward_stone.position,
+		Balance.config().ability_radius_tiles * float(WK.TILE_SIZE),
+		Color(1.0, 0.78, 0.35))
+	_hud.set_ability_state(0.0, true)
+
+func _cancel_ability() -> void:
+	if not _ability_armed:
+		return
+	_ability_armed = false
+	_range_indicator.hide_range()
+	_hud.set_ability_state(_ability_cooldown, false)
+
+func _fire_ability(at: Vector2) -> void:
+	_ability_armed = false
+	_range_indicator.hide_range()
+	_ability_cooldown = Balance.config().ability_cooldown
+	var radius: float = Balance.config().ability_radius_tiles * float(WK.TILE_SIZE)
+	var damage: float = Balance.ability_damage(RunManager.wave)
+	# Ignores the element matchup: the flare is the keep's own power, not a
+	# tower's, so there is no element for an armour type to resist.
+	for enemy: Enemy in enemies_in_radius(at, radius):
+		enemy.take_damage(damage, WK.RuneElement.PHYSICAL, true)
+	play_vfx("boss_death", at)
+	AudioBus.play_random_sfx(AudioBus.SFX_TOWER_HITS)
+	_hud.set_ability_state(_ability_cooldown, false)
+
+func _tick_ability(delta: float) -> void:
+	if _ability_cooldown <= 0.0:
+		return
+	_ability_cooldown = maxf(0.0, _ability_cooldown - delta)
+	_hud.set_ability_state(_ability_cooldown, _ability_armed)
 
 ## Cycles the run clock. An endless game asks the player to watch wave 40 play
 ## out, and at 1x that is a chore rather than a decision.

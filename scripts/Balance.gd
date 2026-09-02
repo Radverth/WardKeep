@@ -162,6 +162,11 @@ static func element_matchup_line(element: WK.RuneElement) -> String:
 		parts.append("weak vs %s" % " and ".join(weak))
 	return "even against everything" if parts.is_empty() else ", ".join(parts)
 
+## Ward Flare damage at a given wave. Scaled by the same §2.2 multiplier that
+## scales enemy health, so it never becomes a rounding error.
+static func ability_damage(wave: int) -> float:
+	return config().ability_base_damage * stat_multiplier(wave)
+
 static func element_multiplier(element: WK.RuneElement, armor: WK.ArmorType) -> float:
 	var cfg: BalanceConfig = config()
 	match element:

@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=6 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="1_iypc4"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="2_sueub"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="1_ptlb7"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="2_7ltnq"]
 
-[sub_resource type="Resource" id="Resource_uu3ea"]
-script = ExtResource("2_sueub")
+[sub_resource type="Resource" id="Resource_dbss3"]
+script = ExtResource("2_7ltnq")
 cost = 25
 damage = 0.0
 range_tiles = 2.0
@@ -20,8 +20,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_ahryx"]
-script = ExtResource("2_sueub")
+[sub_resource type="Resource" id="Resource_h77yg"]
+script = ExtResource("2_7ltnq")
 cost = 40
 damage = 0.0
 range_tiles = 2.5
@@ -37,8 +37,8 @@ bonus_vs_slowed = 0.0
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_yslw6"]
-script = ExtResource("2_sueub")
+[sub_resource type="Resource" id="Resource_dwaj4"]
+script = ExtResource("2_7ltnq")
 cost = 70
 damage = 0.0
 range_tiles = 3.0
@@ -55,12 +55,12 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("1_iypc4")
+script = ExtResource("1_ptlb7")
 id = &"rot_censer"
 display_name = "Rot Censer"
 role = "Damage-over-time AoE"
 rune_element = 2
-tiers = Array[ExtResource("2_sueub")]([SubResource("Resource_uu3ea"), SubResource("Resource_ahryx"), SubResource("Resource_yslw6")])
+tiers = Array[ExtResource("2_7ltnq")]([SubResource("Resource_dbss3"), SubResource("Resource_h77yg"), SubResource("Resource_dwaj4")])
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(5, 5)
 sprite_cell_size = 16

@@ -20,6 +20,7 @@ func _ready() -> void:
 	var boss_id: String = ""
 	var inspect_id: String = ""
 	var tab_index: int = -1
+	var arm_flare: bool = false
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--scene="):
 			scene_path = argument.trim_prefix("--scene=")
@@ -31,6 +32,8 @@ func _ready() -> void:
 			auto_play = true
 		elif argument == "--showcase":
 			showcase = true
+		elif argument == "--flare":
+			arm_flare = true
 		elif argument == "--seed-history":
 			for wave: int in [6, 8, 8, 9, 11, 12, 12, 13, 14, 17, 19, 22, 28]:
 				SaveManager.record_run_end(wave)
@@ -95,6 +98,10 @@ func _ready() -> void:
 		driver.set("arena", scene)
 		driver.set("verbose", false)
 		get_tree().root.add_child(driver)
+	if arm_flare:
+		await get_tree().process_frame
+		await get_tree().process_frame
+		scene.call("_on_ability_pressed")
 	if tab_index >= 0:
 		await get_tree().process_frame
 		var tabs: Node = scene.find_child("Tabs", true, false)
