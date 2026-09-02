@@ -144,3 +144,25 @@ func test_speed_steps_start_at_real_time_and_climb() -> void:
 	for index: int in range(1, WK.SPEED_STEPS.size()):
 		assert_gt(WK.SPEED_STEPS[index], WK.SPEED_STEPS[index - 1],
 			"step %d is faster than the one before" % index)
+
+## The matchup hints the player is shown are derived from Balance rather than
+## written down, so they cannot start lying the first time the multipliers move.
+func test_matchup_hints_follow_the_balance_table() -> void:
+	for armor: int in [WK.ArmorType.NONE, WK.ArmorType.HEAVY, WK.ArmorType.ETHEREAL]:
+		var matchup: Dictionary = Balance.armor_matchup(armor)
+		for name: String in matchup["strong"]:
+			assert_true(name != "Unknown", "%s names a real element" % WK.armor_name(armor))
+		assert_true(Balance.armor_matchup_line(armor).length() > 0,
+			"%s has something to say" % WK.armor_name(armor))
+	for element: int in [WK.RuneElement.PHYSICAL, WK.RuneElement.FROST, WK.RuneElement.BLIGHT]:
+		assert_true(Balance.element_matchup_line(element).length() > 0,
+			"%s has something to say" % WK.element_name(element))
+	# §4: "Frost is strong vs HEAVY and weak vs ETHEREAL; Blight is strong vs
+	# ETHEREAL". If a tuning pass breaks that, the hints follow it silently —
+	# so the spec's own shape is asserted here too.
+	assert_true(Balance.armor_matchup(WK.ArmorType.HEAVY)["strong"].has("Frost"),
+		"Frost cuts through Heavy")
+	assert_true(Balance.armor_matchup(WK.ArmorType.ETHEREAL)["weak"].has("Frost"),
+		"Frost slides off Ethereal")
+	assert_true(Balance.armor_matchup(WK.ArmorType.ETHEREAL)["strong"].has("Blight"),
+		"Blight cuts through Ethereal")

@@ -61,7 +61,8 @@ func refresh_tray() -> void:
 	for def: TowerDef in RunManager.available_towers():
 		var button := Button.new()
 		button.custom_minimum_size = Vector2(150, 128)
-		button.text = "%s\n%dg" % [def.display_name, def.purchase_cost()]
+		button.text = "%s\n%s · %dg" % [def.display_name,
+			WK.element_name(def.rune_element), def.purchase_cost()]
 		button.add_theme_font_size_override("font_size", 18)
 		button.clip_text = true
 		button.pressed.connect(func() -> void:

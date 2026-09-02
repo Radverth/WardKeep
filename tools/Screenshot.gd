@@ -18,6 +18,7 @@ func _ready() -> void:
 	var auto_play: bool = false
 	var showcase: bool = false
 	var boss_id: String = ""
+	var inspect_id: String = ""
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--scene="):
 			scene_path = argument.trim_prefix("--scene=")
@@ -29,6 +30,8 @@ func _ready() -> void:
 			auto_play = true
 		elif argument == "--showcase":
 			showcase = true
+		elif argument.begins_with("--inspect="):
+			inspect_id = argument.trim_prefix("--inspect=")
 		elif argument.begins_with("--map="):
 			GameState.pending_map_id = StringName(argument.trim_prefix("--map="))
 		elif argument.begins_with("--boss="):
@@ -63,6 +66,10 @@ func _ready() -> void:
 					tower.call("upgrade")
 					tower.call("upgrade")
 		scene.set("_armed_def", null)
+		# Open the panel on one of them, so a shot covers the tower readout too.
+		var first: Node = slots[0].tower
+		if first != null:
+			scene.call("_select_tower", first)
 	if boss_id != "":
 		await get_tree().process_frame
 		await get_tree().process_frame
@@ -82,6 +89,10 @@ func _ready() -> void:
 		driver.set("arena", scene)
 		driver.set("verbose", false)
 		get_tree().root.add_child(driver)
+	if inspect_id != "":
+		await get_tree().process_frame
+		await get_tree().process_frame
+		scene.get_node("UI/EnemyPanel").call("open", Registry.enemy(StringName(inspect_id)))
 	for _frame: int in frames:
 		await get_tree().process_frame
 	print("Screenshot: towers=%d wave=%d gold=%d" % [

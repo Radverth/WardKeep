@@ -36,6 +36,7 @@ const HUD_BOTTOM_INSET: float = 148.0
 @onready var _hud: Control = %HUD
 @onready var _draft_overlay: Control = %DraftOverlay
 @onready var _tower_panel: Control = %TowerPanel
+@onready var _enemy_panel: Control = %EnemyPanel
 @onready var _pause_menu: Control = %PauseMenu
 @onready var _onboarding: Control = %Onboarding
 @onready var _ghost: Sprite2D = $Ghost
@@ -128,6 +129,10 @@ func _lane_mask(column: int, row: int) -> int:
 	if _is_lane(column - 1, row):
 		mask |= Terrain.OPEN_WEST
 	return mask
+
+## How far from a tap an enemy still counts as tapped. Enemies are small,
+## moving, and a finger is not a mouse pointer.
+const ENEMY_TAP_RADIUS: float = float(WK.TILE_SIZE) * 0.9
 
 ## The Ward Stone platform is walked onto, so it counts as lane for edging —
 ## otherwise the road would draw a grass border against the keep.
@@ -502,9 +507,31 @@ func _resolve_tap(at: Vector2) -> void:
 		return
 	var slot: TowerSlot = _slots.get(cell, null)
 	if slot != null and slot.tower != null:
+		_enemy_panel.close()
 		_select_tower(slot.tower)
-	else:
+		return
+	# Enemies are checked after build tiles: a tower the player means to select
+	# must not be stolen by something walking past it.
+	var enemy: Enemy = _enemy_near(at)
+	if enemy != null:
 		_close_tower_panel()
+		_enemy_panel.open(enemy.def)
+		return
+	_close_tower_panel()
+	_enemy_panel.close()
+
+## The living enemy nearest the tap inside ENEMY_TAP_RADIUS, or null.
+func _enemy_near(at: Vector2) -> Enemy:
+	var best: Enemy = null
+	var best_distance: float = ENEMY_TAP_RADIUS * ENEMY_TAP_RADIUS
+	for enemy: Enemy in active_enemies:
+		if not enemy.alive:
+			continue
+		var distance: float = enemy.global_position.distance_squared_to(at)
+		if distance <= best_distance:
+			best_distance = distance
+			best = enemy
+	return best
 
 func _try_place(cell: Vector2i) -> void:
 	var slot: TowerSlot = _slots.get(cell, null)

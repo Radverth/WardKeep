@@ -28,6 +28,10 @@ func open(tower: Tower) -> void:
 	var tier: TowerTierData = tower.tier()
 	_title.text = "%s  ·  Tier %d" % [tower.def.display_name, tower.tier_index + 1]
 	var lines: Array[String] = []
+	# What the element is for, derived from the matchup table rather than
+	# written down, so it cannot drift from the numbers it describes.
+	lines.append("%s — %s" % [WK.element_name(tower.def.rune_element),
+		Balance.element_matchup_line(tower.def.rune_element)])
 	if tier.is_aura:
 		lines.append("Aura, radius %.1f tiles" % maxf(tier.range_tiles, tier.splash_radius))
 	else:

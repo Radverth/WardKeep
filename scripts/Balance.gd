@@ -117,6 +117,51 @@ static func level_progress(xp: int) -> float:
 
 ## Frost is strong vs HEAVY and weak vs ETHEREAL; Blight is strong vs
 ## ETHEREAL and neutral vs HEAVY; Physical is neutral against everything.
+## Which elements beat an armour type, and which slide off it. Derived from
+## element_multiplier rather than written down, so the hint the player is shown
+## cannot start lying the first time the multipliers are tuned.
+static func armor_matchup(armor: WK.ArmorType) -> Dictionary:
+	var strong: Array[String] = []
+	var weak: Array[String] = []
+	for element: int in [WK.RuneElement.PHYSICAL, WK.RuneElement.FROST, WK.RuneElement.BLIGHT]:
+		var multiplier: float = element_multiplier(element, armor)
+		if multiplier > 1.0:
+			strong.append(WK.element_name(element))
+		elif multiplier < 1.0:
+			weak.append(WK.element_name(element))
+	return {"strong": strong, "weak": weak}
+
+## One line the player can act on: "Heavy — Frost cuts through, nothing bounces".
+static func armor_matchup_line(armor: WK.ArmorType) -> String:
+	var matchup: Dictionary = armor_matchup(armor)
+	var strong: Array = matchup["strong"]
+	var weak: Array = matchup["weak"]
+	var parts: Array[String] = []
+	if not strong.is_empty():
+		parts.append("%s cuts through" % " and ".join(strong))
+	if not weak.is_empty():
+		parts.append("%s slides off" % " and ".join(weak))
+	if parts.is_empty():
+		return "Every element hits it the same."
+	return "%s." % " · ".join(parts)
+
+## The mirror of the above, for a tower: what its element is for.
+static func element_matchup_line(element: WK.RuneElement) -> String:
+	var strong: Array[String] = []
+	var weak: Array[String] = []
+	for armor: int in [WK.ArmorType.NONE, WK.ArmorType.HEAVY, WK.ArmorType.ETHEREAL]:
+		var multiplier: float = element_multiplier(element, armor)
+		if multiplier > 1.0:
+			strong.append(WK.armor_name(armor))
+		elif multiplier < 1.0:
+			weak.append(WK.armor_name(armor))
+	var parts: Array[String] = []
+	if not strong.is_empty():
+		parts.append("strong vs %s" % " and ".join(strong))
+	if not weak.is_empty():
+		parts.append("weak vs %s" % " and ".join(weak))
+	return "even against everything" if parts.is_empty() else ", ".join(parts)
+
 static func element_multiplier(element: WK.RuneElement, armor: WK.ArmorType) -> float:
 	var cfg: BalanceConfig = config()
 	match element:
