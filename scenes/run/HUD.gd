@@ -5,6 +5,7 @@ extends Control
 signal tower_armed(def: TowerDef)
 signal pause_pressed()
 signal bank_pressed()
+signal speed_pressed()
 
 @onready var _wave_label: Label = %WaveLabel
 @onready var _gold_label: Label = %GoldLabel
@@ -13,12 +14,14 @@ signal bank_pressed()
 @onready var _tray: HBoxContainer = %Tray
 @onready var _banner: Label = %Banner
 @onready var _message: Label = %Message
+@onready var _speed_button: Button = %SpeedButton
 @onready var _pause_button: Button = %PauseButton
 @onready var _bank_button: Button = %BankButton
 
 var _buttons: Dictionary = {}    ## StringName -> Button
 
 func _ready() -> void:
+	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
 	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
 	_bank_button.pressed.connect(func() -> void: bank_pressed.emit())
 	_banner.hide()
@@ -45,6 +48,9 @@ func _on_ward_changed(hp: int, max_hp: int) -> void:
 
 func _on_wave_started(wave: int) -> void:
 	_wave_label.text = "Wave %d" % wave
+
+func set_speed_label(multiplier: float) -> void:
+	_speed_button.text = "x%d" % int(round(multiplier))
 
 ## --- tower tray ---------------------------------------------------------
 

@@ -52,6 +52,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "40 g"
 
+[node name="SpeedButton" type="Button" parent="TopBar/TopRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 72)
+layout_mode = 2
+text = "x1"
+
 [node name="PauseButton" type="Button" parent="TopBar/TopRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(84, 72)

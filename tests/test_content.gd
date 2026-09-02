@@ -134,3 +134,13 @@ func test_wave_table_is_authored_to_sixty() -> void:
 	for wave: int in [1, 10, 30, 60]:
 		var row: WaveRow = table.row_for(wave)
 		assert_almost_eq(row.enemy_budget, Balance.enemy_budget(wave), 0.001, "wave %d budget" % wave)
+
+## The run-clock toggle multiplies whatever the host set rather than assigning
+## over it — the headless playtest runs the clock at 8x, and an Arena that
+## assigned 1x on _ready would silently slow every CI run to real time.
+func test_speed_steps_start_at_real_time_and_climb() -> void:
+	assert_gt(float(WK.SPEED_STEPS.size()), 1.0, "there is something to toggle")
+	assert_almost_eq(WK.SPEED_STEPS[0], 1.0, 0.001, "the first step is real time")
+	for index: int in range(1, WK.SPEED_STEPS.size()):
+		assert_gt(WK.SPEED_STEPS[index], WK.SPEED_STEPS[index - 1],
+			"step %d is faster than the one before" % index)

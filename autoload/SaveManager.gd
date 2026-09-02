@@ -32,6 +32,8 @@ func default_data() -> Dictionary:
 			"music_volume": 0.8,
 			"sfx_volume": 1.0,
 			"reduced_motion": false,
+			## Index into WK.SPEED_STEPS — the run clock the player last chose.
+			"game_speed_step": 0,
 			"has_removed_ads": false,
 		},
 		"stats_lifetime": {

@@ -54,6 +54,11 @@ var _spawn_interval: float = 1.0
 var _armed_def: TowerDef = null
 var _selected_tower: Tower = null
 var _shake_time: float = 0.0
+## Whatever the host had the clock set to when the Arena came up. The headless
+## playtest runs at 8x, so the speed toggle multiplies this rather than
+## assigning over it, and _exit_tree puts it back.
+var _base_time_scale: float = 1.0
+var _speed_step: int = 0
 
 var _enemy_pools: Dictionary = {}          ## StringName -> Array[Enemy]
 var _projectile_pool: Array[Projectile] = []
@@ -62,6 +67,7 @@ var _explosion_frames: Dictionary = {}     ## atlas name -> Array[AtlasTexture]
 
 func _ready() -> void:
 	current = self
+	_base_time_scale = Engine.time_scale
 	map = GameState.resolve_arena_map()
 	_build_ground()
 	_build_path_points()
@@ -75,6 +81,7 @@ func _ready() -> void:
 	RunManager.draft_offered.connect(_on_draft_offered)
 	_draft_overlay.card_chosen.connect(_on_draft_card_chosen)
 	_hud.tower_armed.connect(_on_tower_armed)
+	_hud.speed_pressed.connect(_on_speed_pressed)
 	_hud.pause_pressed.connect(_open_pause)
 	_hud.bank_pressed.connect(_on_bank_pressed)
 	_pause_menu.resume_pressed.connect(_close_pause)
@@ -84,6 +91,7 @@ func _ready() -> void:
 
 	RunManager.start_run(GameState.pending_run_mode)
 	_hud.bind()
+	_apply_speed(int(SaveManager.get_setting("game_speed_step", 0)))
 	AudioBus.play_music(AudioBus.MUSIC_GAMEPLAY)
 	_maybe_run_onboarding()
 	_start_next_wave()
@@ -92,6 +100,7 @@ func _exit_tree() -> void:
 	if current == self:
 		current = null
 	get_tree().paused = false
+	Engine.time_scale = _base_time_scale
 
 ## --- board construction -------------------------------------------------
 
@@ -574,6 +583,18 @@ func _on_draft_card_chosen(card: DraftCardDef) -> void:
 	_hud.set_bank_available(false)
 	_hud.refresh_tray()
 	_start_next_wave()
+
+## Cycles the run clock. An endless game asks the player to watch wave 40 play
+## out, and at 1x that is a chore rather than a decision.
+func _on_speed_pressed() -> void:
+	AudioBus.click()
+	_apply_speed(_speed_step + 1)
+
+func _apply_speed(step: int) -> void:
+	_speed_step = posmod(step, WK.SPEED_STEPS.size())
+	SaveManager.set_setting("game_speed_step", _speed_step)
+	Engine.time_scale = _base_time_scale * WK.SPEED_STEPS[_speed_step]
+	_hud.set_speed_label(WK.SPEED_STEPS[_speed_step])
 
 func _open_pause() -> void:
 	if phase == Phase.ENDED:

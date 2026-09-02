@@ -16,6 +16,11 @@ const TILE_SIZE: int = 64
 ## Every sprite on the board is 16px pixel art from Toen's Medieval Strategy
 ## pack, so a whole-tile sprite is drawn at this magnification. Sizing from a
 ## constant keeps the board, the towers and the enemies at one pixel density.
+## Run-speed steps for the HUD toggle. Not balance — the wave director, the
+## economy and every cooldown are driven by delta, so running the clock faster
+## changes how long a wave takes to watch and nothing else.
+const SPEED_STEPS: Array[float] = [1.0, 2.0, 3.0]
+
 const ART_TILE: int = 16
 const PIXEL_ZOOM: float = float(TILE_SIZE) / float(ART_TILE)
 const GRID_COLUMNS: int = 12
