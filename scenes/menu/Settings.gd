@@ -8,13 +8,21 @@ const PRIVACY_URL: String = "https://wardkeep.example/privacy"
 ## credits live on a screen the player can actually reach. MAPPING.md carries
 ## the full per-tile detail. No [b] here: the theme's bold face is a size up,
 ## which turns every pack name into a heading.
+##
+## Kenney's packs are CC0 and ask for nothing at all. He is thanked here by
+## name anyway, and last, where a reader will still be looking: a licence that
+## waives credit is a reason to give it freely rather than a reason to skip it.
+## The thanks names what of his is actually in the build rather than counting
+## packs, because the count is not something the repository can prove.
 const CREDITS: String = """Board art — Toen's Medieval Strategy Sprite Pack by Andre Mari Coppola, licensed [url=http://creativecommons.org/licenses/by/4.0/]CC BY 4.0[/url]. Modified: lane tiles and the keep are composited from the pack's tiles.
 
 Bosses and the Shade — animated creature sheets by Stephen Challener (Redshrike), from [url=https://opengameart.org]OpenGameArt.org[/url]. Unmodified.
 
 Other enemies — Battlers by JosephSeraph.
 
-Interface, effects, fonts and audio — Kenney ([url=https://kenney.nl]kenney.nl[/url]), CC0."""
+Interface, effects, fonts and audio — Kenney ([url=https://kenney.nl]kenney.nl[/url]).
+
+Kenney releases his work into the public domain and asks for no credit for it. Much of what this game looks and sounds like is his — the borders, the ranks, the explosions, the fonts, the touch prompts, the music and every click. Thank you."""
 
 @onready var _music_slider: HSlider = %MusicSlider
 @onready var _sfx_slider: HSlider = %SfxSlider
