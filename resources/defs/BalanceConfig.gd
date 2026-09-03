@@ -33,6 +33,31 @@ class_name BalanceConfig
 @export var gold_wave_clear_per_wave: int = 1
 @export var sell_refund_ratio: float = 0.6
 
+## --- tower upkeep (PROVISIONAL, SPEC_GAPS.md #16) -----------------------
+## Towers past this many cost one kill's worth of gold every wave. Feature Spec
+## §1 wants gold to be the constraint rather than space, but with 34 build
+## tiles and income that outruns costs, filling the board was strictly correct
+## and nothing pushed back. Upkeep is charged per tower rather than per tier,
+## so going tall stays the efficient play and going wide is what costs.
+##
+## Set to a working line rather than something smaller, so the opening is
+## untaxed. Charging from the ninth tower took gold out of exactly the waves a
+## fresh Keep spends assembling its first defence, which is not where filling
+## the board was the problem.
+@export var upkeep_free_towers: int = 12
+## Gold of unpaid upkeep per point of Ward Stone lost. A tax the player can
+## simply decline to pay changes nothing once the board is already built —
+## towers stay bought and keep firing — so an unpaid garrison deserts and the
+## keep suffers for it. That is what makes an oversized board actively bad
+## rather than merely slower to assemble, and selling one is the answer.
+@export var upkeep_desertion_gold: int = 20
+## Every this many towers past the free allowance, each garrisoned tower's
+## wages go up by another kill's worth. Flat upkeep only skimmed gold a wide
+## board had nothing left to spend on: it made filling the map poorer without
+## making it wrong. A rate that climbs with the size of the garrison is what
+## turns "one more tower" into a decision instead of a formality.
+@export var upkeep_step_towers: int = 8
+
 ## --- opening tower draft (PROVISIONAL, SPEC_GAPS.md #15) ----------------
 ## How many unlocked towers a run offers, and how many of them the player takes
 ## into it. Five of nine picking three gives ten possible hands at a full Keep

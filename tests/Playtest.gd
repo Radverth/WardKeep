@@ -20,12 +20,15 @@ const DEFAULT_SEED: int = 20260902
 func _ready() -> void:
 	var target: int = DEFAULT_TARGET
 	var run_seed: int = DEFAULT_SEED
+	var strategy: AutoPlayer.Strategy = AutoPlayer.Strategy.MEASURED
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	for index: int in args.size():
 		if args[index] == "--waves" and index + 1 < args.size():
 			target = int(args[index + 1])
 		elif args[index] == "--seed" and index + 1 < args.size():
 			run_seed = int(args[index + 1])
+		elif args[index] == "--greedy":
+			strategy = AutoPlayer.Strategy.GREEDY
 	RunManager.seed_override = run_seed
 	print("WARDKEEP playtest: seed ", run_seed)
 
@@ -33,18 +36,35 @@ func _ready() -> void:
 	# Draft a roster the way Run Setup does, so the smoke test exercises the
 	# opening draft rather than the no-draft fallback.
 	GameState.ensure_tower_offer()
-	GameState.pending_tower_ids = GameState.pending_tower_offer.slice(
-		0, TowerDraft.picks_for(GameState.pending_tower_offer.size()))
+	GameState.pending_tower_ids = _draft_hand()
 	if Engine.max_fps != 0:
 		push_warning("WARDKEEP playtest: run with --fixed-fps for a reproducible result.")
 	var arena: Arena = (load("res://scenes/run/Arena.tscn") as PackedScene).instantiate()
 	add_child(arena)
 	var player := AutoPlayer.new()
 	player.target_wave = target
+	player.strategy = strategy
 	player.arena = arena
 	player.report_ready.connect(_on_report)
 	add_child(player)
-	print("WARDKEEP playtest: target wave ", target)
+	print("WARDKEEP playtest: target wave %d, strategy %s" % [
+		target, "greedy" if strategy == AutoPlayer.Strategy.GREEDY else "measured"])
+
+## Takes damage towers first, the way a player reads the offer. Slicing the
+## offer as it came took whichever three sorted first by name, so the bot could
+## walk into wave 10 holding two slow fields — a hand no player would pick, and
+## a run the harness then reported as a balance failure.
+func _draft_hand() -> Array[StringName]:
+	var offer: Array[StringName] = GameState.pending_tower_offer
+	var wanted: int = TowerDraft.picks_for(offer.size())
+	var hand: Array[StringName] = []
+	for want_damage: bool in [true, false]:
+		for id: StringName in offer:
+			var def: TowerDef = Registry.tower(id)
+			if hand.size() < wanted and def != null and def.deals_damage() == want_damage \
+					and not hand.has(id):
+				hand.append(id)
+	return hand
 
 ## Gives the bot the Keep Hub a player would actually have by the time they are
 ## pushing past wave 10 — every tower unlocked and the perks bought.
@@ -56,6 +76,11 @@ func _ready() -> void:
 ## the test covers the perk maths and a full five-card tower draft rather than
 ## the three-unlock degenerate case.
 func _furnish_keep() -> void:
+	# From a clean ledger every time. The save file outlives the process, so
+	# without this each run inherits the last one's Keep and the numbers drift
+	# upward run over run — which quietly turned a balance measurement into a
+	# record of how many times the test had been run.
+	SaveManager.reset()
 	SaveManager.add_runestones(5000)
 	for def: TowerDef in Registry.towers():
 		SaveManager.unlock_tower(String(def.id))

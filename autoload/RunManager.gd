@@ -9,6 +9,12 @@ signal ward_stone_damaged(hp: int, max_hp: int)
 signal gold_changed(gold: int)
 signal draft_offered(cards: Array)
 signal draft_resolved()
+## A tower was placed or sold, so the running upkeep has moved. Separate from
+## gold_changed: a Hollow Charter or a free placement moves the garrison
+## without moving the purse, and the player still needs to see the new cost.
+signal garrison_changed(tower_count: int)
+## Wave cleared, with what it paid and what the garrison cost.
+signal wave_settled(wave: int, bonus: int, upkeep: int)
 signal run_ended(victory: bool, waves: int, runestones_earned: int)
 signal run_unlocks_changed()
 
@@ -154,10 +160,36 @@ func begin_wave() -> void:
 	wave_started.emit(wave)
 
 func complete_wave() -> void:
-	add_gold(int(round(float(Balance.wave_clear_bonus(wave)) * modifiers.wave_clear_mult)))
+	var bonus: int = int(round(float(Balance.wave_clear_bonus(wave)) * modifiers.wave_clear_mult))
+	add_gold(bonus)
+	var upkeep: int = charge_upkeep()
 	repair_ward_stone(Perks.repair_per_wave())
+	wave_settled.emit(wave, bonus, upkeep)
 	wave_cleared.emit(wave)
 	offer_draft()
+
+## Garrison pay, and what happens when it goes short. Deducting gold alone is
+## no pressure once a board is built — the towers stay bought and keep firing,
+## so a player who fills every tile simply banks less and wins anyway. An
+## unpaid garrison deserts and the Ward Stone pays for it, which makes an
+## oversized board a losing position rather than an expensive one. Selling a
+## tower is the move, and it takes effect from the next wave.
+func charge_upkeep() -> int:
+	var owed: int = Balance.upkeep_for(wave, placed_towers.size())
+	var paid: int = mini(owed, gold)
+	if paid > 0:
+		gold -= paid
+		gold_changed.emit(gold)
+	var shortfall: int = owed - paid
+	if shortfall > 0:
+		var deserted: int = ceili(float(shortfall)
+			/ float(maxi(1, Balance.config().upkeep_desertion_gold)))
+		damage_ward_stone(deserted)
+	return owed
+
+## What holding the current board costs at the end of this wave.
+func upkeep_due() -> int:
+	return Balance.upkeep_for(maxi(1, wave), placed_towers.size())
 
 ## --- draft (Feature Spec §5) --------------------------------------------
 
@@ -233,9 +265,11 @@ func available_towers() -> Array[TowerDef]:
 func register_tower(tower: Node) -> void:
 	if tower not in placed_towers:
 		placed_towers.append(tower)
+		garrison_changed.emit(placed_towers.size())
 
 func unregister_tower(tower: Node) -> void:
 	placed_towers.erase(tower)
+	garrison_changed.emit(placed_towers.size())
 
 ## --- ending the run -----------------------------------------------------
 

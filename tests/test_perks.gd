@@ -81,3 +81,21 @@ func test_no_perk_turns_a_knob_nobody_reads() -> void:
 	for perk: PerkDef in Registry.perks():
 		assert_true(known.has(perk.effect),
 			"%s turns '%s', which nothing reads" % [perk.id, perk.effect])
+
+## The ledger records what it was told to record and does not know a perk's
+## ceiling. A caller that buys one rank too many would otherwise be paid out
+## for it forever — which is exactly what the headless harness did, quietly
+## turning every balance measurement into a record of how often it had run.
+func test_a_perk_never_pays_out_past_its_last_rank() -> void:
+	var perk: PerkDef = Registry.perks()[0]
+	var over := StubRanks.new()
+	over.ranks[String(perk.id)] = perk.max_rank() + 5
+	Perks.bind(over)
+	assert_eq(Perks.rank(perk.id), perk.max_rank(), "the rank reads as its ceiling")
+	var capped: float = Perks.value(perk.effect)
+
+	var maxed := StubRanks.new()
+	maxed.ranks[String(perk.id)] = perk.max_rank()
+	Perks.bind(maxed)
+	assert_almost_eq(capped, Perks.value(perk.effect), 0.001,
+		"and pays out no more than a fully bought one")

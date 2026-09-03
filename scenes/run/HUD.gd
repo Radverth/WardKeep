@@ -12,6 +12,7 @@ signal safe_area_changed(top: float, bottom: float)
 
 @onready var _wave_label: Label = %WaveLabel
 @onready var _gold_label: Label = %GoldLabel
+@onready var _upkeep_label: Label = %UpkeepLabel
 @onready var _ward_bar: ProgressBar = %WardBar
 @onready var _ward_label: Label = %WardLabel
 @onready var _tray: HBoxContainer = %Tray
@@ -38,12 +39,21 @@ const TRAY_HEIGHT: float = 148.0
 ## The card that says what an armed tower does. Sits above the tray so it
 ## covers as little board as possible at the moment the player is choosing
 ## where to put the thing.
+## The Ward Flare sits above the tray on the thumb side rather than in it. It
+## used to be the first cell of the tower row, where it competed with the towers
+## for the same space and read as a fourth tower; and now that a run drafts
+## exactly three towers, the tray has room for those three and nothing else.
+const ABILITY_SIZE: Vector2 = Vector2(176, 168)
+## Clear of the tray and the info card, on the right where a thumb rests.
+const ABILITY_MARGIN: float = 20.0
+
 ## Three short lines inside the frame's own padding. The §4 role strings are
 ## far too long to sit next to a name — "Slow single-target + 20% slow debuff
 ## (4s)" wrapped the title on its own — so the numbers say what the role said.
 const ARMED_INFO_HEIGHT: float = 124.0
 
 func _ready() -> void:
+	_style_ability_button()
 	_apply_safe_area()
 	get_viewport().size_changed.connect(_apply_safe_area)
 	_ability_button.pressed.connect(func() -> void: ability_pressed.emit())
@@ -54,6 +64,28 @@ func _ready() -> void:
 	_message.hide()
 	_bank_button.hide()
 	_armed_info.hide()
+
+## The flare is not a tower and must not look like one. The tray's chrome is
+## the same cream panel for everything, so this gets its own red plate — it is
+## the one control on the board that does something immediately when pressed.
+const ABILITY_READY: Color = Color(0.70, 0.18, 0.16)
+const ABILITY_COOLING: Color = Color(0.28, 0.22, 0.22)
+
+func _style_ability_button() -> void:
+	for state: String in ["normal", "hover", "focus"]:
+		_ability_button.add_theme_stylebox_override(state, _ability_plate(ABILITY_READY))
+	_ability_button.add_theme_stylebox_override("pressed", _ability_plate(ABILITY_READY.lightened(0.2)))
+	_ability_button.add_theme_stylebox_override("disabled", _ability_plate(ABILITY_COOLING))
+	_ability_button.add_theme_color_override("font_color", Color(1.0, 0.95, 0.88))
+	_ability_button.add_theme_color_override("font_disabled_color", Color(0.72, 0.66, 0.64))
+
+func _ability_plate(fill: Color) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.bg_color = fill
+	box.set_corner_radius_all(14)
+	box.set_border_width_all(4)
+	box.border_color = fill.lightened(0.35)
+	return box
 
 ## Pushes the top bar below a punch-hole or notch and lifts the tray clear of
 ## the gesture bar. Both bars grow rather than move, so their contents stay
@@ -69,6 +101,10 @@ func _apply_safe_area() -> void:
 	_tray_margin.add_theme_constant_override("margin_bottom", int(insets.y))
 	_armed_info.offset_bottom = -(TRAY_HEIGHT + insets.y)
 	_armed_info.offset_top = _armed_info.offset_bottom - ARMED_INFO_HEIGHT
+	_ability_button.offset_right = -ABILITY_MARGIN
+	_ability_button.offset_left = _ability_button.offset_right - ABILITY_SIZE.x
+	_ability_button.offset_bottom = _armed_info.offset_top - ABILITY_MARGIN
+	_ability_button.offset_top = _ability_button.offset_bottom - ABILITY_SIZE.y
 	safe_area_changed.emit(TOP_BAR_HEIGHT + insets.x, TRAY_HEIGHT + insets.y)
 
 func board_insets() -> Vector2:
@@ -80,13 +116,34 @@ func bind() -> void:
 	RunManager.ward_stone_damaged.connect(_on_ward_changed)
 	RunManager.wave_started.connect(_on_wave_started)
 	RunManager.run_unlocks_changed.connect(refresh_tray)
+	RunManager.wave_settled.connect(_on_wave_settled)
+	RunManager.garrison_changed.connect(func(_count: int) -> void: _refresh_upkeep())
 	_on_gold_changed(RunManager.gold)
+	_refresh_upkeep()
 	_on_ward_changed(RunManager.ward_stone_hp, RunManager.ward_stone_max_hp)
 	refresh_tray()
 
 func _on_gold_changed(gold: int) -> void:
 	_gold_label.text = "%d g" % gold
+	_refresh_upkeep()
 	_refresh_affordability()
+
+## Upkeep the player cannot see is a mysterious drain, so the running cost of
+## the board sits under the gold count and updates the moment a tower is placed
+## or sold — before the wave ends and it is charged.
+func _refresh_upkeep() -> void:
+	var owed: int = RunManager.upkeep_due()
+	_upkeep_label.visible = owed > 0
+	_upkeep_label.text = "-%d/wave" % owed
+
+func _on_wave_settled(_wave: int, bonus: int, upkeep: int) -> void:
+	_refresh_upkeep()
+	if upkeep <= 0:
+		flash_message("Wave held  ·  +%dg" % bonus)
+	elif RunManager.gold <= 0 and upkeep > bonus:
+		flash_message("Wave held  ·  the garrison went unpaid and men deserted")
+	else:
+		flash_message("Wave held  ·  +%dg  ·  -%dg garrison" % [bonus, upkeep])
 
 func _on_ward_changed(hp: int, max_hp: int) -> void:
 	_ward_bar.max_value = float(max_hp)
@@ -149,16 +206,17 @@ func refresh_tray() -> void:
 	_buttons.clear()
 	for def: TowerDef in RunManager.available_towers():
 		var button := Button.new()
-		# Narrow enough that three towers and the Ward Flare fit the width of a
-		# portrait screen, so the tray only has to be swiped once the roster
-		# grows past the starters.
-		button.custom_minimum_size = Vector2(190, 128)
+		# A run drafts three towers, so the three share the tray's width evenly
+		# and nothing has to be swiped. A Hollow Charter can add a fourth, and
+		# the row still scrolls when it does.
+		button.custom_minimum_size = Vector2(180, 128)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		# Name and price only. The element used to sit here too and clipped the
 		# longer names at every width that still fit three towers on a phone;
 		# arming one now shows a card that carries the element and the matchup,
 		# which is a better place for it than a button this size.
 		button.text = "%s\n%dg" % [def.display_name, def.purchase_cost()]
-		button.add_theme_font_size_override("font_size", 16)
+		button.add_theme_font_size_override("font_size", 15)
 		button.clip_text = true
 		button.pressed.connect(func() -> void:
 			AudioBus.click()

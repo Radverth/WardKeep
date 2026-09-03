@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_66jus"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_xx0jr"]
 
 [resource]
-script = ExtResource("1_66jus")
+script = ExtResource("1_xx0jr")
 id = &"wide_blast"
 title = "Wide Blast"
 description = "+1 tile splash radius on all AoE towers."

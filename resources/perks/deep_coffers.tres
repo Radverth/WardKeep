@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="PerkDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_wj2kc"]
+[ext_resource type="Script" path="res://resources/defs/PerkDef.gd" id="1_7mmju"]
 
 [resource]
-script = ExtResource("1_wj2kc")
+script = ExtResource("1_7mmju")
 id = &"deep_coffers"
 display_name = "Deep Coffers"
 description = "Start every run with more gold in hand."

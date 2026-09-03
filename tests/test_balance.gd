@@ -113,3 +113,49 @@ func test_ward_flare_is_a_burst_not_a_tower() -> void:
 	assert_true(flare < brute_hp, "the flare does not delete an Ogre outright")
 	assert_gt(flare, grunt.base_hp * Balance.stat_multiplier(wave),
 		"but it clears the fodder it lands on")
+
+## --- tower upkeep (PROVISIONAL, SPEC_GAPS.md #16) -----------------------
+
+## Feature Spec §1 wants gold to be the constraint. Filling the board was
+## strictly correct until upkeep existed, so these guard the shape that makes
+## going wide a decision: free up to a working line, then a bill that climbs
+## faster than the board does.
+func test_a_working_line_costs_nothing_to_hold() -> void:
+	var free: int = Balance.config().upkeep_free_towers
+	assert_eq(Balance.upkeep_for(10, free), 0, "the free allowance is free")
+	assert_eq(Balance.upkeep_for(10, 1), 0, "an opening tower is free")
+	assert_gt(Balance.upkeep_for(10, free + 1), 0, "one past it is not")
+
+func test_wages_climb_faster_than_the_garrison() -> void:
+	var free: int = Balance.config().upkeep_free_towers
+	var small: int = Balance.upkeep_for(20, free + 4)
+	var double: int = Balance.upkeep_for(20, free + 8)
+	assert_gt(double, small * 2,
+		"twice the excess costs more than twice as much, so widening compounds")
+
+## Tied to the per-kill reward rather than a flat number, so it neither
+## throttles wave 2 nor becomes a rounding error at wave 40.
+func test_wages_keep_pace_with_the_economy() -> void:
+	var towers: int = Balance.config().upkeep_free_towers + 6
+	var early: int = Balance.upkeep_for(2, towers)
+	var late: int = Balance.upkeep_for(40, towers)
+	assert_gt(late, early, "the same board costs more when a kill is worth more")
+	# Loose because the bill is floored to whole gold at both ends; what this
+	# guards is that the two grow together, not that they round alike.
+	var kill_growth: float = float(Balance.gold_for_kill(40)) / float(Balance.gold_for_kill(2))
+	assert_almost_eq(float(late) / float(early), kill_growth, kill_growth * 0.1,
+		"and it tracks the kill reward rather than drifting from it")
+
+## A bill that jumped when one more tower crossed a boundary would put an
+## invisible wall in front of a player who could see no reason for it.
+func test_wages_have_no_cliff() -> void:
+	var free: int = Balance.config().upkeep_free_towers
+	var previous: int = 0
+	var biggest_step: int = 0
+	for towers: int in range(free, free + 20):
+		var owed: int = Balance.upkeep_for(30, towers)
+		assert_true(owed >= previous, "the bill never falls as the board grows")
+		biggest_step = maxi(biggest_step, owed - previous)
+		previous = owed
+	assert_gt(float(Balance.upkeep_for(30, free + 20)) / 2.0, float(biggest_step),
+		"no single tower more than doubles what the last one cost")

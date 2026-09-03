@@ -162,6 +162,29 @@ static func element_matchup_line(element: WK.RuneElement) -> String:
 		parts.append("weak vs %s" % " and ".join(weak))
 	return "even against everything" if parts.is_empty() else ", ".join(parts)
 
+## Gold charged at the end of a wave for holding `tower_count` towers.
+##
+## Tied to the per-kill reward rather than a flat number so it keeps pace with
+## the economy on its own: a tower past the free allowance costs a kill's worth
+## of gold per wave, at whatever a kill is worth now. A flat figure would
+## throttle an early board and then stop mattering exactly when the player has
+## the most gold to spend.
+##
+## The rate then climbs with the size of the garrison — another kill's worth
+## per tower for every `upkeep_step_towers` past the allowance — so the board
+## gets harder to widen the wider it already is. It climbs smoothly rather than
+## in steps: a bill that jumped when one more tower crossed a boundary would
+## put an invisible wall in front of a player who could see no reason for it.
+## Charged the same whatever tier the towers are, which leaves upgrading the
+## cheap way to add damage.
+static func upkeep_for(wave: int, tower_count: int) -> int:
+	var cfg: BalanceConfig = config()
+	var excess: int = maxi(0, tower_count - cfg.upkeep_free_towers)
+	if excess <= 0:
+		return 0
+	var rate: float = 1.0 + float(excess - 1) / float(maxi(1, cfg.upkeep_step_towers))
+	return int(floor(float(excess) * rate * float(gold_for_kill(wave, false, false))))
+
 ## Ward Flare damage at a given wave. Scaled by the same §2.2 multiplier that
 ## scales enemy health, so it never becomes a rounding error.
 static func ability_damage(wave: int) -> float:

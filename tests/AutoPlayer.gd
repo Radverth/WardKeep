@@ -55,18 +55,62 @@ func _use_flare() -> void:
 	if leader != null:
 		arena.call("_fire_ability", leader.global_position)
 
-## A stand-in for a competent player rather than a hoarder: build a working
-## line first, then put gold into upgrades, which are more gold-efficient than
-## a tenth tier-1 tower. Falls back to placing when nothing can be upgraded.
+## Two ways to spend, so a balance change can be measured against both.
+##
+## MEASURED is a stand-in for a competent player: build a working line, then
+## put gold into upgrades, which are more gold-efficient than a tenth tier-1
+## tower, and stop widening the board once the garrison's wages eat the wave.
+## GREEDY is the player who reported reaching wave 30 without trouble — it
+## fills every tile it can afford and never sells. CI runs MEASURED; GREEDY
+## exists so "filling the board is strictly correct" stays a claim we can test.
+enum Strategy { MEASURED, GREEDY }
+
+@export var strategy: Strategy = Strategy.MEASURED
+
+## The measured bot's opening line, before it switches to upgrading.
 const SOFT_TOWER_CAP: int = 12
+## It widens past that line only while the next tower's wages stay under this
+## share of what a wave pays out. Past it, gold goes into upgrades and the
+## board stops growing — the same judgement the upkeep rule asks a player for.
+## Set where a player would set it: wages are worth most of a wave's takings
+## while there is still a tier to buy, and ruinous once there is not.
+const UPKEEP_INCOME_SHARE: float = 0.75
 
 func _buy_or_upgrade() -> void:
 	var towers: int = RunManager.placed_towers.size()
+	if strategy == Strategy.GREEDY:
+		if _place_best():
+			return
+		_upgrade_cheapest()
+		return
 	if towers < SOFT_TOWER_CAP and _place_best():
 		return
 	if _upgrade_cheapest():
 		return
-	_place_best()
+	if _wages_affordable(towers + 1):
+		_place_best()
+
+## Whether a board of `tower_count` would still pay for itself. Compared
+## against the wave-clear bonus plus the kills a wave is worth, which is the
+## income the garrison is drawing against.
+func _wages_affordable(tower_count: int) -> bool:
+	var wave: int = maxi(1, RunManager.wave)
+	var income: float = float(Balance.wave_clear_bonus(wave))
+	income += float(Balance.gold_for_kill(wave)) * float(_expected_kills(wave))
+	return float(Balance.upkeep_for(wave, tower_count)) <= income * UPKEEP_INCOME_SHARE
+
+## Roughly how many enemies a wave sends, from its §2.1 budget divided by what
+## an average enemy costs out of it. Only needs to be the right order of
+## magnitude — it sets a spending threshold, not a game rule.
+func _expected_kills(wave: int) -> int:
+	var spawnable: Array[EnemyDef] = Registry.spawnable_enemies()
+	if spawnable.is_empty():
+		return 1
+	var total: int = 0
+	for def: EnemyDef in spawnable:
+		total += maxi(1, def.budget_cost)
+	var average: float = float(total) / float(spawnable.size())
+	return maxi(1, int(round(Balance.enemy_budget(wave) / average)))
 
 func _place_best() -> bool:
 	var affordable: Array[TowerDef] = []

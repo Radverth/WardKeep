@@ -100,6 +100,12 @@ func load_save() -> void:
 		push_warning("WARDKEEP: save corrupt; starting fresh.")
 		data = default_data()
 
+## Throws the ledger away and starts from the defaults. Used by the headless
+## harness so a run measures the game rather than the machine's history.
+func reset() -> void:
+	data = default_data()
+	write_save()
+
 func write_save() -> void:
 	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:

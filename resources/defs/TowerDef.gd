@@ -33,5 +33,14 @@ func max_tier_index() -> int:
 func purchase_cost() -> int:
 	return tiers[0].cost if not tiers.is_empty() else 0
 
+## Whether this tower can kill on its own. A Glacier Well only slows, so a hand
+## made entirely of towers like it has no way to end a wave — see
+## TowerDraft.offer(), which will not deal one.
+func deals_damage() -> bool:
+	var first: TowerTierData = tier(0)
+	if first == null:
+		return false
+	return first.damage > 0.0 or first.dot_damage > 0.0
+
 func is_starter() -> bool:
 	return unlock_cost <= 0

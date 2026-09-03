@@ -340,6 +340,48 @@ run, and the hand they are dealt is part of that. What they take is theirs.
 
 ---
 
+## 16. Tower upkeep
+
+Feature Spec §1 wants gold to be the constraint on a board rather than space,
+but nothing in the documents charges for a tower after it is bought. With 34
+build tiles and income that outruns costs, filling every tile was strictly
+correct: a player reported reaching wave 30 by doing exactly that, and the
+headless bot confirmed it — 34 towers at wave 40 with 4,852 gold spare.
+
+Towers past a working line (`upkeep_free_towers`, 12) now cost gold at the end
+of every wave, priced in kills rather than flat gold so the bill keeps pace
+with the economy on its own. The rate climbs smoothly with the size of the
+garrison, so the board gets harder to widen the wider it already is, and the
+opening is untaxed. Upkeep is charged per tower and not per tier, which leaves
+upgrading the cheap way to add damage — going tall over going wide.
+
+A tax the player can decline to pay changes nothing once a board is built, so
+an unpaid garrison deserts and the Ward Stone pays for it
+(`upkeep_desertion_gold`). That is what makes an oversized board a losing
+position rather than merely an expensive one; selling a tower is the answer,
+and it takes effect from the next wave.
+
+Measured over six seeds, reproducibly: board-filling now dies at wave 15-17
+every time, while a disciplined line reaches wave 30 on all six with 21 tier-3
+towers and 53-75 Ward Stone left.
+
+PROVISIONAL. Every number is in `BalanceConfig`, and none of it is in the
+documents.
+
+---
+
+## 17. A drafted hand is guaranteed to be able to kill
+
+§14's opening draft dealt five towers at random. Nothing stopped an offer being
+mostly slow fields and support, and a player who drafted three of those had a
+run already lost at the setup screen with nothing on the board to show them
+why. `TowerDraft.offer()` now guarantees the offer holds at least as many
+damage-dealing towers as the hand takes. Support towers stay in the pool; they
+just cannot be all of it.
+
+PROVISIONAL — the documents do not describe the draft at all, so they do not
+describe this either.
+
 ## Deviations from the documents that are not gaps
 
 - **GUT** (Technical Architecture §7) is not vendored — it is a third-party

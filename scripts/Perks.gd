@@ -26,14 +26,31 @@ static func bind(source: Object) -> void:
 	_ranks = source
 
 static func rank(id: StringName) -> int:
-	return int(_ranks.perk_rank(String(id))) if _ranks != null else 0
+	if _ranks == null:
+		return 0
+	return _capped(id, int(_ranks.perk_rank(String(id))))
+
+## A stored rank, held to what the perk actually sells. The ledger records what
+## it was told to record and does not know a perk's ceiling, so a caller that
+## buys one rank too many would otherwise be paid out for it forever. Reading
+## through this cap means an over-bought perk is inert rather than a permanent
+## advantage, whatever put it in the save.
+static func _capped(id: StringName, stored: int) -> int:
+	for perk: PerkDef in Registry.perks():
+		if perk.id == id:
+			return clampi(stored, 0, perk.max_rank())
+	return 0
 
 ## Total value bought against one effect, across every perk that turns it.
 static func value(effect: StringName) -> float:
+	if _ranks == null:
+		return 0.0
 	var total: float = 0.0
 	for perk: PerkDef in Registry.perks():
-		if perk.effect == effect:
-			total += perk.per_rank * float(rank(perk.id))
+		if perk.effect != effect:
+			continue
+		var stored: int = int(_ranks.perk_rank(String(perk.id)))
+		total += perk.per_rank * float(clampi(stored, 0, perk.max_rank()))
 	return total
 
 static func starting_gold_bonus() -> int:

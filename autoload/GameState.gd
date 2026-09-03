@@ -31,11 +31,22 @@ func ensure_tower_offer() -> void:
 	if signature == _offer_signature and not pending_tower_offer.is_empty():
 		return
 	var rng := RandomNumberGenerator.new()
-	rng.seed = RunManager.daily_seed() if pending_run_mode == WK.RunMode.DAILY \
-		else int(Time.get_unix_time_from_system() * 1000.0) ^ randi()
+	rng.seed = _offer_seed()
 	pending_tower_offer = TowerDraft.offer(rng, RunManager.unlocked_towers())
 	pending_tower_ids.clear()
 	_offer_signature = signature
+
+## Where a standard run's hand comes from. A pinned run seed decides it too, so
+## the seed names the whole run — board, waves, draft and opening hand — rather
+## than everything except the hand. Without that a "same seed" run was still
+## played with a different three towers each time, which is most of what a run
+## turns on and made repeated runs incomparable.
+func _offer_seed() -> int:
+	if pending_run_mode == WK.RunMode.DAILY:
+		return RunManager.daily_seed()
+	if RunManager.seed_override >= 0:
+		return RunManager.seed_override
+	return int(Time.get_unix_time_from_system() * 1000.0) ^ randi()
 
 ## Called when a run actually begins, so the next standard run is offered a new
 ## hand rather than the one that was just played.

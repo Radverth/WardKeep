@@ -21,6 +21,9 @@ const MEDAL_LEVELS: Array[int] = [5, 10, 15, 20, 25, 30]
 ## gesture bar. In viewport units.
 const MIN_TOP_INSET: float = 18.0
 const MIN_BOTTOM_INSET: float = 22.0
+## The most of the screen either safe-area inset may claim. Real cutouts and
+## gesture bars sit well under this.
+const MAX_INSET_SHARE: float = 0.09
 
 ## Space at the top and bottom of the viewport that the device's own furniture
 ## occupies — a punch-hole or notch above, a gesture bar below.
@@ -43,9 +46,15 @@ static func safe_insets(viewport: Viewport) -> Vector2:
 	# oversized rect; either way the minimums are the sane answer.
 	if safe.size.y <= 0 or safe.size.y > int(window.y):
 		return minimums
+	# Held to a slice of the screen. A punch-hole or a gesture bar is a small
+	# band; a reading far bigger than that is the display server describing
+	# something other than this window — a desktop screen larger than the
+	# window it is reporting against, say — and taking it at its word handed
+	# the tower tray a third of the board as dead panel.
+	var ceiling: float = visible.y * MAX_INSET_SHARE
 	return Vector2(
-		maxf(minimums.x, float(safe.position.y) * to_viewport),
-		maxf(minimums.y, float(int(window.y) - safe.end.y) * to_viewport))
+		clampf(float(safe.position.y) * to_viewport, minimums.x, ceiling),
+		clampf(float(int(window.y) - safe.end.y) * to_viewport, minimums.y, ceiling))
 
 ## Pushes a full-screen layout in past whatever the device puts over the top
 ## and bottom of the glass, keeping whatever padding the scene already had.

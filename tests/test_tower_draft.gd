@@ -84,3 +84,28 @@ func test_no_draft_falls_back_to_every_unlock() -> void:
 	RunManager.run_roster.clear()
 	assert_eq(RunManager.available_towers().size(), Registry.towers().size(),
 		"everything unlocked is buildable when nothing was drafted")
+
+## A hand of nothing but slow fields has no way to end a wave, and a player who
+## drafted one lost the run at the setup screen with nothing on the board to
+## show them why. Support towers stay in the pool; they cannot be all of it.
+func test_the_offer_always_deals_enough_damage_to_fill_a_hand() -> void:
+	_unlock_everything()
+	var picks: int = Balance.config().tower_draft_picks
+	for seed_value: int in range(0, 200):
+		var offer: Array[StringName] = TowerDraft.offer(
+			_rng(seed_value), RunManager.unlocked_towers())
+		var damage: int = 0
+		for id: StringName in offer:
+			if Registry.tower(id).deals_damage():
+				damage += 1
+		assert_true(damage >= picks,
+			"seed %d offers %d damage towers for a hand of %d" % [seed_value, damage, picks])
+
+func test_support_towers_are_still_offered() -> void:
+	_unlock_everything()
+	var seen_support: bool = false
+	for seed_value: int in range(0, 200):
+		for id: StringName in TowerDraft.offer(_rng(seed_value), RunManager.unlocked_towers()):
+			if not Registry.tower(id).deals_damage():
+				seen_support = true
+	assert_true(seen_support, "guaranteeing damage did not push support out of the pool")

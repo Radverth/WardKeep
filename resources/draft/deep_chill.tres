@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_xevua"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_1vaxy"]
 
 [resource]
-script = ExtResource("1_xevua")
+script = ExtResource("1_1vaxy")
 id = &"deep_chill"
 title = "Deep Chill"
 description = "+25% slow strength and duration."

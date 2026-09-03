@@ -18,6 +18,10 @@ const SKIN_TIERS: Array[Dictionary] = [
 @onready var _balance_label: Label = %BalanceLabel
 @onready var _towers_list: VBoxContainer = %TowersList
 ## Runs are bucketed this many waves wide in the where-runs-end chart.
+## Rows are sized off this so the Towers and Perks lists show most of their
+## content without a scroll on a phone.
+const ROW_ICON: int = 56
+
 const CHART_BUCKET: int = 5
 const CHART_BAR: Color = Color(0.85, 0.72, 0.36)
 const CHART_TRACK: Color = Color(0.22, 0.20, 0.20)
@@ -70,17 +74,18 @@ func _perk_row(perk: PerkDef) -> Control:
 	var rank: int = SaveManager.perk_rank(String(perk.id))
 	var title := Label.new()
 	title.text = "%s   %s" % [perk.display_name, _pips(rank, perk.max_rank())]
-	title.add_theme_font_size_override("font_size", 24)
+	title.add_theme_font_size_override("font_size", 22)
 	text.add_child(title)
 
 	var subtitle := Label.new()
 	subtitle.text = perk.description
-	subtitle.add_theme_font_size_override("font_size", 17)
+	subtitle.add_theme_font_size_override("font_size", 15)
 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text.add_child(subtitle)
 
 	var action := Button.new()
-	action.custom_minimum_size = Vector2(190, 72)
+	action.custom_minimum_size = Vector2(170, ROW_ICON)
+	action.add_theme_font_size_override("font_size", 18)
 	if rank >= perk.max_rank():
 		action.text = "Maxed"
 		action.disabled = true
@@ -123,7 +128,7 @@ func _build_towers() -> void:
 
 		var icon := TextureRect.new()
 		icon.texture = def.texture()
-		icon.custom_minimum_size = Vector2(72, 72)
+		icon.custom_minimum_size = Vector2(ROW_ICON, ROW_ICON)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.modulate = WK.element_tint(def.rune_element)
@@ -134,16 +139,22 @@ func _build_towers() -> void:
 		box.add_child(text)
 		var title := Label.new()
 		title.text = def.display_name
-		title.add_theme_font_size_override("font_size", 24)
+		title.add_theme_font_size_override("font_size", 22)
 		text.add_child(title)
 		var subtitle := Label.new()
 		subtitle.text = "%s · %s" % [WK.element_name(def.rune_element), def.role]
-		subtitle.add_theme_font_size_override("font_size", 17)
-		subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		subtitle.add_theme_font_size_override("font_size", 15)
+		# One line, cut rather than wrapped. The §4 role strings run to fifty
+		# characters and wrapped every row to three lines, which pushed the
+		# ninth tower off the bottom of a list that then had to be scrolled to
+		# see anything.
+		subtitle.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		subtitle.clip_text = true
 		text.add_child(subtitle)
 
 		var action := Button.new()
-		action.custom_minimum_size = Vector2(190, 72)
+		action.custom_minimum_size = Vector2(170, ROW_ICON)
+		action.add_theme_font_size_override("font_size", 18)
 		if SaveManager.is_tower_unlocked(String(def.id)):
 			action.text = "Unlocked"
 			action.disabled = true

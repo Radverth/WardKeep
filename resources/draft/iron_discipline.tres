@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_l16wy"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_allsi"]
 
 [resource]
-script = ExtResource("1_l16wy")
+script = ExtResource("1_allsi")
 id = &"iron_discipline"
 title = "Iron Discipline"
 description = "+8% fire rate for all towers."
