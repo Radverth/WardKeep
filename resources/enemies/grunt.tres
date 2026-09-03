@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_dnnbq"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_tjrnn"]
 
 [resource]
-script = ExtResource("1_dnnbq")
+script = ExtResource("1_tjrnn")
 id = &"grunt"
 display_name = "Grunt"
 base_hp = 12.0
@@ -29,4 +29,8 @@ phase_visible_seconds = 0.0
 phase_hidden_seconds = 0.0
 is_boss = false
 scene_path = "res://scenes/enemies/Grunt.tscn"
+sprite_frame_size = Vector2i(0, 0)
+sprite_sheet_columns = 1
+sprite_frames = 0
+sprite_fps = 8.0
 provisional = true

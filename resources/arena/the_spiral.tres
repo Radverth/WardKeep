@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_hyoj5"]
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_1eqdt"]
 
 [resource]
-script = ExtResource("1_hyoj5")
+script = ExtResource("1_1eqdt")
 id = &"the_spiral"
 display_name = "The Spiral"
 blurb = "Winds inward past the same ground twice. Slow towers earn their keep."

@@ -96,9 +96,24 @@ func _ready() -> void:
 			["the_bulwark", "frostmaw", "the_hollow_king"])
 		for index: int in wanted.size():
 			var boss: Resource = Registry.enemy(StringName(wanted[index]))
-			if boss != null:
-				scene.call("_spawn", boss, false,
-					0.30 + 0.22 * float(index), 30)
+			if boss == null:
+				print("Screenshot: no enemy named %s" % wanted[index])
+				continue
+			var spawned: Node = scene.call("_spawn", boss, false,
+				0.30 + 0.22 * float(index), 30)
+			# Say what actually landed on the board. A sprite that silently
+			# fails to draw is otherwise indistinguishable from one that never
+			# spawned, and both look like an empty screenshot.
+			if spawned == null:
+				print("Screenshot: %s did not spawn" % wanted[index])
+			else:
+				var sprite: Sprite2D = spawned.get_node_or_null("Sprite")
+				print("Screenshot: spawned %s visible=%s pos=%s sprite=%s scale=%s tex=%s"
+					% [wanted[index], spawned.visible, spawned.global_position,
+					   "-" if sprite == null else str(sprite.visible),
+					   "-" if sprite == null else str(sprite.scale),
+					   "-" if sprite == null or sprite.texture == null
+						   else str(sprite.texture.get_size())])
 	if auto_play:
 		# Let the smoke-test driver buy and upgrade, so the shot shows a board
 		# with towers on it rather than an empty field.

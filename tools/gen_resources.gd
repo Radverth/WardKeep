@@ -23,6 +23,10 @@ const PERK_DIR := "res://resources/perks/"
 const TOEN_SHEET := "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 const TOEN_COLUMNS: int = 7
 const BATTLER_DIR := "res://assets/sprites/enemies/battlers/"
+## Redshrike's animated creature sheets. Frame size is in each filename; the
+## grid has no margin. See assets/sprites/enemies/redshrike/LICENSE.txt for the
+## attribution these carry, which the Settings credits panel delivers.
+const REDSHRIKE_DIR := "res://assets/sprites/enemies/redshrike/"
 
 const AUTHORED_WAVES: int = 60   ## Technical Architecture §4.2
 const PROJECTILE_SCENE := "res://scenes/run/Projectile.tscn"
@@ -509,9 +513,17 @@ func _build_enemies() -> void:
 			"tint": Color(0.66, 0.86, 1.0, 0.74), "scale": 4.6},
 		{"id": "ironclad", "name": "Ironclad", "hp": 90.0, "speed": 0.8, "dmg": 3.0,
 			"armor": WK.ArmorType.HEAVY, "cost": 24, "wave": 16, "art": 124, "scale": 4.6},
+		# Redshrike's shadow sheet, last row only. The earlier rows are the
+		# figure climbing out of the ground — a spawn animation this has
+		# nowhere to play — and the row before the last is a half row: two
+		# drawn frames followed by two empty cells. The sheet is not the
+		# uniform grid its dimensions suggest, so the cycle is the four frames
+		# that are actually drawn.
 		{"id": "shade", "name": "Shade", "hp": 30.0, "speed": 2.6, "dmg": 2.0,
-			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19, "art": 112,
-			"tint": Color(0.80, 0.84, 1.0, 0.66), "scale": 4.0,
+			"armor": WK.ArmorType.ETHEREAL, "cost": 18, "wave": 19,
+			"sheet": "shadow-80x70", "frame": Vector2i(80, 70), "columns": 4,
+			"frames": 4, "fps": 8.0, "start": Vector2i(0, 4),
+			"tint": Color(0.80, 0.84, 1.0, 0.80), "scale": 0.7,
 			"phase_visible": 2.0, "phase_hidden": 1.1},
 		{"id": "ogre", "name": "Ogre", "hp": 140.0, "speed": 0.7, "dmg": 4.0,
 			"armor": WK.ArmorType.HEAVY, "cost": 34, "wave": 22, "art": 123, "scale": 5.4},
@@ -529,9 +541,19 @@ func _build_enemies() -> void:
 		def.armor_type = entry["armor"]
 		def.budget_cost = entry["cost"]
 		def.unlock_wave = entry["wave"]
-		def.sprite_atlas_path = TOEN_SHEET
-		def.sprite_cell = Vector2i(int(entry["art"]) % TOEN_COLUMNS,
-			int(entry["art"]) / TOEN_COLUMNS)
+		# Most enemies are a cell of Toen's 16px sheet; one is an animated
+		# sheet of its own, which brings its frame size with it.
+		if entry.has("sheet"):
+			def.sprite_atlas_path = REDSHRIKE_DIR + str(entry["sheet"]) + ".png"
+			def.sprite_cell = entry.get("start", Vector2i.ZERO)
+			def.sprite_frame_size = entry["frame"]
+			def.sprite_sheet_columns = int(entry["columns"])
+			def.sprite_frames = int(entry["frames"])
+			def.sprite_fps = float(entry["fps"])
+		else:
+			def.sprite_atlas_path = TOEN_SHEET
+			def.sprite_cell = Vector2i(int(entry["art"]) % TOEN_COLUMNS,
+				int(entry["art"]) / TOEN_COLUMNS)
 		def.tint = entry.get("tint", Color.WHITE)
 		def.scale_factor = float(entry.get("scale", 0.8))
 		def.sprite_faces_left = bool(entry.get("faces_left", false))
@@ -564,17 +586,29 @@ func _build_enemies() -> void:
 	# Frostmaw is the pack's fire salamander with its warm hues rotated to
 	# glacier blue (an adaptation the Battlers licence allows); the recolour
 	# script is recorded in MAPPING.md.
+	# The three bosses are Redshrike's animated sheets: a boss is the one thing
+	# on the board a player stops to look at, and a still image of it could not
+	# hold that. They are drawn at their native resolution — the frame is
+	# already a tile and a half tall — rather than at the 16px packs' zoom.
+	#
+	# The three mage sheets are one creature escalating, so the two that read
+	# as the same lineage take the two later bosses. Frostmaw keeps its element
+	# because mage-2 is holding blue fire; The Hollow King is mage-3, which is
+	# the form with nothing left of the body but tendrils.
 	var bosses: Array = [
 		{"id": "the_bulwark", "name": "The Bulwark", "hp": 450.0, "speed": 0.5, "dmg": 5.0,
-			"armor": WK.ArmorType.HEAVY, "art": "World01_005_Shello", "scale": 2.0,
+			"armor": WK.ArmorType.HEAVY, "sheet": "andromalius-57x88", "frame": Vector2i(57, 88),
+			"columns": 8, "frames": 8, "fps": 7.0, "scale": 1.3,
 			"tint": Color.WHITE, "faces_camera": true,
 			"script": "res://scenes/enemies/bosses/BulwarkPattern.gd"},
 		{"id": "frostmaw", "name": "Frostmaw", "hp": 700.0, "speed": 0.7, "dmg": 6.0,
-			"armor": WK.ArmorType.ETHEREAL, "art": "Frostmaw_from_Salamander", "scale": 2.0,
-			"tint": Color.WHITE, "faces_left": true,
+			"armor": WK.ArmorType.ETHEREAL, "sheet": "mage-2-122x110", "frame": Vector2i(122, 110),
+			"columns": 4, "frames": 8, "fps": 6.0, "scale": 1.0,
+			"tint": Color.WHITE, "faces_camera": true,
 			"script": "res://scenes/enemies/bosses/FrostmawPattern.gd"},
 		{"id": "the_hollow_king", "name": "The Hollow King", "hp": 1000.0, "speed": 0.9, "dmg": 6.0,
-			"armor": WK.ArmorType.NONE, "art": "World01_004_WailingPrince", "scale": 1.5,
+			"armor": WK.ArmorType.NONE, "sheet": "mage-3-87x110", "frame": Vector2i(87, 110),
+			"columns": 4, "frames": 8, "fps": 6.0, "scale": 1.15,
 			"tint": Color.WHITE, "faces_camera": true,
 			"script": "res://scenes/enemies/bosses/HollowKingPattern.gd"},
 	]
@@ -592,8 +626,12 @@ func _build_enemies() -> void:
 		def.provisional = true
 		def.sprite_faces_left = bool(entry.get("faces_left", false))
 		def.sprite_faces_camera = bool(entry.get("faces_camera", false))
-		def.sprite_atlas_path = BATTLER_DIR + str(entry["art"]) + ".png"
-		def.sprite_cell = Vector2i(-1, -1)   # whole-image sprite, not a sheet cell
+		def.sprite_atlas_path = REDSHRIKE_DIR + str(entry["sheet"]) + ".png"
+		def.sprite_cell = Vector2i(0, 0)     # the cycle starts at the sheet's first frame
+		def.sprite_frame_size = entry["frame"]
+		def.sprite_sheet_columns = int(entry["columns"])
+		def.sprite_frames = int(entry["frames"])
+		def.sprite_fps = float(entry["fps"])
 		def.tint = entry["tint"]
 		def.scale_factor = float(entry["scale"])
 		def.boss_pattern_script = load(entry["script"]) if ResourceLoader.exists(entry["script"]) else null

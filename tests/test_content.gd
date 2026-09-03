@@ -166,3 +166,35 @@ func test_matchup_hints_follow_the_balance_table() -> void:
 		"Frost slides off Ethereal")
 	assert_true(Balance.armor_matchup(WK.ArmorType.ETHEREAL)["strong"].has("Blight"),
 		"Blight cuts through Ethereal")
+
+## Every frame an animated enemy walks through has something drawn in it.
+##
+## A sheet's dimensions imply a uniform grid and are not always telling the
+## truth: Redshrike's shadow sheet ends on a half row, two drawn frames then
+## two empty cells, and a cycle that ran over them made the Shade vanish for a
+## quarter of every loop. Nothing failed — it simply was not there — so this
+## reads the pixels rather than trusting the grid.
+func test_no_enemy_animates_through_an_empty_frame() -> void:
+	for def: EnemyDef in Registry.spawnable_enemies() + Registry.bosses():
+		if not def.is_animated():
+			continue
+		var sheet: Texture2D = SpriteAtlas.texture(def.sprite_atlas_path)
+		assert_not_null(sheet, "%s has a sheet to read" % def.id)
+		var image: Image = sheet.get_image()
+		assert_not_null(image, "%s imports losslessly enough to inspect" % def.id)
+		for index: int in def.sprite_frames:
+			var frame: Texture2D = def.frame_texture(index)
+			assert_true(frame is AtlasTexture, "%s frame %d is a sheet region" % [def.id, index])
+			var region: Rect2i = Rect2i((frame as AtlasTexture).region)
+			assert_true(Rect2i(Vector2i.ZERO, image.get_size()).encloses(region),
+				"%s frame %d stays inside its sheet" % [def.id, index])
+			assert_true(_drawn_pixels(image, region) > 0,
+				"%s frame %d is blank — the enemy disappears for that frame" % [def.id, index])
+
+func _drawn_pixels(image: Image, region: Rect2i) -> int:
+	var drawn: int = 0
+	for y: int in range(region.position.y, region.end.y):
+		for x: int in range(region.position.x, region.end.x):
+			if image.get_pixel(x, y).a > 0.03:
+				drawn += 1
+	return drawn

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_6tnxw"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="1_2iiip"]
 
 [resource]
-script = ExtResource("1_6tnxw")
+script = ExtResource("1_2iiip")
 id = &"shade"
 display_name = "Shade"
 base_hp = 30.0
@@ -12,14 +12,14 @@ base_damage = 2.0
 armor_type = 2
 budget_cost = 18
 unlock_wave = 19
-sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
-sprite_cell = Vector2i(0, 16)
+sprite_atlas_path = "res://assets/sprites/enemies/redshrike/shadow-80x70.png"
+sprite_cell = Vector2i(0, 4)
 sprite_cell_size = 16
 sprite_cell_margin = 0
 sprite_faces_left = false
 sprite_faces_camera = false
-tint = Color(0.8, 0.84, 1, 0.66)
-scale_factor = 4.0
+tint = Color(0.8, 0.84, 1, 0.8)
+scale_factor = 0.7
 pack_size = 1
 aura_radius_tiles = 0.0
 aura_damage_reduction = 0.0
@@ -29,4 +29,8 @@ phase_visible_seconds = 2.0
 phase_hidden_seconds = 1.1
 is_boss = false
 scene_path = "res://scenes/enemies/Shade.tscn"
+sprite_frame_size = Vector2i(80, 70)
+sprite_sheet_columns = 4
+sprite_frames = 4
+sprite_fps = 8.0
 provisional = true

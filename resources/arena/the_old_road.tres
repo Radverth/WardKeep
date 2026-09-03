@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_6txlh"]
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_qwwnd"]
 
 [resource]
-script = ExtResource("1_6txlh")
+script = ExtResource("1_qwwnd")
 id = &"the_old_road"
 display_name = "The Old Road"
 blurb = "The long switchback. Four tight corners and room to build at each."

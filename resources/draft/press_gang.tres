@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_wun7d"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_4ocxj"]
 
 [resource]
-script = ExtResource("1_wun7d")
+script = ExtResource("1_4ocxj")
 id = &"press_gang"
 title = "Press-Gang"
 description = "+3 gold from every kill, but wave-clear pays 35% less."

@@ -1,0 +1,22 @@
+Animated creature spritesheets, from spritesheets.zip on OpenGameArt.org.
+
+Copyright/Attribution Notice, as supplied with the pack:
+
+    Attibution to Stephen Challener (Redshrike) for the original sprites
+    and a link to OpenGameArt.org
+
+This notice is reproduced verbatim, including its original spelling. The
+attribution it requires is delivered in the shipped build on the credits
+panel of the Settings screen (scenes/menu/Settings.gd), because a line in a
+repository file does not reach a player.
+
+Files used, and where:
+
+    mage-3-87x110.png     The Hollow King
+    mage-2-122x110.png    Frostmaw
+    andromalius-57x88.png The Bulwark
+    shadow-80x70.png      Shade
+    mage-1-85x94.png      held, unused
+
+Modifications: none. Each sheet is read as a grid of frames at its native
+resolution; the frame size is in the filename. See MAPPING.md.

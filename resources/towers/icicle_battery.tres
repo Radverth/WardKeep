@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TowerDef" load_steps=7 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_uy2tn"]
-[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_fmgl4"]
-[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_w0tou"]
+[ext_resource type="PackedScene" path="res://scenes/run/Projectile.tscn" id="1_pvgbb"]
+[ext_resource type="Script" path="res://resources/defs/TowerDef.gd" id="2_ojthx"]
+[ext_resource type="Script" path="res://resources/defs/TowerTierData.gd" id="3_33f3s"]
 
-[sub_resource type="Resource" id="Resource_njjcf"]
-script = ExtResource("3_w0tou")
+[sub_resource type="Resource" id="Resource_x8auv"]
+script = ExtResource("3_33f3s")
 cost = 35
 damage = 6.0
 range_tiles = 3.0
@@ -21,8 +21,8 @@ bonus_vs_slowed = 0.5
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_o8xgt"]
-script = ExtResource("3_w0tou")
+[sub_resource type="Resource" id="Resource_h41ca"]
+script = ExtResource("3_33f3s")
 cost = 55
 damage = 15.0
 range_tiles = 3.5
@@ -38,8 +38,8 @@ bonus_vs_slowed = 0.5
 bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
-[sub_resource type="Resource" id="Resource_rc2yd"]
-script = ExtResource("3_w0tou")
+[sub_resource type="Resource" id="Resource_tpm3p"]
+script = ExtResource("3_33f3s")
 cost = 95
 damage = 36.0
 range_tiles = 4.0
@@ -56,17 +56,17 @@ bonus_vs_ethereal = 0.0
 ignores_armor_matchup = false
 
 [resource]
-script = ExtResource("2_fmgl4")
+script = ExtResource("2_ojthx")
 id = &"icicle_battery"
 display_name = "Icicle Battery"
 role = "Burst single-target, bonus vs slowed"
 rune_element = 1
-tiers = Array[ExtResource("3_w0tou")]([SubResource("Resource_njjcf"), SubResource("Resource_o8xgt"), SubResource("Resource_rc2yd")])
+tiers = Array[ExtResource("3_33f3s")]([SubResource("Resource_x8auv"), SubResource("Resource_h41ca"), SubResource("Resource_tpm3p")])
 sprite_atlas_path = "res://assets/sprites/environment/toen_medieval_strategy/toen_medieval_strategy.png"
 sprite_cell = Vector2i(5, 17)
 sprite_cell_size = 16
 sprite_cell_margin = 0
-projectile_scene = ExtResource("1_uy2tn")
+projectile_scene = ExtResource("1_pvgbb")
 scene_path = "res://scenes/towers/IcicleBattery.tscn"
 unlock_cost = 300
 required_account_level = 6

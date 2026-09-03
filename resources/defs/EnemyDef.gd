@@ -57,11 +57,34 @@ class_name EnemyDef
 @export var boss_pattern_script: Script = null
 @export var scene_path: String = ""
 
+## --- animation sheets ---------------------------------------------------
+## A sheet of non-square frames, read as an animation rather than as a single
+## cell. Frames run left to right and wrap at `sprite_sheet_columns`, so a
+## cycle drawn across two rows plays as one loop. Zero frames means the sprite
+## is a still, which is what every 16px pack enemy is.
+@export var sprite_frame_size: Vector2i = Vector2i.ZERO
+@export var sprite_sheet_columns: int = 1
+@export var sprite_frames: int = 0
+@export var sprite_fps: float = 8.0
+
+func is_animated() -> bool:
+	return sprite_frames > 1 and sprite_frame_size.x > 0 and sprite_frame_size.y > 0
+
+## The sprite at rest: frame zero when animated, the still otherwise.
 func texture() -> Texture2D:
+	if is_animated():
+		return frame_texture(0)
 	if sprite_cell.x < 0:
 		return SpriteAtlas.whole(sprite_atlas_path)
 	return SpriteAtlas.cell(sprite_atlas_path, sprite_cell.x, sprite_cell.y,
 		sprite_cell_size, sprite_cell_margin)
+
+## Frame `index` of the cycle, counted from the sheet cell the def starts at.
+func frame_texture(index: int) -> Texture2D:
+	var start: int = maxi(0, sprite_cell.y) * maxi(1, sprite_sheet_columns) + maxi(0, sprite_cell.x)
+	return SpriteAtlas.frame_cell(sprite_atlas_path,
+		start + posmod(index, maxi(1, sprite_frames)),
+		sprite_frame_size, sprite_sheet_columns)
 
 ## True where a value in this resource is provisional rather than transcribed
 ## from a Feature Spec table. See SPEC_GAPS.md.

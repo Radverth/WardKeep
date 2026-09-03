@@ -210,3 +210,36 @@ a build script. Two problems: the kit is a modular googly-eye monster maker
 and read as a cartoon toy rather than anything besieging a medieval keep, and
 at 270px on a 64px grid each boss covered **four tiles square**. Both the
 composites and the script that built them are gone.
+
+
+## Redshrike animated creature sheets
+
+`assets/sprites/enemies/redshrike/`, from `spritesheets.zip` on OpenGameArt.
+Attribution is required — Stephen Challener (Redshrike) and a link to
+OpenGameArt.org — and is delivered on the Settings credits panel. The pack's
+notice is reproduced verbatim in that directory's LICENSE.txt.
+
+Read as grids of non-square frames with no margin; the frame size is in each
+filename. Frames run left to right and wrap at the sheet's column count, so a
+cycle drawn over two rows plays as one loop.
+
+| Sheet | Frame | Grid | Used by | Start | Frames | fps | Scale |
+|---|---|---|---|---|---|---|---|
+| `andromalius-57x88` | 57x88 | 8x3 | The Bulwark | (0,0) | 8 | 7 | 1.30 |
+| `mage-2-122x110` | 122x110 | 4x2 | Frostmaw | (0,0) | 8 | 6 | 1.00 |
+| `mage-3-87x110` | 87x110 | 4x2 | The Hollow King | (0,0) | 8 | 6 | 1.15 |
+| `shadow-80x70` | 80x70 | 4x5 | Shade | (0,4) | 4 | 8 | 0.70 |
+| `mage-1-85x94` | 85x94 | 4x2 | held, unused | — | — | — | — |
+
+Drawn at native resolution rather than the 16px packs' 4x zoom: a boss frame is
+already a tile and a half tall.
+
+The three mage sheets are one creature escalating through three forms, which is
+why the two that read as the same lineage take the two later bosses. Frostmaw
+keeps its frost element because mage-2 is holding blue fire.
+
+`shadow-80x70` is **not** the uniform 4x5 grid its dimensions imply. Rows 0-2
+and the first half of row 3 are the figure rising out of the ground; row 3 then
+ends in two empty cells. Only row 4 is a clean four-frame loop of the formed
+figure, so that is the cycle. `test_no_enemy_animates_through_an_empty_frame`
+reads the sheet's pixels to keep any future cycle off the blanks.

@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ArenaMap" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_i6fwu"]
+[ext_resource type="Script" path="res://resources/defs/ArenaMap.gd" id="1_swnr4"]
 
 [resource]
-script = ExtResource("1_i6fwu")
+script = ExtResource("1_swnr4")
 id = &"the_gauntlet"
 display_name = "The Gauntlet"
 blurb = "Long open straights. Range matters more than rate of fire."

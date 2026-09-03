@@ -10,7 +10,9 @@ const PRIVACY_URL: String = "https://wardkeep.example/privacy"
 ## which turns every pack name into a heading.
 const CREDITS: String = """Board art — Toen's Medieval Strategy Sprite Pack by Andre Mari Coppola, licensed [url=http://creativecommons.org/licenses/by/4.0/]CC BY 4.0[/url]. Modified: lane tiles and the keep are composited from the pack's tiles.
 
-Bosses — Battlers by JosephSeraph. Modified: Frostmaw is recoloured from the pack's salamander.
+Bosses and the Shade — animated creature sheets by Stephen Challener (Redshrike), from [url=https://opengameart.org]OpenGameArt.org[/url]. Unmodified.
+
+Other enemies — Battlers by JosephSeraph.
 
 Interface, effects, fonts and audio — Kenney ([url=https://kenney.nl]kenney.nl[/url]), CC0."""
 

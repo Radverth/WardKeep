@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_ttmlx"]
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_xca3d"]
+[ext_resource type="Script" path="res://scenes/enemies/bosses/BulwarkPattern.gd" id="1_jjni4"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_nrm1o"]
 
 [resource]
-script = ExtResource("2_xca3d")
+script = ExtResource("2_nrm1o")
 id = &"the_bulwark"
 display_name = "The Bulwark"
 base_hp = 450.0
@@ -13,14 +13,14 @@ base_damage = 5.0
 armor_type = 1
 budget_cost = 0
 unlock_wave = 10
-sprite_atlas_path = "res://assets/sprites/enemies/battlers/World01_005_Shello.png"
-sprite_cell = Vector2i(-1, -1)
+sprite_atlas_path = "res://assets/sprites/enemies/redshrike/andromalius-57x88.png"
+sprite_cell = Vector2i(0, 0)
 sprite_cell_size = 16
 sprite_cell_margin = 0
 sprite_faces_left = false
 sprite_faces_camera = true
 tint = Color(1, 1, 1, 1)
-scale_factor = 2.0
+scale_factor = 1.3
 pack_size = 1
 aura_radius_tiles = 0.0
 aura_damage_reduction = 0.0
@@ -29,6 +29,10 @@ aura_heal_per_second = 0.0
 phase_visible_seconds = 0.0
 phase_hidden_seconds = 0.0
 is_boss = true
-boss_pattern_script = ExtResource("1_ttmlx")
+boss_pattern_script = ExtResource("1_jjni4")
 scene_path = "res://scenes/enemies/bosses/TheBulwark.tscn"
+sprite_frame_size = Vector2i(57, 88)
+sprite_sheet_columns = 8
+sprite_frames = 8
+sprite_fps = 7.0
 provisional = true

@@ -70,6 +70,8 @@ var _aura_timer: float = 0.0
 ## through a vertical leg rather than snapping back to the artwork's default.
 var _facing_left: bool = false
 var _bob_phase: float = 0.0
+var _frame_time: float = 0.0
+var _frame: int = 0
 
 func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector2Array) -> void:
 	def = enemy_def
@@ -102,6 +104,8 @@ func setup(enemy_def: EnemyDef, wave_index: int, elite: bool, path: PackedVector
 	_refresh_health_bar()
 
 func _apply_sprite() -> void:
+	_frame_time = 0.0
+	_frame = 0
 	_sprite.texture = def.texture()
 	_sprite.scale = Vector2.ONE * def.scale_factor
 	_sprite.flip_h = false if def.sprite_faces_camera else (_facing_left != def.sprite_faces_left)
@@ -114,6 +118,7 @@ func _apply_sprite() -> void:
 func _process(delta: float) -> void:
 	if not alive:
 		return
+	_tick_animation(delta)
 	_tick_effects(delta)
 	if not alive:
 		return
@@ -161,6 +166,20 @@ func _tick_effects(delta: float) -> void:
 ## Bobs the sprite rather than the node: the node's position is the enemy's
 ## place on the lane, which targeting, splash and the tap-to-inspect radius all
 ## measure against, and none of them should wobble.
+## Advances an animated sheet. Driven off the same delta as everything else,
+## so the game-speed control slows and hurries the animation with the rest of
+## the board rather than letting a boss flail at 3x while it walks at 1x.
+func _tick_animation(delta: float) -> void:
+	if def == null or not def.is_animated():
+		return
+	_frame_time += delta * maxf(0.0, def.sprite_fps)
+	var advanced: int = int(_frame_time)
+	if advanced <= 0:
+		return
+	_frame_time -= float(advanced)
+	_frame = posmod(_frame + advanced, def.sprite_frames)
+	_sprite.texture = def.frame_texture(_frame)
+
 func _tick_bob(delta: float) -> void:
 	if reached_ward_stone:
 		return

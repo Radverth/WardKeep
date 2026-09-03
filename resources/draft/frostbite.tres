@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DraftCardDef" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_g8q62"]
+[ext_resource type="Script" path="res://resources/defs/DraftCardDef.gd" id="1_ylyt1"]
 
 [resource]
-script = ExtResource("1_g8q62")
+script = ExtResource("1_ylyt1")
 id = &"frostbite"
 title = "Frostbite"
 description = "Every tower deals +30% damage to slowed enemies."

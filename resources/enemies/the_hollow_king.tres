@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scenes/enemies/bosses/HollowKingPattern.gd" id="1_ivn8q"]
-[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_wuh2e"]
+[ext_resource type="Script" path="res://scenes/enemies/bosses/HollowKingPattern.gd" id="1_r52si"]
+[ext_resource type="Script" path="res://resources/defs/EnemyDef.gd" id="2_t0dco"]
 
 [resource]
-script = ExtResource("2_wuh2e")
+script = ExtResource("2_t0dco")
 id = &"the_hollow_king"
 display_name = "The Hollow King"
 base_hp = 1000.0
@@ -13,14 +13,14 @@ base_damage = 6.0
 armor_type = 0
 budget_cost = 0
 unlock_wave = 10
-sprite_atlas_path = "res://assets/sprites/enemies/battlers/World01_004_WailingPrince.png"
-sprite_cell = Vector2i(-1, -1)
+sprite_atlas_path = "res://assets/sprites/enemies/redshrike/mage-3-87x110.png"
+sprite_cell = Vector2i(0, 0)
 sprite_cell_size = 16
 sprite_cell_margin = 0
 sprite_faces_left = false
 sprite_faces_camera = true
 tint = Color(1, 1, 1, 1)
-scale_factor = 1.5
+scale_factor = 1.15
 pack_size = 1
 aura_radius_tiles = 0.0
 aura_damage_reduction = 0.0
@@ -29,6 +29,10 @@ aura_heal_per_second = 0.0
 phase_visible_seconds = 0.0
 phase_hidden_seconds = 0.0
 is_boss = true
-boss_pattern_script = ExtResource("1_ivn8q")
+boss_pattern_script = ExtResource("1_r52si")
 scene_path = "res://scenes/enemies/bosses/TheHollowKing.tscn"
+sprite_frame_size = Vector2i(87, 110)
+sprite_sheet_columns = 4
+sprite_frames = 8
+sprite_fps = 6.0
 provisional = true

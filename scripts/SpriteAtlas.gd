@@ -53,6 +53,24 @@ static func cell(sheet_path: String, column: int, row: int, size: int = 16, marg
 	_cache[key] = tex
 	return tex
 
+## One frame of an animation sheet: a uniform grid of non-square cells with no
+## margin, indexed linearly and wrapped at `columns`, so a sheet whose cycle
+## runs across more than one row is read the way it was drawn.
+static func frame_cell(sheet_path: String, index: int, frame_size: Vector2i,
+		columns: int) -> AtlasTexture:
+	var wide: int = maxi(1, columns)
+	var key: String = "%s@%d,%dx%d,%d" % [sheet_path, index, frame_size.x, frame_size.y, wide]
+	if _cache.has(key):
+		return _cache[key]
+	var tex := AtlasTexture.new()
+	tex.atlas = texture(sheet_path)
+	tex.region = Rect2(
+		float((index % wide) * frame_size.x), float((index / wide) * frame_size.y),
+		float(frame_size.x), float(frame_size.y))
+	tex.filter_clip = true
+	_cache[key] = tex
+	return tex
+
 ## A whole image used as one sprite (the baked boss composites).
 static func whole(path: String) -> Texture2D:
 	return texture(path)
